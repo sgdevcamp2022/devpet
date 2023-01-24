@@ -1,0 +1,12 @@
+.
+├── back-end
+│   ├── api-gateway		//MSA API-Gateway
+│   ├── app
+│   ├── auth
+│   ├── chat
+│   ├── push
+│   ├── relation
+│   ├── service-discovery	//MSA Eureka Server
+│   ├── service1		//MSA test service
+│   └── service2		//MSA test service
+└── front-end			//Android
