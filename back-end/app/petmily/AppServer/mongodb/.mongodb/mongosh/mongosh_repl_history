@@ -1,0 +1,36 @@
+show collections;
+use app_db;
+show dbs;
+clear;
+show collections;
+db;
+show dbs;
+use app_db
+show collections;
+});
+roles: [ { "role": "readWriteAnyDatabase", "db": "admin" }, { "role": "userAdminAnyDatabase", "db": "admin" }, { "role": "dbAdminAnyDatabase", "db": "admin" }, { "role": "clusterAdmin", "db": "admin" }, { "role": "restore", "db": "admin" }, { "role": "backup", "db": "admin" }]
+db.createUser( {user: skine134, pwd:  qwer!@#$,
+roles: [ { "role" : "readWriteAnyDatabase", "db" : "admin" }, { "role" : "userAdminAnyDatabase", "db" : "admin" }, { "role" : "dbAdminAnyDatabase", "db" : "admin" }, { "role" : "clusterAdmin", "db" : "admin" }, { "role" : "restore", "db" : "admin" }, { "role" : "backup", "db" : "admin" } ]});
+db.createUser( {user: skine134, pwd:  qwer!@#$,
+roles: [ { "role" : "readWriteAnyDatabase", "db" : "admin" }, { "role" : "userAdminAnyDatabase", "db" : "admin" }, { "role" : "dbAdminAnyDatabase", "db" : "admin" }, { "role" : "clusterAdmin", "db" : "admin" }, { "role" : "restore", "db" : "admin" }, { "role" : "backup", "db" : "admin" } ]});
+    pwd:  “root”,
+db.createUser( {user: “root”,
+  }
+roles: [ { "role": "readWriteAnyDatabase", "db": "admin" }, { "role": "userAdminAnyDatabase", "db": "admin" }, { "role": "dbAdminAnyDatabase", "db": "admin" }, { "role": "clusterAdmin", "db": "admin" }, { "role": "restore", "db": "admin" }, { "role": "backup", "db": "admin" }]
+    pwd:  “root”,
+db.createUser( { user: “root”,
+);
+  }
+roles: [ { "role": "readWriteAnyDatabase", "db": "admin" }, { "role": "userAdminAnyDatabase", "db": "admin" }, { "role": "dbAdminAnyDatabase", "db": "admin" }, { "role": "clusterAdmin", "db": "admin" }, { "role": "restore", "db": "admin" }, { "role": "backup", "db": "admin" }]
+    pwd:  “root”,
+db.createUser( { user: “root”,
+{ "role" : "userAdminAnyDatabase", "db" : "admin" }, { "role" : "dbAdminAnyDatabase", "db" : "admin" }, { "role" : "clusterAdmin", "db" : "admin" }, { "role" : "restore", "db" : "admin" }, { "role" : "backup", "db" : "admin" } ;
+db.createUser({user:"root",pwd:"root",roles:[{ "role" : "readWriteAnyDatabase", "db" : "admin" },]})
+use admin
+show dbs
+show db
+show dbs;
+db
+db.getCollectionNames;
+db.getCollectionNames();
+db.getCollection();
