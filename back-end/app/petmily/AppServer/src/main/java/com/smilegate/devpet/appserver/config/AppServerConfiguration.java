@@ -12,9 +12,9 @@ import java.util.List;
  * 스프링 환결설정을 하는 클래스
  */
 public class AppServerConfiguration implements WebMvcConfigurer {
-    @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new UserInfoArgumentResolver());
-        WebMvcConfigurer.super.addArgumentResolvers(resolvers);
-    }
+//    @Override
+//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+//        resolvers.add(new UserInfoArgumentResolver());
+//        WebMvcConfigurer.super.addArgumentResolvers(resolvers);
+//    }
 }
