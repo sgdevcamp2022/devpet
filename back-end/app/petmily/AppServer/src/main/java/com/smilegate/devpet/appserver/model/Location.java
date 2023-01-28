@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -26,9 +27,7 @@ public class Location {
     @Field
     private Long category = (long)(Category.PRIVATE.ordinal());
     @Field
-    private Double longitude;
-    @Field
-    private Double latitude;
+    private Point coord;
 
     @Override
     public boolean equals(Object o) {

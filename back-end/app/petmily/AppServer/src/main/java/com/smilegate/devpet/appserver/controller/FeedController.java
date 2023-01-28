@@ -3,12 +3,11 @@ package com.smilegate.devpet.appserver.controller;
 import com.smilegate.devpet.appserver.model.CommentRequest;
 import com.smilegate.devpet.appserver.model.Feed;
 import com.smilegate.devpet.appserver.model.FeedRequest;
-import com.smilegate.devpet.appserver.model.Location;
 import com.smilegate.devpet.appserver.service.CommentService;
 import com.smilegate.devpet.appserver.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Point;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
 import java.util.List;
 
@@ -45,14 +44,17 @@ public class FeedController {
     }
 
     @GetMapping("/{mode}")
-    public List<Feed> getFeedList(@PathVariable("mode") int mode, 
-                                  @RequestParam("longitude") Double longitude, 
-                                  @RequestParam("latitude") Double latitude, 
-                                  @RequestParam("range") int range, 
-                                  @RequestParam("word") String word, 
-                                  @RequestParam("category") int category)
+    public List<Feed> getNearByFeedList(@PathVariable("mode") int mode,
+                                        @RequestParam("longitude") Double longitude,
+                                        @RequestParam("latitude") Double latitude,
+                                        @RequestParam("distance") int distance,
+                                        @RequestParam("word") String word,
+                                        @RequestParam("category") int category,
+                                        @RequestParam("start") int start,
+                                        @RequestParam("size") int size)
     {
-        return null;
+        Point center = new Point(longitude,latitude);
+        return feedService.getFeedList(center,distance,category,word,start,size);
     }
 
     @PostMapping("/{feedId}/comment")

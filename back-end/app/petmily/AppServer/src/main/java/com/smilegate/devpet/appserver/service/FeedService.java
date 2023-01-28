@@ -9,10 +9,16 @@ import com.smilegate.devpet.appserver.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.geo.Circle;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.awt.print.Pageable;
 import java.security.Principal;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -60,5 +66,24 @@ public class FeedService {
         // TODO: 그래프 서버 응답으로 좋아요 갯수 처리
         // TODO: fcm or fan-out, fan-in to feed owner
         return true;
+    }
+    public List<Feed> getFeedList(Point center, long distance, int category, String word, int start, int size)
+    {
+        PageRequest pageRequest = PageRequest.of(start/size,size);
+
+        return feedRepository.findByNear(center,distance,category,word,pageRequest);
+        /*{
+          location: {
+            $near: {
+              $geometry: {
+                type: "Point",
+                coordinates: [-0.126821, 51.495885]
+              },
+              $maxDistance: 1000,
+              $minDistance: 10
+            }
+          }
+        }*/
+
     }
 }
