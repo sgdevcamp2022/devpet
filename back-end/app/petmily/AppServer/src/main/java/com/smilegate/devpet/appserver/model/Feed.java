@@ -10,18 +10,19 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.List;
 
 @Getter @Setter
 @Document(collection = "feed")
-public class Feed {
+public class Feed extends BaseModel {
+    @Transient
+    public static final String SEQUENCE_NAME = "feed_sequence";
     @Id
-    private Long id;
+    private Long feedId;
     @Field
     private String content;
     @Field
-    private Long category;
-    @Field
-    private Location coord;
+    private Location location;
     @Field
     private ArrayList<Long> tag;
     @Field
@@ -31,7 +32,7 @@ public class Feed {
     @Field
     private ArrayList<Long> hashTag;
     @Transient
-    public static final String SEQUENCE_NAME = "feed_sequence";
+    private List<Comment> comments;
     public Feed(FeedRequest feedRequest, Principal userInfo)
     {
         setFeedData(feedRequest);
@@ -39,6 +40,10 @@ public class Feed {
 
     public void setFeedData(FeedRequest feedRequest)
     {
-
+        this.setLocation(feedRequest.getLocation());
+        this.setGroupId(feedRequest.getGroupId());
+        this.setImageUrl(feedRequest.getImageUrl());
+        this.setTag(feedRequest.getTag());
+        this.setContent(feedRequest.getContent());
     }
 }

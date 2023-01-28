@@ -10,8 +10,8 @@ import java.util.ArrayList;
 @Getter @Setter
 public class FeedRequest {
     private String content;
-    private Long category;
-    private Location coord;
+    private String category;
+    private Location location;
     private ArrayList<Long> tag;
     private Long groupId;
     private ArrayList<String> imageUrl;
