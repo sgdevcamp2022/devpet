@@ -21,6 +21,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -67,23 +68,28 @@ public class FeedService {
         // TODO: fcm or fan-out, fan-in to feed owner
         return true;
     }
+    public List<String> getSimpleFeedList(Point center, long distance, int category, java.lang.String word, int start, int size)
+    {
+        PageRequest pageRequest = PageRequest.of(start/size,size);
+        List<Feed> result = feedRepository.findByNear(center,distance,category,word,pageRequest);
+        return  result.stream().map((feed)->{
+            if (feed.getImageUrl().size()<1)
+                return null;
+            return feed.getImageUrl().get(0);
+        }).collect(Collectors.toList());
+    }
+    public List<Feed> getMarkerFeedList(Point center, int category, String word, int start, int size)
+    {
+        PageRequest pageRequest = PageRequest.of(start/size,size);
+        Location location = new Location();
+        location.setCoord(center);
+        location.setCategory((long)category);
+        return feedRepository.findByLocationAndContent(location,word, pageRequest);
+    }
     public List<Feed> getFeedList(Point center, long distance, int category, String word, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
 
         return feedRepository.findByNear(center,distance,category,word,pageRequest);
-        /*{
-          location: {
-            $near: {
-              $geometry: {
-                type: "Point",
-                coordinates: [-0.126821, 51.495885]
-              },
-              $maxDistance: 1000,
-              $minDistance: 10
-            }
-          }
-        }*/
-
     }
 }

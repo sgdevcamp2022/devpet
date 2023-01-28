@@ -2,14 +2,14 @@ package com.smilegate.devpet.appserver.repository;
 
 
 import com.smilegate.devpet.appserver.model.Feed;
-import javafx.scene.shape.Circle;
+import com.smilegate.devpet.appserver.model.Location;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @Repository
@@ -30,4 +30,5 @@ public interface FeedRepository extends MongoRepository<Feed, Long> {
                     "}";
     @Query(FEED_NEAR_QUERY)
     List<Feed> findByNear(Point center, long distance, int category, String word, PageRequest pageRequest);
+    List<Feed> findByLocationAndContent(Location location, String word, Pageable pageable);
 }

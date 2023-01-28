@@ -43,8 +43,21 @@ public class FeedController {
         return feedService.setFeedEmotion(feedId, emotion, userInfo);
     }
 
-    @GetMapping("/{mode}")
-    public List<Feed> getNearByFeedList(@PathVariable("mode") int mode,
+    @GetMapping("/gallety")
+    public List<String> getNearBySimpleFeedList(
+                                        @RequestParam("longitude") Double longitude,
+                                        @RequestParam("latitude") Double latitude,
+                                        @RequestParam("distance") int distance,
+                                        @RequestParam("word") String word,
+                                        @RequestParam("category") int category,
+                                        @RequestParam("start") int start,
+                                        @RequestParam("size") int size)
+    {
+        Point center = new Point(longitude,latitude);
+        return feedService.getSimpleFeedList(center,distance,category,word,start,size);
+    }
+    @GetMapping
+    public List<Feed> getNearByFeedList(
                                         @RequestParam("longitude") Double longitude,
                                         @RequestParam("latitude") Double latitude,
                                         @RequestParam("distance") int distance,
@@ -55,6 +68,18 @@ public class FeedController {
     {
         Point center = new Point(longitude,latitude);
         return feedService.getFeedList(center,distance,category,word,start,size);
+    }
+    @GetMapping("/marker")
+    public List<Feed> getMarkerFeedList(
+                                        @RequestParam("longitude") Double longitude,
+                                        @RequestParam("latitude") Double latitude,
+                                        @RequestParam("word") String word,
+                                        @RequestParam("category") int category,
+                                        @RequestParam("start") int start,
+                                        @RequestParam("size") int size)
+    {
+        Point center = new Point(longitude,latitude);
+        return feedService.getMarkerFeedList(center,category,word,start,size);
     }
 
     @PostMapping("/{feedId}/comment")

@@ -15,6 +15,7 @@ import java.util.List;
 @Getter @Setter
 @Document(collection = "feed")
 public class Feed extends BaseModel {
+    public static enum FEED_SEARCH_MODE {GALLERY,POST,MARKER}
     @Transient
     public static final String SEQUENCE_NAME = "feed_sequence";
     @Id
