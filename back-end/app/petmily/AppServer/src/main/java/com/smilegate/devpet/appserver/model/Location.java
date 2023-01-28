@@ -7,6 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Objects;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
@@ -27,4 +29,17 @@ public class Location {
     private Double longitude;
     @Field
     private Double latitude;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Location location = (Location) o;
+        return Objects.equals(locationId, location.locationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(locationId);
+    }
 }

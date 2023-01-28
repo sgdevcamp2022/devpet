@@ -3,7 +3,9 @@ package com.smilegate.devpet.appserver.service;
 
 import com.smilegate.devpet.appserver.model.Feed;
 import com.smilegate.devpet.appserver.model.FeedRequest;
+import com.smilegate.devpet.appserver.model.Location;
 import com.smilegate.devpet.appserver.repository.FeedRepository;
+import com.smilegate.devpet.appserver.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -18,13 +20,14 @@ import java.util.concurrent.atomic.AtomicReference;
 @RequiredArgsConstructor
 public class FeedService {
     private final FeedRepository feedRepository;
-
+    private final LocationService locationService;
     private final SequenceGeneratorService sequenceGeneratorService;
     @Transactional
     public Feed postFeed(FeedRequest feedRequest, Principal userInfo)
     {
         Feed feed = new Feed(feedRequest,userInfo);
-        feed.setId(sequenceGeneratorService.longSequenceGenerate(Feed.SEQUENCE_NAME));
+        feed.setFeedId(sequenceGeneratorService.longSequenceGenerate(Feed.SEQUENCE_NAME));
+        locationService.postLocation(feed.getLocation());
         feed = feedRepository.save(feed);
         // TODO: fan-out, fan-in, fcm implements
         return feed;
@@ -35,6 +38,8 @@ public class FeedService {
     {
         Feed feed = feedRepository.findById(feedId).orElseThrow(RuntimeException::new);
         feed.setFeedData(feedRequest);
+        if (!feed.getLocation().equals(feedRequest.getLocation()))
+            locationService.postLocation(feedRequest.getLocation());
         feedRepository.save(feed);
         return feed;
     }
