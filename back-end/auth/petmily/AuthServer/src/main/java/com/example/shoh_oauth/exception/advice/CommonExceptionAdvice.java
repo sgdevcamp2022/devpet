@@ -1,6 +1,7 @@
 package com.example.shoh_oauth.exception.advice;
 
 import com.example.shoh_oauth.exception.AuthenticationFailedException;
+import com.example.shoh_oauth.exception.DataNotFoundException;
 import com.example.shoh_oauth.exception.UnauthorizedException;
 import com.example.shoh_oauth.exception.ValidationException;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class CommonExceptionAdvice {
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class})
+    @ExceptionHandler(value = {IllegalArgumentException.class, IllegalStateException.class, DataNotFoundException.class})
     public ErrorResponse badRequestHandler(Exception e) {
         log.error(e.getMessage(), e);
         return new ErrorResponse(400, e.getMessage());
@@ -50,12 +51,12 @@ public class CommonExceptionAdvice {
         return new ErrorResponse(405, "지원하지 않는 API 입니다.");
     }
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(value = {Exception.class})
-    public ErrorResponse internalServerErrorHandler(Exception e) {
-        log.error(e.getMessage(), e);
-        return new ErrorResponse(500, "Internal server error");
-    }
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ExceptionHandler(value = {Exception.class})
+//    public ErrorResponse internalServerErrorHandler(Exception e) {
+//        log.error(e.getMessage(), e);
+//        return new ErrorResponse(500, "Internal server error");
+//    }
 
     @Getter
     @NoArgsConstructor

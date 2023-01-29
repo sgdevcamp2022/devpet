@@ -93,13 +93,6 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    }
 }
 
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        //return new BCryptPasswordEncoder();
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
-
 //    @Bean
 //    @Order(SecurityProperties.BASIC_AUTH_ORDER)
 //    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{

@@ -41,7 +41,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
                    .username(userDto.getUsername())
                    .name(userDto.getName())
                    .password(passwordEncoder.encode(userDto.getPassword()))
-                   .type(UserType.DEFAULT)
                    .build();
            userRepository.save(user);
         }

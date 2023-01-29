@@ -42,6 +42,7 @@ public class UserController {
     @PostMapping(value = "/oauth/token")
     public ResponseEntity<OAuth2AccessToken> postAccessToken(@RequestParam Map<String, String> parameters, Principal principal) throws HttpRequestMethodNotSupportedException {
 
+        userService.checkPassword(parameters);
         userService.checkLoginEmail(parameters);
 
         return tokenEndpoint.postAccessToken(principal, parameters);

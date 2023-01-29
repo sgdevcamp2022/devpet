@@ -2,6 +2,7 @@ package com.example.shoh_oauth.service;
 
 import com.example.shoh_oauth.data.entity.User;
 import com.example.shoh_oauth.data.entity.UserDetailsImpl;
+import com.example.shoh_oauth.exception.DataNotFoundException;
 import com.example.shoh_oauth.repository.VUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,19 +23,15 @@ public class UserDetailService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User findUser = vUserRepository.findByUsername(username).get();
+        User findUser = vUserRepository.findByUsername(username).orElseThrow(() -> new DataNotFoundException("이메일을 잘못 입력했거나 사용자가 존재하지 않습니다"));
 
         log.info(findUser.getUsername());
-
-        if (findUser==null)
-            throw new UsernameNotFoundException("사용자 정보를 찾을 수 없습니다.");
 
         UserDetailsImpl userDetails = UserDetailsImpl.builder()
                 .id(findUser.getId())
                 .username(findUser.getUsername())
                 .nickname(findUser.getNickname())
                 .password(findUser.getPassword())
-                .type(findUser.getType())
                 .authorities(findUser.getAuthorities())
                 .build();
 

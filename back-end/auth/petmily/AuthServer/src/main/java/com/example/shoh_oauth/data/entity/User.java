@@ -43,9 +43,6 @@ public class User  {
 
     private String provider;
 
-    @Enumerated(value = EnumType.STRING)
-    private UserType type;
-
     @ElementCollection(targetClass = AuthorityType.class)
     //@CollectionTable(name = "TBL_USER_AUTHORITY", joinColumns = @JoinColumn(name = "USER_ID"))
     @Enumerated(EnumType.STRING)
@@ -53,7 +50,7 @@ public class User  {
 
 
     @Builder
-    public User(String username, String password, String nickname, String name , String gender, String age, String provider, String phone , UserType type) {
+    public User(String username, String password, String nickname, String name , String gender, String age, String provider, String phone) {
         this.username = username;
         this.name = name;
         this.password = password;
@@ -63,7 +60,6 @@ public class User  {
         this.provider = provider;
         this.phone = phone;
         this.authorities.add(AuthorityType.ROLE_USER);
-        this.type = type;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities() {

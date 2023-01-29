@@ -1,11 +1,15 @@
 package com.example.shoh_oauth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -13,11 +17,15 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
+import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 // 토큰 발급, 관리 해주는곳
 // oauth2 인증을 거치는 과정을 AuthorizationInitializer 가 처리한다
@@ -26,8 +34,12 @@ import javax.sql.DataSource;
 @EnableAuthorizationServer
 public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapter {
 
-    private final String clientID = "dev";
-    private final String clientSecret = "pet";
+    @Value("${security.oauth2.clientID}")
+    private String clientID;
+    @Value("${security.oauth2.clientSecret}")
+    private String clientSecret;
+    @Value("${security.oauth2.signkey}")
+    private String signKey;
     // 얘가 실제로 인증을 한다, 인증 토큰을 관리하는 객체
     @Autowired
     private AuthenticationManager authenticationManager; // grant_type password를 사용하려면 필수
@@ -50,7 +62,7 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
 
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey("123");
+        converter.setSigningKey(signKey);
         return converter;
     }
 
@@ -98,9 +110,23 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
                 .authenticationManager(authenticationManager) // authenticationManager - password 값으로 사용자를 인증하고 인가
                 .tokenStore(tokenStore()) // tokenStore - token이 저장될 기본 store를 정의
                 .userDetailsService(service) // userDetailsService - 사용자를 인증하고 인가하는 서비스를 설정
-                .accessTokenConverter(jwtAccessTokenConverter()); // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
+                .accessTokenConverter(jwtAccessTokenConverter()) // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
+                .exceptionTranslator(authorizationWebResponseExceptionTranslator());
 
 //                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE) allowedTokenEndpointRequestMethods - token endpoint를 사용할 때 허용할 method들을 설정
 //                .tokenEnhancer(jwtAccessTokenConverter) tokenEnhancer - access token 추가 설정
+    }
+
+    @Bean
+    public WebResponseExceptionTranslator authorizationWebResponseExceptionTranslator() {
+        return new DefaultWebResponseExceptionTranslator() {
+
+            @Override
+            public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
+                Map responseMap = new HashMap();
+                responseMap.put("message", "비밀번호 틀림");
+                return new ResponseEntity(responseMap, HttpStatus.UNAUTHORIZED);
+            }
+        };
     }
 }

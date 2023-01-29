@@ -14,8 +14,6 @@ import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHand
 //@EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-//    private final CustomOAuth2UserService oAuth2UserService;
-//
 //    @Override
 //    public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
 //        super.configure(resources);
