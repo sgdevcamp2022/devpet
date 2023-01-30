@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Petmily</string>
+    <string name="kakao_app_key">네이티브 앱키</string>
+</resources>

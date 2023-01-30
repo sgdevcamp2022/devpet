@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/group"
+        android:title="그룹"
+        android:icon="@drawable/group"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/home"
+        android:title="메인"
+        android:icon="@drawable/dm"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/profile"
+        android:title="프로필"
+        android:icon="@drawable/user"
+        app:showAsAction="always" />
+
+</menu>
