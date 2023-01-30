@@ -18,10 +18,18 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.petmily.R;
+import com.example.petmily.viewModel.LoginViewModel;
 import com.example.petmily.viewModel.PlaceViewModel;
 import com.example.petmily.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.kakao.sdk.auth.model.OAuthToken;
+import com.kakao.sdk.common.KakaoSdk;
+import com.kakao.sdk.user.UserApiClient;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
+import kotlin.jvm.functions.Function2;
 
 public class MainActivity extends AppCompatActivity {
     ActivityMainBinding binding;
@@ -43,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(false);//기본 제목을 없애줍니다.
+        actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeAsUpIndicator(R.drawable.make);
 
@@ -106,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
         PlaceViewModel placeViewModel = new ViewModelProvider(this).get(PlaceViewModel.class);
 
 
+
+
+        LoginViewModel loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+
+
+
+
+
     }
 
     @Override
@@ -125,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case android.R.id.home:
                 //select back button
-                Intent intent = new Intent(this, Make.class);
+                Intent intent = new Intent(this, Login.class);
                 startActivity(intent);
 
                 break;
