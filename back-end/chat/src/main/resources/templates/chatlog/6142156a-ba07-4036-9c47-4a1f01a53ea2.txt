@@ -1,0 +1,12 @@
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"test","userCount":0,"timeLog":"2023-02-01T06:14:51.463638"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"resrser","userCount":0,"timeLog":"2023-02-01T06:14:52.964752"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"sersedfgdsfg","userCount":0,"timeLog":"2023-02-01T06:14:54.657024"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"tdsrgdfgdsf","userCount":0,"timeLog":"2023-02-01T06:14:56.271396"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"test","userCount":0,"timeLog":"2023-02-01T06:14:51.463638"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"resrser","userCount":0,"timeLog":"2023-02-01T06:14:52.964752"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"sersedfgdsfg","userCount":0,"timeLog":"2023-02-01T06:14:54.657024"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"tdsrgdfgdsf","userCount":0,"timeLog":"2023-02-01T06:14:56.271396"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"test","userCount":0,"timeLog":"2023-02-01T07:06:02.438310"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"gg","userCount":0,"timeLog":"2023-02-01T07:06:07.943746"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"","userCount":0,"timeLog":"2023-02-01T07:06:09.483792"}
+{"type":"TALK","roomId":"6142156a-ba07-4036-9c47-4a1f01a53ea2","sender":"admin1","message":"gggg","userCount":0,"timeLog":"2023-02-01T07:06:11.323504"}
