@@ -5,6 +5,7 @@ import com.example.shoh_oauth.config.auth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,8 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 @Configuration
@@ -23,7 +22,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 @RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-//    @SuppressWarnings("deprecation")
+    //    @SuppressWarnings("deprecation")
     private final CustomOAuth2UserService oAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final UserDetailsService userDetailsService;
@@ -64,15 +63,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin().disable()
                 .csrf().disable()
-                //.httpBasic().disable()
+                .httpBasic().disable()
                 .authorizeRequests()
                     .antMatchers("/sign-up").permitAll()
+                    .antMatchers("/oauth2/authorization/kakao").permitAll()
                     .antMatchers("/login/oauth2/**").permitAll()
                     .antMatchers("/oauth2/callback").permitAll()
                     .antMatchers("/oauth/authorize").permitAll()
                     .antMatchers("/oauth/**").authenticated()
                     .anyRequest().authenticated()
-
                 .and()
                 .oauth2Login()
 //                .loginPage("/loginForm")
@@ -81,36 +80,4 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                 .successHandler(oAuth2SuccessHandler);
     }
-
-//    @Bean
-//    AuthenticationSuccessHandler authenticationSuccessHandler() {
-//        return new CustomAuthenticationSuccessHandler();
-//    }
-//
-//    @Bean
-//    AuthenticationFailureHandler authenticationFailureHandler() {
-//        return new CustomAuthenticationFailureHandler();
-//    }
 }
-
-//    @Bean
-//    @Order(SecurityProperties.BASIC_AUTH_ORDER)
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
-//        http
-//            .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//            .and()
-//            .authorizeHttpRequests()
-//                .antMatchers("/oauth/**").authenticated()
-//                .anyRequest().authenticated()
-//                .and()
-//                .csrf().disable()
-//                .exceptionHandling().accessDeniedHandler(new AccessDeniedHandler() {
-//                    @Override
-//                    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-//                        response.sendError(HttpServletResponse.SC_UNAUTHORIZED,"UnAuthorized");
-//                    }
-//                });
-//
-//        return http.build();
-//    }

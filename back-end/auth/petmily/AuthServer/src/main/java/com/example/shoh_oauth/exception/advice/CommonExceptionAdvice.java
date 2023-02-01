@@ -51,12 +51,16 @@ public class CommonExceptionAdvice {
         return new ErrorResponse(405, "지원하지 않는 API 입니다.");
     }
 
-//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-//    @ExceptionHandler(value = {Exception.class})
-//    public ErrorResponse internalServerErrorHandler(Exception e) {
-//        log.error(e.getMessage(), e);
-//        return new ErrorResponse(500, "Internal server error");
-//    }
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(value = {Exception.class})
+    public ErrorResponse internalServerErrorHandler(Exception e) {
+        String refreshCheck = e.getMessage();
+        if (refreshCheck.substring(8, 15).equals("refresh")) {
+            return new ErrorResponse(400, "refreshToken이 만료 되었습니다.");
+        }
+        log.error(e.getMessage(), e);
+        return new ErrorResponse(500, e.getMessage());
+    }
 
     @Getter
     @NoArgsConstructor

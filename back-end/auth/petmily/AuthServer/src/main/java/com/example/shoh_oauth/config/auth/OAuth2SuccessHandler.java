@@ -2,7 +2,6 @@ package com.example.shoh_oauth.config.auth;
 
 import com.example.shoh_oauth.data.dto.UserDto;
 import com.example.shoh_oauth.data.entity.User;
-import com.example.shoh_oauth.data.entity.type.UserType;
 import com.example.shoh_oauth.repository.VUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +31,6 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
         OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
         UserDto userDto = userRequestMapper.getUser(oAuth2User);
 
-        //PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         // 최초 로그인이라면 회원가입 처리를 한다.
         log.info(userDto.getUsername());
         log.info(userDto.getName());
@@ -45,18 +43,5 @@ public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler 
            userRepository.save(user);
         }
 
-        //writeTokenResponse(response, token);
     }
-
-//    private void writeTokenResponse(HttpServletResponse response, Token token) throws IOException {
-//
-//        response.setContentType("text/html;charset=UTF-8");
-//        response.addHeader("Auth", token.getToken());
-//        response.addHeader("Refresh", token.getRefreshToken());
-//        response.setContentType("application/json;charset=UTF-8");
-//
-//        var writer = response.getWriter();
-//        writer.println(objectMapper.writeValueAsString(token));
-//        writer.flush();
-//    }
 }

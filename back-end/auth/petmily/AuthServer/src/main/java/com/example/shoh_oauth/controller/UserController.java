@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.validation.BindingResult;
@@ -20,7 +21,6 @@ import java.util.Map;
 
 @Slf4j
 @RestController
-//@RequiredArgsConstructor
 public class UserController {
 
     @Autowired
@@ -42,9 +42,11 @@ public class UserController {
     @PostMapping(value = "/oauth/token")
     public ResponseEntity<OAuth2AccessToken> postAccessToken(@RequestParam Map<String, String> parameters, Principal principal) throws HttpRequestMethodNotSupportedException {
 
-        userService.checkPassword(parameters);
-        userService.checkLoginEmail(parameters);
-
+        if (!String.valueOf(parameters.get("grant_type")).equals("refresh_token")) {
+            userService.checkPassword(parameters);
+            userService.checkLoginEmail(parameters);
+        }
+        //OAuth2RefreshToken
         return tokenEndpoint.postAccessToken(principal, parameters);
     }
 

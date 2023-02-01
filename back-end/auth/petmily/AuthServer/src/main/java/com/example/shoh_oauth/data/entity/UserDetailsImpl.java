@@ -1,6 +1,5 @@
 package com.example.shoh_oauth.data.entity;
 
-import com.example.shoh_oauth.data.entity.type.UserType;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,17 +19,15 @@ public class UserDetailsImpl implements UserDetails {
     private String email;
     private String username;
     private String password;
-    private UserType type;
     private Collection<? extends GrantedAuthority> authorities;
 
     @Builder
-    public UserDetailsImpl(Long id, String nickname, String email, String username, String password, UserType type, Collection<? extends GrantedAuthority> authorities) {
+    public UserDetailsImpl(Long id, String nickname, String email, String username, String password, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.nickname = nickname;
         this.email = email;
         this.username = username;
         this.password = password;
-        this.type = type;
         this.authorities = authorities;
     }
 

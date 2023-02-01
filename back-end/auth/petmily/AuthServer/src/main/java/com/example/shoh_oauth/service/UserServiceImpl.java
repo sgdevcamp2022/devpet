@@ -2,7 +2,6 @@ package com.example.shoh_oauth.service;
 
 import com.example.shoh_oauth.data.dto.SignUpRequest;
 import com.example.shoh_oauth.data.entity.User;
-import com.example.shoh_oauth.data.entity.type.UserType;
 import com.example.shoh_oauth.exception.DataNotFoundException;
 import com.example.shoh_oauth.exception.DuplicateUserException;
 import com.example.shoh_oauth.exception.SimpleFieldError;
@@ -12,10 +11,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.Assert;
 
 import java.util.Map;
-import java.util.Optional;
 
 @Slf4j
 @Service
@@ -55,12 +52,6 @@ public class UserServiceImpl implements UserService {
         }
 
     }
-
-//    public User checkRegisteredUser(String username) {
-//        Optional<User> optUser = userRepository.findByUsername(username);
-//        Assert.state(optUser.isPresent(), "가입되지 않은 회원입니다.");
-//        return optUser.get();
-//    }
 
     public void checkDuplicateNickname(String nickname) {
         if (userRepository.existsByNickname(nickname))

@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,8 +15,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
-import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
@@ -55,7 +51,7 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     /*
     * AuthorizationInitializer 에서 발급하는 oauth 토큰들을 저장하는 저장소이다
     * token store로 JWTTokenStore를 사용하겠다
-    * */
+    */
 
     /* JWT 디코딩 하기 위한 설정 */
     @Bean
@@ -88,17 +84,6 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
 
         /* jdbc(DataBase)를 이용하는 방식 */
         client.jdbc(dataSource).passwordEncoder(passwordEncoder);
-
-//        client.inMemory()
-//                .withClient(clientID)
-//                .secret(passwordEncoder.encode(clientSecret))
-//                .redirectUris("http://localhost:8080/oauth2/callback")
-//                .authorizedGrantTypes("authorization_code", "password", "refresh_token")
-//                .accessTokenValiditySeconds(60)
-//                .refreshTokenValiditySeconds(6*60*60)
-//                .scopes("trust")
-//                .scopes ("read", "write")
-//                .autoApprove(true);
     }
 
     // OAuth2 서버가 작동하기 위한 Endpoint 에 대한 정보를 설정
@@ -110,23 +95,9 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
                 .authenticationManager(authenticationManager) // authenticationManager - password 값으로 사용자를 인증하고 인가
                 .tokenStore(tokenStore()) // tokenStore - token이 저장될 기본 store를 정의
                 .userDetailsService(service) // userDetailsService - 사용자를 인증하고 인가하는 서비스를 설정
-                .accessTokenConverter(jwtAccessTokenConverter()) // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
-                .exceptionTranslator(authorizationWebResponseExceptionTranslator());
+                .accessTokenConverter(jwtAccessTokenConverter()); // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
 
 //                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE) allowedTokenEndpointRequestMethods - token endpoint를 사용할 때 허용할 method들을 설정
 //                .tokenEnhancer(jwtAccessTokenConverter) tokenEnhancer - access token 추가 설정
-    }
-
-    @Bean
-    public WebResponseExceptionTranslator authorizationWebResponseExceptionTranslator() {
-        return new DefaultWebResponseExceptionTranslator() {
-
-            @Override
-            public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
-                Map responseMap = new HashMap();
-                responseMap.put("message", "비밀번호 틀림");
-                return new ResponseEntity(responseMap, HttpStatus.UNAUTHORIZED);
-            }
-        };
     }
 }

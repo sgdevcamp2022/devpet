@@ -23,6 +23,8 @@ public class UserDetailService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.info(username);
+
         User findUser = vUserRepository.findByUsername(username).orElseThrow(() -> new DataNotFoundException("이메일을 잘못 입력했거나 사용자가 존재하지 않습니다"));
 
         log.info(findUser.getUsername());
@@ -35,9 +37,6 @@ public class UserDetailService implements UserDetailsService {
                 .authorities(findUser.getAuthorities())
                 .build();
 
-
-        //GrantedAuthority authority = new SimpleGrantedAuthority("USER");
-        //return new CurrentUser(findUser,authority);
         return  userDetails;
     }
 }
