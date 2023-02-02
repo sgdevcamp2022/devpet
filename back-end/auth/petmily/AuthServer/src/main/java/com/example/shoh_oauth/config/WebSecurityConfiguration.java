@@ -65,19 +65,15 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                    .antMatchers("/sign-up").permitAll()
-                    .antMatchers("/oauth2/authorization/kakao").permitAll()
-                    .antMatchers("/login/oauth2/**").permitAll()
-                    .antMatchers("/oauth2/callback").permitAll()
-                    .antMatchers("/oauth/authorize").permitAll()
-                    .antMatchers("/oauth/**").authenticated()
-                    .anyRequest().authenticated()
-                .and()
-                .oauth2Login()
+                    .antMatchers("/oauth/sign-up").permitAll()
+                    .antMatchers("/oauth/token").permitAll()
+                    .anyRequest().authenticated();
+//                .and()
+//                .oauth2Login()
 //                .loginPage("/loginForm")
 //                .defaultSuccessUrl("/")
-                .userInfoEndpoint().userService(oAuth2UserService)
-                .and()
-                .successHandler(oAuth2SuccessHandler);
+//                .userInfoEndpoint().userService(oAuth2UserService)
+//                .and()
+//                .successHandler(oAuth2SuccessHandler);
     }
 }

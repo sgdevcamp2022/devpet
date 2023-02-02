@@ -22,43 +22,36 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class UserController {
-
-    @Autowired
-    private TokenEndpoint tokenEndpoint;
     @Autowired
     private UserServiceImpl userService;
-    @Autowired
-    private ClientDetailsService clientDetailsService;
-    @Autowired
-    private VUserRepository userRepository;
 
-    @PostMapping("/sign-up")
+    @PostMapping("/oauth/sign-up")
     public ResponseEntity<?> signUpNewUser(@RequestBody @Valid SignUpRequest signUpRequest, BindingResult bindingResult){
         if (bindingResult.hasErrors()) throw new ValidationException("회원가입 유효성 검사 실패.", bindingResult.getFieldErrors());
         userService.saveUser(signUpRequest);
         return ResponseEntity.ok("Success");
     }
 
-    @PostMapping(value = "/oauth/token")
-    public ResponseEntity<OAuth2AccessToken> postAccessToken(@RequestParam Map<String, String> parameters, Principal principal) throws HttpRequestMethodNotSupportedException {
+//    @PostMapping(value = "/oauth/token")
+//    public ResponseEntity<OAuth2AccessToken> postAccessToken(@RequestParam Map<String, String> parameters, Principal principal) throws HttpRequestMethodNotSupportedException {
+//
+//        if (!String.valueOf(parameters.get("grant_type")).equals("refresh_token")) {
+//            userService.checkPassword(parameters);
+//            userService.checkLoginEmail(parameters);
+//        }
+//        //OAuth2RefreshToken
+//        return tokenEndpoint.postAccessToken(principal, parameters);
+//    }
 
-        if (!String.valueOf(parameters.get("grant_type")).equals("refresh_token")) {
-            userService.checkPassword(parameters);
-            userService.checkLoginEmail(parameters);
-        }
-        //OAuth2RefreshToken
-        return tokenEndpoint.postAccessToken(principal, parameters);
-    }
-
-    @GetMapping(value = "/api/token")
-    public ResponseEntity<?> apiTest()  {
-
-        return ResponseEntity.ok("api test good");
-    }
-
-    @GetMapping(value = "/users/user")
-    public ResponseEntity<?> user()  {
-
-        return ResponseEntity.ok("user test good");
-    }
+//    @GetMapping(value = "/api/token")
+//    public ResponseEntity<?> apiTest()  {
+//
+//        return ResponseEntity.ok("api test good");
+//    }
+//
+//    @GetMapping(value = "/users/user")
+//    public ResponseEntity<?> user()  {
+//
+//        return ResponseEntity.ok("user test good");
+//    }
 }
