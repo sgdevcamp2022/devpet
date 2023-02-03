@@ -26,19 +26,19 @@ public class ChatRoomService {
      * @param roomId
      * @return
      */
-    public List<ChatMessage> getMessageList(String roomId, int lineNumber){
-        List<String> messageList = repository.getMessageList(roomId, lineNumber);
-        List<ChatMessage> messages = new ArrayList<>();
-        if(!messageList.isEmpty()){
-            for(String message : messageList){
-                    ChatMessage messageObject =  gson.fromJson(message, ChatMessage.class);
-                    messages.add(messageObject);
-            }
-
-        }
-        log.info("messageList : {}", messageList);
-        return messages;
-    }
+//    public List<ChatMessage> getMessageList(String roomId, int lineNumber){
+//        List<String> messageList = repository.getMessageList(roomId, lineNumber);
+//        List<ChatMessage> messages = new ArrayList<>();
+//        if(!messageList.isEmpty()){
+//            for(String message : messageList){
+//                    ChatMessage messageObject =  gson.fromJson(message, ChatMessage.class);
+//                    messages.add(messageObject);
+//            }
+//
+//        }
+//        log.info("messageList : {}", messageList);
+//        return messages;
+//    }
 
 
 }

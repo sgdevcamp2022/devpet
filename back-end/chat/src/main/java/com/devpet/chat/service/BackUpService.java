@@ -38,7 +38,7 @@ public class BackUpService {
         for (ChatRoom chatRoom : rooms) {
             long counter = chatRoomRepository.findAllChatCounter(chatRoom.getRoomId());
             RoomInfo info = RoomInfo.builder()
-                    .roomId(chatRoom.getName())
+                    .roomId(chatRoom.getRoomId())
                     .chatCounter(counter).build();
             roomInfo.add(info);
         }
@@ -94,6 +94,7 @@ public class BackUpService {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            chatRoomRepository.clearMessageList(roomId);
         }
     }
     /**

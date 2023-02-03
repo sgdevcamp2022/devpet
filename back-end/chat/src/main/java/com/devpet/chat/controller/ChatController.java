@@ -9,8 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,15 +28,19 @@ public class ChatController {
      * websocket "/pub/chat/message"로 들어오는 메시징을 처리한다.
      */
     @MessageMapping("/chat/message")
-    public void message(ChatMessage message, @Header("token") String token) {
-        String nickname = jwtTokenProvider.getUserNameFromJwt(token);
-        // 로그인 회원 정보로 대화명 설정
-        message.setSender(nickname);
-        // 채팅방 인원수 세팅
-        message.setUserCount(chatRoomRepository.getUserCount(message.getRoomId()));
+    public void message(ChatMessage message) {
         // Websocket에 발행된 메시지를 redis로 발행(publish)
         message.setTimeLog(LocalDateTime.now().toString());
-        chatRoomRepository.saveMessage(message);
+
         chatService.sendChatMessage(message);
     }
+
+    @GetMapping("/chat/message")
+    @ResponseBody
+    public List<String> getMessageList(@Header ("token") String token){
+        String userId = jwtTokenProvider.getEmail(token);
+        List<String> ChatMessageList = chatService.getUserMessages(userId);
+        return ChatMessageList;
+    }
+
 }

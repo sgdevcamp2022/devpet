@@ -57,19 +57,28 @@ public class ChatRoomRepository {
 
     // 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
 
+//    /**
+//     *
+//     * @param name
+//     * @param chatRoom
+//     * @param chatMessage
+//     * @return
+//     */
+//    public ChatRoom createChatRoom(String name, ChatRoom chatRoom, String chatMessage) {
+//
+//
+//        hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
+////        messageLog.leftPush(chatRoom.getRoomId()+"log", chatMessage);
+//        chatCounter.set(MESSAGE_COUNT+ "_" + chatRoom.getRoomId(), 0L);
+//        return chatRoom;
+//    }
+
     /**
-     *
-     * @param name
      * @param chatRoom
-     * @param chatMessage
      * @return
      */
-    public ChatRoom createChatRoom(String name, ChatRoom chatRoom, String chatMessage) {
-
-
+    public ChatRoom createChatRoom(ChatRoom chatRoom) {
         hashOpsChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
-//        messageLog.leftPush(chatRoom.getRoomId()+"log", chatMessage);
-        chatCounter.set(MESSAGE_COUNT+ "_" + chatRoom.getRoomId(), 0L);
         return chatRoom;
     }
 
@@ -88,39 +97,13 @@ public class ChatRoomRepository {
         hashOpsEnterInfo.delete(ENTER_INFO, sessionId);
     }
 
-    // 채팅방 유저수 조회
-    public long getUserCount(String roomId) {
-        return Long.valueOf(Optional.ofNullable(valueOps.get(USER_COUNT + "_" + roomId)).orElse("0"));
-    }
-
-    // 채팅방에 입장한 유저수 +1
-    public long plusUserCount(String roomId) {
-        return Optional.ofNullable(valueOps.increment(USER_COUNT + "_" + roomId)).orElse(0L);
-    }
-
-    // 채팅방에 입장한 유저수 -1
-    public long minusUserCount(String roomId) {
-        return Optional.ofNullable(valueOps.decrement(USER_COUNT + "_" + roomId)).filter(count -> count > 0).orElse(0L);
-    }
-
-    /**
-     * 받은 메시지 저장
-     * @param chatMessage
-     */
-    public void saveMessage(ChatMessage chatMessage) {
-        String roomId = chatMessage.getRoomId();
-        messageLog.rightPush(MESSAGES + "_" + roomId, chatMessage);
-        chatCounter.increment(MESSAGE_COUNT+ "_" + roomId);
-
-    }
-
-    public List<String> getMessageList(String roomId, int lineNumber){
-            return redisTemplate.opsForList().range(MESSAGES+ "_" + roomId, lineNumber, lineNumber+10);
-    }
 
     public List<String> getAllMessageList(String roomId){
         long count = Long.valueOf(Optional.ofNullable(valueOps.get(MESSAGE_COUNT + "_" + roomId)).orElse("0"));
         return redisTemplate.opsForList().range(MESSAGES+ "_" + roomId, 0, count);
     }
 
+    public void clearMessageList(String roomId) {
+
+    }
 }
