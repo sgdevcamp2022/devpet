@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -16,7 +17,8 @@ import java.util.Objects;
 @Document(collection = "location")
 public class Location {
     public static enum Category {FACILITY, GROUP, PRIVATE}
-
+    @Transient
+    public static final String SEQUENCE_NAME = "location_sequence";
     @Field
     @Id
     private Long locationId;

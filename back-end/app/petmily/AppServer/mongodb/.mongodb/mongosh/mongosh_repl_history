@@ -1,3 +1,44 @@
+show tables;
+db.location.find()
+db.feed.find()
+db.long_database_sequence.find()
+show tables;
+use app_db;
+show databases
+use test
+db.test.deleteMany({})
+db.test.deletMany({})
+db.test.deletMany()
+db.test.deletAll()
+show tables;
+use app_db;
+show databases
+delete app_db
+selete app_db
+selete app_Db
+show databases
+exit
+show databases
+show database
+db.test.insertOne({username:"seungjin",password:"111111"})
+db.test.insertOne({username:“seungjin”,password:“111111”})
+db.user.insertOne({username:“seungjin”,password:“111111”})
+use app_db;
+show databases;
+exit
+db.getUsers()
+use app_db
+db.getUsers()
+db.system.users.find()
+use admin
+show collections;
+use app_db;
+mongorestore -u root -p root --authenticationDatabase admin -d app_db PATH/
+show collections;
+use app_db;
+db.getRoles();
+db.getRoles()
+db.getRole()
 show collections;
 use app_db;
 show dbs;
@@ -32,5 +73,7 @@ show db
 show dbs;
 db
 db.getCollectionNames;
+db.getCollectionNames();
+db.getCollection();ectionNames;
 db.getCollectionNames();
 db.getCollection();
