@@ -1,16 +1,32 @@
 package com.smilegate.devpet.appserver.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.smilegate.devpet.appserver.model.UserInfo;
+import com.smilegate.devpet.appserver.service.KafkaTestConsumerService;
+import com.smilegate.devpet.appserver.service.KafkaTestProducerService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/test")
+@RequiredArgsConstructor
 public class TestController {
-
+    private final KafkaTestProducerService kafkaTestProducerService;
+    private final KafkaTestConsumerService kafkaTestConsumerService;
     @GetMapping("pingpong")
-    public String pingpong()
+    public Long pingpong(UserInfo info)
     {
-        return "yes I'm pong";
+        return info.getUserId();
     }
+    @PostMapping("/send")
+    public  boolean sendMessage(@RequestBody String body)
+    {
+        kafkaTestProducerService.send(body);
+        return true;
+    }
+
+//    @GetMapping
+//    public boolean geMessage()
+//    {
+//        kafkaTestConsumerService.listen(kafkaTestConsumerService.);
+//    }
 }

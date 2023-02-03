@@ -4,23 +4,15 @@ package com.smilegate.devpet.appserver.service;
 import com.smilegate.devpet.appserver.model.Feed;
 import com.smilegate.devpet.appserver.model.FeedRequest;
 import com.smilegate.devpet.appserver.model.Location;
+import com.smilegate.devpet.appserver.model.UserInfo;
 import com.smilegate.devpet.appserver.repository.FeedRepository;
-import com.smilegate.devpet.appserver.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
-import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +22,7 @@ public class FeedService {
     private final LocationService locationService;
     private final SequenceGeneratorService sequenceGeneratorService;
     @Transactional
-    public Feed postFeed(FeedRequest feedRequest, Principal userInfo)
+    public Feed postFeed(FeedRequest feedRequest, UserInfo userInfo)
     {
         Feed feed = new Feed(feedRequest,userInfo);
         feed.setFeedId(sequenceGeneratorService.longSequenceGenerate(Feed.SEQUENCE_NAME));
@@ -60,7 +52,7 @@ public class FeedService {
         return feed;
     }
 
-    public boolean setFeedEmotion(long feedId,int emotion,Principal userInfo)
+    public boolean setFeedEmotion(long feedId,int emotion,UserInfo userInfo)
     {
         Feed feedO = feedRepository.findById(feedId).orElseThrow(RuntimeException::new);
         // TODO: call rest api graph server

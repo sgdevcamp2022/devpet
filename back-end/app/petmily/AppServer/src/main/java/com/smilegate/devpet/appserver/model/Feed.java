@@ -34,7 +34,7 @@ public class Feed extends BaseModel {
     private ArrayList<Long> hashTag;
     @Transient
     private List<Comment> comments;
-    public Feed(FeedRequest feedRequest, Principal userInfo)
+    public Feed(FeedRequest feedRequest, UserInfo userInfo)
     {
         setFeedData(feedRequest);
     }

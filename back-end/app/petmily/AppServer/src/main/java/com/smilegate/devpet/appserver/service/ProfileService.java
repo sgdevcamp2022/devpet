@@ -12,9 +12,9 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class ProfileService {
     private final ProfileRepository profileRepository;
-    public Profile getProfile(Principal principal)
+    public Profile getProfile(UserInfo userInfo)
     {
-        return profileRepository.findByUserInfo((UserInfo)principal).orElseThrow(RuntimeException::new);
+        return profileRepository.findByUserInfo(userInfo).orElseThrow(RuntimeException::new);
     }
 
 }

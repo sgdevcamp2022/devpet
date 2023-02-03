@@ -3,6 +3,7 @@ package com.smilegate.devpet.appserver.controller;
 import com.smilegate.devpet.appserver.model.CommentRequest;
 import com.smilegate.devpet.appserver.model.Feed;
 import com.smilegate.devpet.appserver.model.FeedRequest;
+import com.smilegate.devpet.appserver.model.UserInfo;
 import com.smilegate.devpet.appserver.service.CommentService;
 import com.smilegate.devpet.appserver.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,7 @@ public class FeedController {
     private CommentService commentService;
 
     @PostMapping
-    public long postFeed(@RequestBody FeedRequest feedRequest, Principal userInfo) {
+    public long postFeed(@RequestBody FeedRequest feedRequest, UserInfo userInfo) {
         Feed feed = feedService.postFeed(feedRequest, userInfo);
         return feed.getFeedId();
     }
@@ -39,7 +40,7 @@ public class FeedController {
     }
 
     @PostMapping("/{feedId}/emotion")
-    public boolean postEmotion(@PathVariable long feedId, @RequestBody int emotion, Principal userInfo) {
+    public boolean postEmotion(@PathVariable long feedId, @RequestBody int emotion, UserInfo userInfo) {
         return feedService.setFeedEmotion(feedId, emotion, userInfo);
     }
 
@@ -83,11 +84,11 @@ public class FeedController {
     }
 
     @PostMapping("/{feedId}/comment")
-    public long postComment(@PathVariable("feedId") long feedId, @RequestBody CommentRequest commentRequest, Principal userInfo) {
+    public long postComment(@PathVariable("feedId") long feedId, @RequestBody CommentRequest commentRequest, UserInfo userInfo) {
         return commentService.postComment(feedId, commentRequest, userInfo).getCommentId();
     }
     @PutMapping("/{feedId}/comment")
-    public long putComment(@PathVariable("feedId") long feedId, @RequestBody CommentRequest commentRequest, Principal userInfo) {
+    public long putComment(@PathVariable("feedId") long feedId, @RequestBody CommentRequest commentRequest, UserInfo userInfo) {
         return commentService.putComment(feedId, commentRequest).getCommentId();
     }
 }

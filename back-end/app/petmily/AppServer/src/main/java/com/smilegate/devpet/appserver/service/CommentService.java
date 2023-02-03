@@ -12,7 +12,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -27,11 +26,11 @@ public class CommentService {
 
 
     @Transactional
-    public Comment postComment(long feedId, CommentRequest commentRequest, Principal principal)
+    public Comment postComment(long feedId, CommentRequest commentRequest, UserInfo userInfo)
     {
         if (commentRequest.getUserProfile()==null)
         {
-            commentRequest.setUserProfile(profileService.getProfile(principal));
+            commentRequest.setUserProfile(profileService.getProfile(userInfo));
         }
         Comment comment = new Comment(commentRequest,feedId,sequenceGeneratorService.longSequenceGenerate(Comment.SEQUENCE_NAME));
         commentRepository.save(comment);
