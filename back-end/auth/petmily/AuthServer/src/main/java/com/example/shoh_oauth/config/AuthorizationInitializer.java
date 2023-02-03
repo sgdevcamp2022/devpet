@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,11 +17,16 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
+import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.sql.DataSource;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +75,10 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
         /* token store로 JWTTokenStore를 사용하겠다 */
         return new JwtTokenStore(jwtAccessTokenConverter());
     }
+    @Bean
+    public TokenEnhancer tokenEnhancer() {
+        return new CustomTokenEnhancer();
+    }
 
     // Oauth2 인증서버 자체의 보안 정보를 설정하는 부분
     @Override
@@ -91,13 +102,30 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoint) throws Exception {
 
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), jwtAccessTokenConverter()));
+
         endpoint
                 .authenticationManager(authenticationManager) // authenticationManager - password 값으로 사용자를 인증하고 인가
                 .tokenStore(tokenStore()) // tokenStore - token이 저장될 기본 store를 정의
                 .userDetailsService(service) // userDetailsService - 사용자를 인증하고 인가하는 서비스를 설정
-                .accessTokenConverter(jwtAccessTokenConverter()); // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
-
+                .accessTokenConverter(jwtAccessTokenConverter()) // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
+                .exceptionTranslator(authorizationWebResponseExceptionTranslator())
+                .tokenStore(tokenStore()).tokenEnhancer(tokenEnhancerChain);
 //                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE) allowedTokenEndpointRequestMethods - token endpoint를 사용할 때 허용할 method들을 설정
 //                .tokenEnhancer(jwtAccessTokenConverter) tokenEnhancer - access token 추가 설정
+    }
+
+    public WebResponseExceptionTranslator authorizationWebResponseExceptionTranslator() {
+        return new DefaultWebResponseExceptionTranslator() {
+
+            @Override
+            public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
+                Map responseMap = new HashMap();
+                responseMap.put("code", 4004);
+                responseMap.put("message", e.getMessage());
+                return new ResponseEntity(responseMap, HttpStatus.UNAUTHORIZED);
+            }
+        };
     }
 }

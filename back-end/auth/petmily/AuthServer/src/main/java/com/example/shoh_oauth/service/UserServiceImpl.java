@@ -1,6 +1,7 @@
 package com.example.shoh_oauth.service;
 
 import com.example.shoh_oauth.data.dto.SignUpRequest;
+import com.example.shoh_oauth.data.dto.UserDto;
 import com.example.shoh_oauth.data.entity.User;
 import com.example.shoh_oauth.exception.DataNotFoundException;
 import com.example.shoh_oauth.exception.DuplicateUserException;
@@ -9,6 +10,7 @@ import com.example.shoh_oauth.repository.VUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +80,18 @@ public class UserServiceImpl implements UserService {
            user.setPhone(String.valueOf(parameters.get("phone")));
            user.setProvider(String.valueOf(parameters.get("provider")));
            userRepository.save(user);
+    }
+
+    public void kakaoInfo(UserDto userDto) {
+
+        User user = User.builder()
+                .username(userDto.getUsername())
+                .name(userDto.getName())
+                .password(passwordEncoder.encode(userDto.getPassword()))
+                .build();
+
+        userRepository.save(user);
+
     }
 
 }

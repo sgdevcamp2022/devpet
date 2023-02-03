@@ -70,8 +70,8 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .anyRequest().authenticated();
 //                .and()
 //                .oauth2Login()
-//                .loginPage("/loginForm")
-//                .defaultSuccessUrl("/")
+////                .loginPage("/loginForm")
+////                .defaultSuccessUrl("/")
 //                .userInfoEndpoint().userService(oAuth2UserService)
 //                .and()
 //                .successHandler(oAuth2SuccessHandler);

@@ -56,8 +56,12 @@ public class CommonExceptionAdvice {
     public ErrorResponse internalServerErrorHandler(Exception e) {
         String refreshCheck = e.getMessage();
         if (refreshCheck.substring(8, 15).equals("refresh")) {
-            return new ErrorResponse(400, "refreshToken이 만료 되었습니다.");
+            return new ErrorResponse(4005, "refreshToken이 만료 되었습니다.");
         }
+        if (refreshCheck.substring(0,6).equals("Cannot")) {
+            return new ErrorResponse(4004, "refreshToken이 없습니다");
+        }
+
         log.error(e.getMessage(), e);
         return new ErrorResponse(500, e.getMessage());
     }

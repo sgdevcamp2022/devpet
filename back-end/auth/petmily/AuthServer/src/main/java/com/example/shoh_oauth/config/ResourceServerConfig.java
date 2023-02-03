@@ -1,5 +1,7 @@
 package com.example.shoh_oauth.config;
 
+import com.example.shoh_oauth.config.auth.CustomOAuth2UserService;
+import com.example.shoh_oauth.config.auth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +10,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -20,11 +23,14 @@ import org.springframework.security.oauth2.provider.error.WebResponseExceptionTr
 import java.util.HashMap;
 import java.util.Map;
 
+@RequiredArgsConstructor
 @Configuration
-//@EnableResourceServer
+@EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
-
+//    private final CustomOAuth2UserService oAuth2UserService;
+//    private final OAuth2SuccessHandler oAuth2SuccessHandler;
+//
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         super.configure(resources);
@@ -38,7 +44,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.anonymous().disable()
                 .authorizeRequests()
-                    .antMatchers(HttpMethod.OPTIONS).permitAll()
+                    //.antMatchers(HttpMethod.OPTIONS).permitAll()
                     .antMatchers("/map/**").authenticated()
                     .antMatchers("/proflil/**").authenticated()
                     .antMatchers("/post/**").authenticated()
@@ -47,6 +53,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(new OAuth2AccessDeniedHandler());
+
     }
 
     @Bean

@@ -22,8 +22,15 @@ import java.util.Map;
 @Slf4j
 @RestController
 public class UserController {
+
+    @Autowired
+    private TokenEndpoint tokenEndpoint;
     @Autowired
     private UserServiceImpl userService;
+    @Autowired
+    private ClientDetailsService clientDetailsService;
+    @Autowired
+    private VUserRepository userRepository;
 
     @PostMapping("/oauth/sign-up")
     public ResponseEntity<?> signUpNewUser(@RequestBody @Valid SignUpRequest signUpRequest, BindingResult bindingResult){
@@ -42,16 +49,16 @@ public class UserController {
 //        //OAuth2RefreshToken
 //        return tokenEndpoint.postAccessToken(principal, parameters);
 //    }
+//
+    @GetMapping(value = "/api/token")
+    public ResponseEntity<?> apiTest()  {
 
-//    @GetMapping(value = "/api/token")
-//    public ResponseEntity<?> apiTest()  {
-//
-//        return ResponseEntity.ok("api test good");
-//    }
-//
-//    @GetMapping(value = "/users/user")
-//    public ResponseEntity<?> user()  {
-//
-//        return ResponseEntity.ok("user test good");
-//    }
+        return ResponseEntity.ok("api test good");
+    }
+
+    @GetMapping(value = "/users/user")
+    public ResponseEntity<?> user()  {
+
+        return ResponseEntity.ok("user test good");
+    }
 }
