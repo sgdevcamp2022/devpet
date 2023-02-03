@@ -21,6 +21,8 @@ public class FeedService {
     private final FeedRepository feedRepository;
     private final LocationService locationService;
     private final SequenceGeneratorService sequenceGeneratorService;
+
+    private final KafkaProducerService kafkaProducerService;
     @Transactional
     public Feed postFeed(FeedRequest feedRequest, UserInfo userInfo)
     {
@@ -28,6 +30,7 @@ public class FeedService {
         feed.setFeedId(sequenceGeneratorService.longSequenceGenerate(Feed.SEQUENCE_NAME));
         locationService.postLocation(feed.getLocation());
         feed = feedRepository.save(feed);
+        kafkaProducerService.feedSubscribeSend(feed);
         // TODO: fan-out, fan-in, fcm implements
         return feed;
     }
