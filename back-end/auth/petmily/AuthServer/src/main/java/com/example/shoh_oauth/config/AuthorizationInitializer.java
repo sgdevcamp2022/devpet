@@ -1,5 +1,7 @@
 package com.example.shoh_oauth.config;
 
+import com.example.shoh_oauth.exception.advice.CommonExceptionAdvice;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurer;
@@ -33,6 +36,7 @@ import java.util.Map;
 // 토큰 발급, 관리 해주는곳
 // oauth2 인증을 거치는 과정을 AuthorizationInitializer 가 처리한다
 //
+@Slf4j
 @Configuration
 @EnableAuthorizationServer
 public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapter {
@@ -45,7 +49,7 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     private String signKey;
     // 얘가 실제로 인증을 한다, 인증 토큰을 관리하는 객체
     @Autowired
-    private AuthenticationManager authenticationManager; // grant_type password를 사용하려면 필수
+    private AuthenticationManager authenticationManager; // grant_type password 를 사용하려면 필수
     @Autowired
     private DataSource dataSource;
     @Autowired
@@ -58,9 +62,7 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     /*
     * AuthorizationInitializer 에서 발급하는 oauth 토큰들을 저장하는 저장소이다
     * token store로 JWTTokenStore를 사용하겠다
-    */
-
-    /* JWT 디코딩 하기 위한 설정 */
+      JWT 디코딩 하기 위한 설정 */
     @Bean
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
 
@@ -74,10 +76,6 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
 
         /* token store로 JWTTokenStore를 사용하겠다 */
         return new JwtTokenStore(jwtAccessTokenConverter());
-    }
-    @Bean
-    public TokenEnhancer tokenEnhancer() {
-        return new CustomTokenEnhancer();
     }
 
     // Oauth2 인증서버 자체의 보안 정보를 설정하는 부분
@@ -102,18 +100,13 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoint) throws Exception {
 
-        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(Arrays.asList(tokenEnhancer(), jwtAccessTokenConverter()));
-
         endpoint
                 .authenticationManager(authenticationManager) // authenticationManager - password 값으로 사용자를 인증하고 인가
                 .tokenStore(tokenStore()) // tokenStore - token이 저장될 기본 store를 정의
                 .userDetailsService(service) // userDetailsService - 사용자를 인증하고 인가하는 서비스를 설정
                 .accessTokenConverter(jwtAccessTokenConverter()) // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
-                .exceptionTranslator(authorizationWebResponseExceptionTranslator())
-                .tokenStore(tokenStore()).tokenEnhancer(tokenEnhancerChain);
-//                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE) allowedTokenEndpointRequestMethods - token endpoint를 사용할 때 허용할 method들을 설정
-//                .tokenEnhancer(jwtAccessTokenConverter) tokenEnhancer - access token 추가 설정
+                .exceptionTranslator(authorizationWebResponseExceptionTranslator());
+                // .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE) allowedTokenEndpointRequestMethods - token endpoint를 사용할 때 허용할 method들을 설정
     }
 
     public WebResponseExceptionTranslator authorizationWebResponseExceptionTranslator() {
@@ -122,8 +115,23 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
             @Override
             public ResponseEntity<OAuth2Exception> translate(Exception e) throws Exception {
                 Map responseMap = new HashMap();
-                responseMap.put("code", 4004);
-                responseMap.put("message", e.getMessage());
+                String refreshCheck = e.getMessage();
+                if (refreshCheck.substring(0, 3).equals("Bad")) {
+                    responseMap.put("message", "4003");
+                } else if (refreshCheck.substring(8, 15).equals("refresh")) {
+                    // refreshToken
+                    responseMap.put("message", "4010");
+                } else if (refreshCheck.substring(0,6).equals("Cannot")) {
+                    // refreshToken
+                    responseMap.put("message", "4010");
+                } else if (refreshCheck.substring(10, 17).equals("expired")) {
+                    responseMap.put("message", "4004");
+                } else {
+                    // id, pw 잘못 입력
+                    responseMap.put("message", "4003");
+                }
+
+                log.info(e.getMessage());
                 return new ResponseEntity(responseMap, HttpStatus.UNAUTHORIZED);
             }
         };

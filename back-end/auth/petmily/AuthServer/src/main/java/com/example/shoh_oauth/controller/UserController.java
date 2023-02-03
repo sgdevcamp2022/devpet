@@ -2,54 +2,87 @@ package com.example.shoh_oauth.controller;
 
 import com.example.shoh_oauth.data.dto.SignUpRequest;
 import com.example.shoh_oauth.exception.ValidationException;
-import com.example.shoh_oauth.repository.VUserRepository;
 import com.example.shoh_oauth.service.UserServiceImpl;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.oauth2.common.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.endpoint.TokenEndpoint;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
-import java.util.Map;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired
-    private TokenEndpoint tokenEndpoint;
-    @Autowired
-    private UserServiceImpl userService;
-    @Autowired
-    private ClientDetailsService clientDetailsService;
-    @Autowired
-    private VUserRepository userRepository;
+    private final UserServiceImpl userService;
 
     @PostMapping("/oauth/sign-up")
-    public ResponseEntity<?> signUpNewUser(@RequestBody @Valid SignUpRequest signUpRequest, BindingResult bindingResult){
-        if (bindingResult.hasErrors()) throw new ValidationException("회원가입 유효성 검사 실패.", bindingResult.getFieldErrors());
+    public ResponseEntity<?> signUpNewUser(
+                            @RequestParam String username,
+                            @RequestParam String name,
+                            @RequestParam String nickname,
+                            @RequestParam String password,
+                            @RequestParam String age,
+                            @RequestParam String gender,
+                            @RequestParam String phone,
+                            @RequestParam String provider){
+
+        //userService.checkDuplicateNickname(nickname);
+
+        SignUpRequest signUpRequest = SignUpRequest.builder()
+                .username(username)
+                .name(name)
+                .nickname(nickname)
+                .password(password)
+                .age(age)
+                .gender(gender)
+                .phone(phone)
+                .provider(provider)
+                .build();
+
+        if (provider != "") {
+            userService.saveKaKaoUserLast(signUpRequest);
+            return ResponseEntity.ok("카카오 회원가입");
+        }
+
+        //userService.checkDuplicateEmail(username);
         userService.saveUser(signUpRequest);
-        return ResponseEntity.ok("Success");
+
+
+
+        return ResponseEntity.ok("일반 회원가입");
     }
 
-//    @PostMapping(value = "/oauth/token")
-//    public ResponseEntity<OAuth2AccessToken> postAccessToken(@RequestParam Map<String, String> parameters, Principal principal) throws HttpRequestMethodNotSupportedException {
-//
-//        if (!String.valueOf(parameters.get("grant_type")).equals("refresh_token")) {
-//            userService.checkPassword(parameters);
-//            userService.checkLoginEmail(parameters);
-//        }
-//        //OAuth2RefreshToken
-//        return tokenEndpoint.postAccessToken(principal, parameters);
-//    }
-//
+    // 카카오 프로필 정보(자동 회원 가입)
+    @PostMapping(value = "/oauth/kakao")
+    public ResponseEntity<?> saveKaKaoUser(@RequestParam String username,
+                                           @RequestParam String name,
+                                           //@RequestParam String nickname,
+                                           @RequestParam String password
+                                           //@RequestParam String age,
+                                           //@RequestParam String gender,
+                                           //@RequestParam String phone
+                                           ){
+
+
+        userService.checkDuplicateKaKaoEmail(username);
+
+        SignUpRequest signUpRequest = SignUpRequest.builder()
+                .username(username)
+                .name(name)
+                .password(password)
+                .build();
+
+        userService.saveKaKaoUser(signUpRequest);
+
+        return ResponseEntity.ok("카카오 자동 회원 가입 성공(1차)");
+    }
+
     @GetMapping(value = "/api/token")
     public ResponseEntity<?> apiTest()  {
 

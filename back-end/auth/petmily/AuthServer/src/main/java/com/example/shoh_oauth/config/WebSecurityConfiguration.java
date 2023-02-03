@@ -67,13 +67,7 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                     .antMatchers("/oauth/sign-up").permitAll()
                     .antMatchers("/oauth/token").permitAll()
+                    .antMatchers("/oauth/kakao").permitAll()
                     .anyRequest().authenticated();
-//                .and()
-//                .oauth2Login()
-////                .loginPage("/loginForm")
-////                .defaultSuccessUrl("/")
-//                .userInfoEndpoint().userService(oAuth2UserService)
-//                .and()
-//                .successHandler(oAuth2SuccessHandler);
     }
 }

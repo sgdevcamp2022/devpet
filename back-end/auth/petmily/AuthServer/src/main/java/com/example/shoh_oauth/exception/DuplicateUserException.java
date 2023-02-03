@@ -2,16 +2,15 @@ package com.example.shoh_oauth.exception;
 
 import org.springframework.validation.FieldError;
 
-public class DuplicateUserException extends ValidationException {
+import java.util.List;
+
+public class DuplicateUserException extends RuntimeException {
 
     public DuplicateUserException() {
     }
 
-    public DuplicateUserException(String message, FieldError fieldError) {
-        super(message, fieldError);
+    public DuplicateUserException(String message) {
+        super(message);
     }
 
-    public DuplicateUserException(String message, Throwable cause, FieldError fieldError) {
-        super(message, cause, fieldError);
-    }
 }
