@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +18,7 @@ import com.example.petmily.R;
 import com.example.petmily.databinding.FragmentHomeBinding;
 import com.example.petmily.model.Place;
 import com.example.petmily.model.Post_half;
+import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMapSdk;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -25,6 +27,8 @@ import java.util.ArrayList;
 public class Fragment_Home extends Fragment {
     private FragmentHomeBinding binding;
     Context context;
+    FragmentManager fm;
+    MapFragment mapFragment;
 
     @Nullable
     @Override
@@ -39,6 +43,15 @@ public class Fragment_Home extends Fragment {
 
         NaverMapSdk.getInstance(context).setClient(
                 new NaverMapSdk.NaverCloudPlatformClient("ztkfe47y3q"));
+
+        fm = getChildFragmentManager();
+        mapFragment = (MapFragment)fm.findFragmentById(R.id.map);
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance();
+            fm.beginTransaction().add(R.id.map, mapFragment).commit();
+        }
+
+
 
         RecyclerView re = binding.placeList;
         re.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));

@@ -10,17 +10,16 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 
 import com.example.petmily.R;
-import com.example.petmily.databinding.MainChatBinding;
-import com.example.petmily.databinding.MainMakeBinding;
+import com.example.petmily.databinding.ActivityMakeBinding;
 
-public class Make extends AppCompatActivity {
+public class Activity_Make extends AppCompatActivity {
 
-    private MainMakeBinding binding;
+    private ActivityMakeBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.main_make);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_make);
         binding.setMake(this);
 
         Toolbar toolbar = binding.backToolbar;

@@ -42,6 +42,15 @@ public class Fragment_Profile extends Fragment {
         fragmentTransaction.replace(R.id.profile_frame, fragment_post).commitAllowingStateLoss();
 
 
+                /*
+            @PostMapping("/room")
+    @ResponseBody
+    public ChatRoom createRoom(@RequestParam List<String> userId) {
+        ChatRoom chatRoom = ChatRoom.create(userId);
+        return chatRoomRepository.createChatRoom(chatRoom);
+    }
+         */
+
         Log.e("테스트 \t\t\t", "asdasd");
 
         return view;

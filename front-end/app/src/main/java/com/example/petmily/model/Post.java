@@ -5,12 +5,14 @@ public class Post {
     String nickname;
     String text;
     String time;
+    String refresh_token;
 
     public Post(int image, String nickname, String text, String time) {
         this.image = image;
         this.nickname = nickname;
         this.text = text;
         this.time = time;
+
     }
 
     public int getImage() {

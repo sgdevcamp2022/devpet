@@ -1,6 +1,5 @@
 package com.example.petmily.view;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,19 +12,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petmily.R;
-import com.example.petmily.databinding.FragmentMessageBinding;
-import com.example.petmily.databinding.MainChatBinding;
-import com.example.petmily.model.Place;
-import com.example.petmily.viewModel.PlaceViewModel;
+import com.example.petmily.databinding.ActivityChatBinding;
 
-public class Chat extends AppCompatActivity {
+public class Activity_Chat extends AppCompatActivity {
 
-    private MainChatBinding binding;
+    private ActivityChatBinding binding;
     private Fragment_Alarm fragment_alarm;
     private Fragment_Message fragment_message;
     private FragmentTransaction fragmentTransaction;
@@ -33,7 +26,7 @@ public class Chat extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.main_chat);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_chat);
         binding.setChat(this);
 
         Toolbar toolbar = binding.backToolbar;

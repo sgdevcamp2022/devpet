@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.petmily.model.Place;
 import com.example.petmily.model.PlaceRepository;
@@ -20,6 +21,9 @@ public class PlaceViewModel extends AndroidViewModel{
     public PlaceViewModel(@NonNull Application application) {
         super(application);
         allPlaces=placeRepository.findAll();
+
+
+
     }
 
     public LiveData<List<Place>> findAll(){
