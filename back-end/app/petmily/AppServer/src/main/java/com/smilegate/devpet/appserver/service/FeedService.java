@@ -5,15 +5,20 @@ import com.smilegate.devpet.appserver.model.Feed;
 import com.smilegate.devpet.appserver.model.FeedRequest;
 import com.smilegate.devpet.appserver.model.Location;
 import com.smilegate.devpet.appserver.model.UserInfo;
-import com.smilegate.devpet.appserver.repository.FeedRepository;
+import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.geo.Point;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +26,7 @@ public class FeedService {
     private final FeedRepository feedRepository;
     private final LocationService locationService;
     private final SequenceGeneratorService sequenceGeneratorService;
-
+    private final MongoOperations mongoOperations;
     private final KafkaProducerService kafkaProducerService;
     @Transactional
     public Feed postFeed(FeedRequest feedRequest, UserInfo userInfo)
@@ -84,7 +89,20 @@ public class FeedService {
     public List<Feed> getFeedList(Point center, long distance, int category, String word, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-
         return feedRepository.findByNear(center,distance,category,word,pageRequest);
+    }
+
+    @Transactional
+    public List<Feed> saveAll(List<Feed> pushList) {
+        List<Location> pushLocations = pushList.stream().map(Feed::getLocation).filter(Objects::nonNull).collect(Collectors.toList());
+        locationService.saveAll(pushLocations);
+        Stream<Feed> feedStream = pushList.stream().filter(item->item.getFeedId()!=null);
+        AtomicLong lastSeq = new AtomicLong(sequenceGeneratorService.longSequenceBulkGenerate(Feed.SEQUENCE_NAME, (int) feedStream.count()));
+        feedStream.forEach(item->{
+            item.setFeedId(lastSeq.get());
+            lastSeq.getAndIncrement();
+        });
+        List<Feed> result = new ArrayList<>(mongoOperations.insert(pushList,"feed"));
+        return result;
     }
 }

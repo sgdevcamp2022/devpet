@@ -44,7 +44,7 @@ public class FeedController {
         return feedService.setFeedEmotion(feedId, emotion, userInfo);
     }
 
-    @GetMapping("/gallety")
+    @GetMapping("/gallery")
     public List<String> getNearBySimpleFeedList(
                                         @RequestParam("longitude") Double longitude,
                                         @RequestParam("latitude") Double latitude,

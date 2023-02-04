@@ -7,12 +7,14 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.redis.core.RedisHash;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter @Setter
+@RedisHash("feed")
 @Document(collection = "feed")
 public class Feed extends BaseModel {
     public static enum FEED_SEARCH_MODE {GALLERY,POST,MARKER}

@@ -1,7 +1,6 @@
 package com.smilegate.devpet.appserver.controller;
 
 import com.smilegate.devpet.appserver.model.Location;
-import com.smilegate.devpet.appserver.repository.LocationRepository;
 import com.smilegate.devpet.appserver.service.LocationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.geo.Point;

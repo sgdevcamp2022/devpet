@@ -2,11 +2,9 @@ package com.smilegate.devpet.appserver.service;
 
 import com.smilegate.devpet.appserver.model.Profile;
 import com.smilegate.devpet.appserver.model.UserInfo;
-import com.smilegate.devpet.appserver.repository.ProfileRepository;
+import com.smilegate.devpet.appserver.repository.mongo.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor

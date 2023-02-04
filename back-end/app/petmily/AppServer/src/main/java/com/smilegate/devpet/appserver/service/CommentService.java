@@ -3,18 +3,13 @@ package com.smilegate.devpet.appserver.service;
 import com.smilegate.devpet.appserver.model.Comment;
 import com.smilegate.devpet.appserver.model.CommentRequest;
 import com.smilegate.devpet.appserver.model.UserInfo;
-import com.smilegate.devpet.appserver.repository.CommentRepository;
-import com.smilegate.devpet.appserver.repository.ProfileRepository;
+import com.smilegate.devpet.appserver.repository.mongo.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service

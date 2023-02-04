@@ -20,11 +20,15 @@ public class SequenceGeneratorService {
     private final MongoOperations mongoOperations;
 
     public long longSequenceGenerate(String seqName) {
-
         LongDatabaseSequence counter = mongoOperations.findAndModify(query(Criteria.where("_id").is(seqName)),
                 new Update().inc("seq",1), FindAndModifyOptions.options().returnNew(true).upsert(true),
                 LongDatabaseSequence.class);
         return !Objects.isNull(counter) ? counter.getSeq() : 1;
-
+    }
+    public long longSequenceBulkGenerate(String seqName,int size) {
+        LongDatabaseSequence counter = mongoOperations.findAndModify(query(Criteria.where("_id").is(seqName)),
+                new Update().inc("seq",size), FindAndModifyOptions.options().returnNew(true).upsert(true),
+                LongDatabaseSequence.class);
+        return !Objects.isNull(counter) ? counter.getSeq() : 1;
     }
 }
