@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void updateKaKaoUser (SignUpRequest signUpRequest) {
-            User user = userRepository.findByUsername(signUpRequest.getUsername()).orElseThrow(() -> new DataNotFoundException("4010"));
+            User user = userRepository.findByUsername(signUpRequest.getUsername()).orElseThrow(() -> new DataNotFoundException("4005"));
             user.setAge(signUpRequest.getAge());
             user.setNickname(signUpRequest.getNickname());
             user.setProvider(signUpRequest.getProvider());

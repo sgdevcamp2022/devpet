@@ -1,7 +1,9 @@
 package com.example.shoh_oauth.controller;
 
+import com.example.shoh_oauth.data.dto.ProfileDto;
 import com.example.shoh_oauth.data.dto.SignUpRequest;
 import com.example.shoh_oauth.exception.ValidationException;
+import com.example.shoh_oauth.service.ProfileService;
 import com.example.shoh_oauth.service.UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,12 +18,14 @@ import javax.validation.Valid;
 
 @Slf4j
 @RestController
+@RequestMapping("/oauth")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserServiceImpl userService;
+    private final ProfileService profileService;
 
-    @PostMapping("/oauth/sign-up")
+    @PostMapping("/sign-up")
     public ResponseEntity<?> signUpNewUser(
                             @RequestParam String username,
                             @RequestParam String name,
@@ -53,22 +57,27 @@ public class UserController {
         //userService.checkDuplicateEmail(username);
         userService.saveUser(signUpRequest);
 
+        ProfileDto profileDto = ProfileDto.builder()
+                .name(signUpRequest.getName())
+                .nickname(signUpRequest.getNickname())
+                .username(signUpRequest.getUsername())
+                .build();
 
+        profileService.saveProfile(profileDto);
 
         return ResponseEntity.ok("일반 회원가입");
     }
 
     // 카카오 프로필 정보(자동 회원 가입)
-    @PostMapping(value = "/oauth/kakao")
+    @PostMapping(value = "/kakao")
     public ResponseEntity<?> saveKaKaoUser(@RequestParam String username,
                                            @RequestParam String name,
-                                           //@RequestParam String nickname,
-                                           @RequestParam String password
-                                           //@RequestParam String age,
-                                           //@RequestParam String gender,
-                                           //@RequestParam String phone
-                                           ){
-
+                                           @RequestParam String nickname,
+                                           @RequestParam String password,
+                                           @RequestParam String age,
+                                           @RequestParam String gender,
+                                           @RequestParam String phone,
+                                           @RequestParam String provider){
 
         userService.checkDuplicateKaKaoEmail(username);
 
@@ -80,18 +89,13 @@ public class UserController {
 
         userService.saveKaKaoUser(signUpRequest);
 
+        ProfileDto profileDto = ProfileDto.builder()
+                .name(signUpRequest.getName())
+                .username(signUpRequest.getUsername())
+                .build();
+
+        profileService.saveProfile(profileDto);
+
         return ResponseEntity.ok("카카오 자동 회원 가입 성공(1차)");
-    }
-
-    @GetMapping(value = "/api/token")
-    public ResponseEntity<?> apiTest()  {
-
-        return ResponseEntity.ok("api test good");
-    }
-
-    @GetMapping(value = "/users/user")
-    public ResponseEntity<?> user()  {
-
-        return ResponseEntity.ok("user test good");
     }
 }

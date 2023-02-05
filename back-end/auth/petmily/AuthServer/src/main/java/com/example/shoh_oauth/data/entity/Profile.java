@@ -2,6 +2,7 @@ package com.example.shoh_oauth.data.entity;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.Entity;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor
 public class Profile {
 
     @Id

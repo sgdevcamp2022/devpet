@@ -1,18 +1,14 @@
 package com.example.shoh_oauth.config;
 
-import com.example.shoh_oauth.config.auth.OAuth2SuccessHandler;
-import com.example.shoh_oauth.config.auth.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
@@ -22,9 +18,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 @RequiredArgsConstructor
 public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-    //    @SuppressWarnings("deprecation")
-    private final CustomOAuth2UserService oAuth2UserService;
-    private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final UserDetailsService userDetailsService;
     private final PasswordEncoder passwordEncoder;
 
@@ -56,18 +49,19 @@ public class WebSecurityConfiguration extends WebSecurityConfigurerAdapter {
         web.ignoring().antMatchers("/webjars/**", "/images/**", "/oauth/uncache_approvals", "/oauth/cache_approvals", "/templates/*");
     }
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .formLogin().disable()
-                .csrf().disable()
-                .httpBasic().disable()
-                .authorizeRequests()
-                    .antMatchers("/oauth/sign-up").permitAll()
-                    .antMatchers("/oauth/token").permitAll()
-                    .antMatchers("/oauth/kakao").permitAll()
-                    .anyRequest().authenticated();
-    }
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
+//                .formLogin().disable()
+//                .csrf().disable()
+//                .httpBasic().disable()
+//                .authorizeRequests()
+//                    .antMatchers("/oauth/sign-up").permitAll()
+//                    .antMatchers("/oauth/token").permitAll()
+//                    .antMatchers("/oauth/kakao").permitAll()
+////                    .antMatchers("/profile/**").permitAll()
+//                    .anyRequest().authenticated();
+//    }
 }

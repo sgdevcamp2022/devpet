@@ -1,19 +1,17 @@
 package com.example.shoh_oauth.config;
 
-import com.example.shoh_oauth.config.auth.CustomOAuth2UserService;
-import com.example.shoh_oauth.config.auth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.error.DefaultWebResponseExceptionTranslator;
-import org.springframework.security.oauth2.provider.error.OAuth2AccessDeniedHandler;
 import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 
@@ -36,18 +34,17 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.anonymous().disable()
-                .authorizeRequests()
-                    //.antMatchers(HttpMethod.OPTIONS).permitAll()
-                    .antMatchers("/map/**").authenticated()
-                    .antMatchers("/profile/**").authenticated()
-                    .antMatchers("/post/**").authenticated()
-                    .antMatchers("/api/**").authenticated()
-                    .antMatchers("/users/**").hasAnyRole("USER", "ADMIN")
+        http
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .exceptionHandling()
-                .accessDeniedHandler(new OAuth2AccessDeniedHandler());
-
+                .formLogin().disable()
+                .csrf().disable()
+                .httpBasic().disable()
+                .authorizeRequests()
+                .antMatchers("/oauth/sign-up").permitAll()
+                .antMatchers("/oauth/token").permitAll()
+                .antMatchers("/oauth/kakao").permitAll()
+                .anyRequest().authenticated();
     }
 
     @Bean
