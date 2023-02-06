@@ -19,17 +19,21 @@ public class JobConfig {
     @Autowired
     private Scheduler scheduler; // 쿼츠 스케줄 객체
 
+    /**
+     * 게시글 redis에서 모아서 저장 안하기로함
+     */
     @PostConstruct
+    @Deprecated
     public void run() {
         // job 객체 생성
-        JobDetail detail = creatPostAveJob();
-
-        try {
-            // 스케줄 시간 설정 후  스케줄 실행
-            scheduler.scheduleJob(detail, createJobTrigger("0 0/2 * * * * ?"));
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }
+//        JobDetail detail = creatPostAveJob();
+//
+//        try {
+//            // 스케줄 시간 설정 후  스케줄 실행
+//            scheduler.scheduleJob(detail, createJobTrigger("0 0/2 * * * * ?"));
+//        } catch (SchedulerException e) {
+//            e.printStackTrace();
+//        }
     }
 
     /**

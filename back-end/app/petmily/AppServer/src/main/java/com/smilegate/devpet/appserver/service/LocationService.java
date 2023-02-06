@@ -5,8 +5,8 @@ import com.smilegate.devpet.appserver.repository.mongo.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 public class LocationService {
     private final LocationRepository locationRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
-    private final MongoEntityInformation<Location,Long> locationEntityInformation;
     private final MongoOperations locationMongoOperation;
     public Location postLocation(Location location)
     {
@@ -43,10 +42,13 @@ public class LocationService {
      * @param locations : 저장하려는 위치 정보 리스트
      * @return 저장된 location 리스트 반환
      */
+    @Transactional
     public List<Location> saveAll(List<Location> locations)
     {
 
-        Stream<Location> locationStream = locations.stream().filter(item->!locationEntityInformation.isNew(item));
+        Stream<Location> locationStream = locations.stream().filter(item->item.getLocationId()!=null);
+//        MongoEntityInformation<Location,Long> locationEntityInformation = factory.getEntityInformation(Location.class);
+//        Stream<Location> locationStream = locations.stream().filter(item->!locationEntityInformation.isNew(item));
         if (locationStream.findAny().isPresent())
         {
             return locations;

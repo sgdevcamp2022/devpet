@@ -7,9 +7,11 @@ import com.smilegate.devpet.appserver.model.Location;
 import com.smilegate.devpet.appserver.model.UserInfo;
 import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,11 +38,12 @@ public class FeedService {
         locationService.postLocation(feed.getLocation());
         feed = feedRepository.save(feed);
         kafkaProducerService.feedSubscribeSend(feed);
-        // TODO: fan-out, fan-in, fcm implements
+        // TODO: fcm implements
         return feed;
     }
 
     @Transactional
+    @Cacheable(value = "Feed", key = "#feedId", cacheManager = "getCacheManager")
     public Feed putFeed(FeedRequest feedRequest,Long feedId)
     {
         Feed feed = feedRepository.findById(feedId).orElseThrow(RuntimeException::new);
@@ -64,8 +67,8 @@ public class FeedService {
     {
         Feed feedO = feedRepository.findById(feedId).orElseThrow(RuntimeException::new);
         // TODO: call rest api graph server
-        // TODO: 그래프 서버 응답으로 좋아요 갯수 처리
-        // TODO: fcm or fan-out, fan-in to feed owner
+        // TODO: 그래프 서버로 카프카 전송.
+        // TODO: fcm to feed owner
         return true;
     }
     public List<String> getSimpleFeedList(Point center, long distance, int category, java.lang.String word, int start, int size)
