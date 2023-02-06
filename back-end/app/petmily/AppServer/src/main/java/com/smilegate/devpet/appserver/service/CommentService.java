@@ -22,26 +22,27 @@ public class CommentService {
 
     public Comment postComment(long feedId, CommentRequest commentRequest, UserInfo userInfo)
     {
-        if (commentRequest.getUserProfile()==null)
+        if (commentRequest.getProfileId()==null)
         {
-            commentRequest.setUserProfile(profileService.getProfile(userInfo));
+            commentRequest.setProfileId(profileService.getProfile(userInfo).getProfileId());
         }
         Comment comment = new Comment(commentRequest,feedId,sequenceGeneratorService.longSequenceGenerate(Comment.SEQUENCE_NAME));
         commentRepository.save(comment);
         return comment;
     }
 
-    public Comment putComment(long commentId, CommentRequest commentRequest)
+    public Comment putComment(CommentRequest commentRequest)
     {
-        Comment comment = commentRepository.findById(commentId).orElseThrow(RuntimeException::new);
+        Comment comment = commentRepository.findById(commentRequest.getCommentId()).orElseThrow(RuntimeException::new);
         comment.setComment(String.valueOf(commentRequest));
         commentRepository.save(comment);
         return comment;
     }
 
-    public List<Comment> getPostComment(Long postId)
+    public List<Comment> getPostComment(Long postId,int start,int count)
     {
-        return commentRepository.findByPostIdOrderByCreatedAt(postId,PageRequest.of(1,3)).get().collect(Collectors.toList());
+        return commentRepository.findByPostIdOrderByCreatedAt(postId,PageRequest.of(start,count)).get().collect(Collectors.toList());
+//        return commentRepository.findByPostId(postId);
     }
 
 }

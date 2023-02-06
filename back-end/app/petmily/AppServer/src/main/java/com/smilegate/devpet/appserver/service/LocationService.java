@@ -47,20 +47,20 @@ public class LocationService {
     public List<Location> saveAll(List<Location> locations)
     {
 
-        Stream<Location> locationStream = locations.stream().filter(item->item.getLocationId()!=null);
+        List<Location> locationStream = locations.stream().filter(item->item.getLocationId()==null).collect(Collectors.toList());
 //        MongoEntityInformation<Location,Long> locationEntityInformation = factory.getEntityInformation(Location.class);
 //        Stream<Location> locationStream = locations.stream().filter(item->!locationEntityInformation.isNew(item));
-        if (locationStream.findAny().isPresent())
+        if (locationStream.isEmpty())
         {
             return locations;
         }
-        long lastSeq = sequenceGeneratorService.longSequenceBulkGenerate(Location.SEQUENCE_NAME,(int) locationStream.count());
-        AtomicLong seq = new AtomicLong(lastSeq - locationStream.count() + 1);
+        long lastSeq = sequenceGeneratorService.longSequenceBulkGenerate(Location.SEQUENCE_NAME,(int) locationStream.size());
+        AtomicLong seq = new AtomicLong(lastSeq - locationStream.size() + 1);
         locationStream.forEach(item->{
             item.setLocationId(seq.get());
             seq.getAndIncrement();
         });
-        List<Location> result =  new ArrayList<>(locationMongoOperation.insert(locationStream.collect(Collectors.toList()),"location"));
+        List<Location> result =  new ArrayList<>(locationMongoOperation.insert(locationStream,"location"));
         return result;
     }
 }

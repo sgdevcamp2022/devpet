@@ -93,11 +93,11 @@ public class FeedService {
         return feedRepository.findByNear(center,distance,category,word,pageRequest);
     }
 
-    public List<Feed> saveAll(List<Feed> pushList) {
+    public List<Feed> postAllFeed(List<Feed> pushList) {
         List<Location> pushLocations = pushList.stream().map(Feed::getLocation).filter(Objects::nonNull).collect(Collectors.toList());
         locationService.saveAll(pushLocations);
-        Stream<Feed> feedStream = pushList.stream().filter(item->item.getFeedId()!=null);
-        AtomicLong lastSeq = new AtomicLong(sequenceGeneratorService.longSequenceBulkGenerate(Feed.SEQUENCE_NAME, (int) feedStream.count()));
+        List<Feed> feedStream = pushList.stream().filter(item->item.getFeedId()==null).collect(Collectors.toList());
+        AtomicLong lastSeq = new AtomicLong(sequenceGeneratorService.longSequenceBulkGenerate(Feed.SEQUENCE_NAME, (int) feedStream.size()));
         feedStream.forEach(item->{
             item.setFeedId(lastSeq.get());
             lastSeq.getAndIncrement();

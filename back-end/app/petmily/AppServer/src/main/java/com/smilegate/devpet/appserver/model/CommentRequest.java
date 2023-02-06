@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter @Setter
 @RequiredArgsConstructor
 public class CommentRequest {
-    private Profile userProfile;
+    private Long commentId;
+    private Long profileId;
     private String comment;
 }

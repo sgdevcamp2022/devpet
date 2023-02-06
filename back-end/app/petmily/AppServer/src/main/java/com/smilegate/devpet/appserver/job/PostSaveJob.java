@@ -41,7 +41,7 @@ public class PostSaveJob extends QuartzJobBean {
             return;
         Streamable<Feed> source = Streamable.of(feedRepository.findAll());
         List<Feed> pushList = source.stream().collect(Collectors.toList());
-        feedService.saveAll(pushList);
+        feedService.postAllFeed(pushList);
     }
 
     private RedisConnection getRedisConnection()

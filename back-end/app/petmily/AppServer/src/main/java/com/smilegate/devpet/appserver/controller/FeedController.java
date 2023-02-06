@@ -1,9 +1,6 @@
 package com.smilegate.devpet.appserver.controller;
 
-import com.smilegate.devpet.appserver.model.CommentRequest;
-import com.smilegate.devpet.appserver.model.Feed;
-import com.smilegate.devpet.appserver.model.FeedRequest;
-import com.smilegate.devpet.appserver.model.UserInfo;
+import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.service.CommentService;
 import com.smilegate.devpet.appserver.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,6 +86,11 @@ public class FeedController {
     }
     @PutMapping("/{feedId}/comment")
     public long putComment(@PathVariable("feedId") long feedId, @RequestBody CommentRequest commentRequest, UserInfo userInfo) {
-        return commentService.putComment(feedId, commentRequest).getCommentId();
+        return commentService.putComment(commentRequest).getCommentId();
+    }
+    @GetMapping("/{feedId}/comment")
+    public List<Comment> getComment(@PathVariable("feedId") long feedId,@RequestParam("start") int start,@RequestParam("count") int count)
+    {
+        return commentService.getPostComment(feedId,start,count);
     }
 }

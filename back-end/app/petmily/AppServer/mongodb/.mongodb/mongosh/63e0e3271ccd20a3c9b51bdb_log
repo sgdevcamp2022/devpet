@@ -30,3 +30,25 @@
 {"t":{"$date":"2023-02-06T11:46:18.413Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.location.find()"}}
 {"t":{"$date":"2023-02-06T11:46:18.423Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"find","class":"Collection","db":"app_db","coll":"location","arguments":{"options":{}}}}
 {"t":{"$date":"2023-02-06T11:46:25.962Z"},"s":"I","c":"MONGOSH","id":1000000009,"ctx":"shell-api","msg":"Used \"show\" command","attr":{"method":"show collections"}}
+{"t":{"$date":"2023-02-06T17:11:26.557Z"},"s":"I","c":"MONGOSH","id":1000000009,"ctx":"shell-api","msg":"Used \"show\" command","attr":{"method":"show collections"}}
+{"t":{"$date":"2023-02-06T17:11:33.371Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.pet.find()"}}
+{"t":{"$date":"2023-02-06T17:11:33.378Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"find","class":"Collection","db":"app_db","coll":"pet","arguments":{"options":{}}}}
+{"t":{"$date":"2023-02-06T17:11:44.795Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.post.find()"}}
+{"t":{"$date":"2023-02-06T17:11:44.804Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"find","class":"Collection","db":"app_db","coll":"post","arguments":{"options":{}}}}
+{"t":{"$date":"2023-02-06T17:11:50.273Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.profile.find()"}}
+{"t":{"$date":"2023-02-06T17:11:50.278Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"find","class":"Collection","db":"app_db","coll":"profile","arguments":{"options":{}}}}
+{"t":{"$date":"2023-02-06T17:15:32.210Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.profile.drop({})"}}
+{"t":{"$date":"2023-02-06T17:15:32.223Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"drop","class":"Collection","db":"app_db","coll":"profile","arguments":{}}}
+{"t":{"$date":"2023-02-06T17:15:37.059Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.pet.drop({})"}}
+{"t":{"$date":"2023-02-06T17:15:37.064Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"drop","class":"Collection","db":"app_db","coll":"pet","arguments":{}}}
+{"t":{"$date":"2023-02-06T17:15:48.882Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.comment.drop"}}
+{"t":{"$date":"2023-02-06T17:15:53.645Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.comment.drop({})"}}
+{"t":{"$date":"2023-02-06T17:15:53.650Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"drop","class":"Collection","db":"app_db","coll":"comment","arguments":{}}}
+{"t":{"$date":"2023-02-06T17:34:31.948Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.comment.find()"}}
+{"t":{"$date":"2023-02-06T17:34:31.956Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"find","class":"Collection","db":"app_db","coll":"comment","arguments":{"options":{}}}}
+{"t":{"$date":"2023-02-06T17:35:17.431Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.comment.drop({})"}}
+{"t":{"$date":"2023-02-06T17:35:17.438Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"drop","class":"Collection","db":"app_db","coll":"comment","arguments":{}}}
+{"t":{"$date":"2023-02-06T17:35:55.427Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.comment.drop({})"}}
+{"t":{"$date":"2023-02-06T17:35:55.438Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"drop","class":"Collection","db":"app_db","coll":"comment","arguments":{}}}
+{"t":{"$date":"2023-02-06T17:38:07.403Z"},"s":"I","c":"MONGOSH","id":1000000007,"ctx":"repl","msg":"Evaluating input","attr":{"input":"db.comment.find()"}}
+{"t":{"$date":"2023-02-06T17:38:07.410Z"},"s":"I","c":"MONGOSH","id":1000000011,"ctx":"shell-api","msg":"Performed API call","attr":{"method":"find","class":"Collection","db":"app_db","coll":"comment","arguments":{"options":{}}}}
