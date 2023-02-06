@@ -20,7 +20,6 @@ public class CommentService {
     private final SequenceGeneratorService sequenceGeneratorService;
 
 
-    @Transactional
     public Comment postComment(long feedId, CommentRequest commentRequest, UserInfo userInfo)
     {
         if (commentRequest.getUserProfile()==null)
@@ -32,7 +31,6 @@ public class CommentService {
         return comment;
     }
 
-    @Transactional
     public Comment putComment(long commentId, CommentRequest commentRequest)
     {
         Comment comment = commentRepository.findById(commentId).orElseThrow(RuntimeException::new);

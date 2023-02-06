@@ -15,6 +15,50 @@ services:
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+  #  mongo1:
+  #    image: mongo
+  #    hostname: mongo1
+  #    container_name: mongo1
+  #    restart: always
+  #    environment:
+  #      - MONGO_INITDB_ROOT_USERNAME=root
+  #      - MONGO_INITDB_ROOT_PASSWORD=root
+  #      - MONGO_INITDB_DATABASE=app_db
+  #    ports:
+  #      # 로컬 27017 포트로 요청이 들어오면 컨테이너의 27017 포트로 리다이렉트되도록 설정
+  #      - 27017:27017
+  #    volumes:
+  #      - ./mongo1:/data/db
+  #      - ./mongodb.key:/etc/mongodb.key
+  #    command:
+  #      - '--replSet'
+  #      - 'appReplicaSet'
+  #      - '--keyFile'
+  #      - '/etc/mongodb.key'
+  #      - '--bind_ip_all'
+  #  mongo2:
+  #    image: mongo
+  #    hostname: mongo2
+  #    container_name: mongo2
+  #    restart: always
+  #    environment:
+  #      - MONGO_INITDB_ROOT_USERNAME=root
+  #      - MONGO_INITDB_ROOT_PASSWORD=root
+  #      - MONGO_INITDB_DATABASE=app_db
+  #    depends_on:
+  #      - mongo1
+  #    ports:
+  #      # 로컬 27017 포트로 요청이 들어오면 컨테이너의 27017 포트로 리다이렉트되도록 설정
+  #      - 27018:27017
+  #    volumes:
+  #      - ./mongo2:/data/db
+  #      - ./mongodb.key:/etc/mongodb.key
+  #    command:
+  #      - '--replSet'
+  #      - 'appReplicaSet'
+  #      - '--keyFile'
+  #      - '/etc/mongodb.key'
+  #      - '--bind_ip_all'
   mongodb:
     image: mongo
     container_name: mongodb
@@ -37,3 +81,6 @@ services:
       - "mode=standalone"
     ports:
       - 6379:6379
+#networks:
+#  default:
+#    name: mongoCluster

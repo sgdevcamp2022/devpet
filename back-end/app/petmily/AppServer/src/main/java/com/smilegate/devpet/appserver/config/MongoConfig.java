@@ -34,10 +34,10 @@ public class MongoConfig {
     private String password;
 
 
-    @Bean
-    MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
-        return new MongoTransactionManager(dbFactory);
-    }
+//    @Bean
+//    MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
+//        return new MongoTransactionManager(dbFactory);
+//    }
 
     @Bean
     public MongoDatabaseFactory mongoDbFactory() {

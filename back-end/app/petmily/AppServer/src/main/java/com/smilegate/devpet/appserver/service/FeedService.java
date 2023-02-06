@@ -30,7 +30,7 @@ public class FeedService {
     private final SequenceGeneratorService sequenceGeneratorService;
     private final MongoOperations mongoOperations;
     private final KafkaProducerService kafkaProducerService;
-    @Transactional
+
     public Feed postFeed(FeedRequest feedRequest, UserInfo userInfo)
     {
         Feed feed = new Feed(feedRequest,userInfo);
@@ -42,7 +42,6 @@ public class FeedService {
         return feed;
     }
 
-    @Transactional
     @Cacheable(value = "Feed", key = "#feedId", cacheManager = "getCacheManager")
     public Feed putFeed(FeedRequest feedRequest,Long feedId)
     {
@@ -54,7 +53,6 @@ public class FeedService {
         return feed;
     }
 
-    @Transactional
     public Feed deleteFeed(Long feedId)
     {
         Feed feed = feedRepository.findById(feedId).orElseThrow(RuntimeException::new);
@@ -95,7 +93,6 @@ public class FeedService {
         return feedRepository.findByNear(center,distance,category,word,pageRequest);
     }
 
-    @Transactional
     public List<Feed> saveAll(List<Feed> pushList) {
         List<Location> pushLocations = pushList.stream().map(Feed::getLocation).filter(Objects::nonNull).collect(Collectors.toList());
         locationService.saveAll(pushLocations);

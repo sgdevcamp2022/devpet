@@ -3,6 +3,7 @@ package com.smilegate.devpet.appserver.service;
 import com.smilegate.devpet.appserver.model.Location;
 import com.smilegate.devpet.appserver.repository.mongo.LocationRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
@@ -32,9 +33,9 @@ public class LocationService {
                 });
         return returnLocation;
     }
-    public List<Location> getNearByLocation(Point point, Double distance, long category)
+    public List<Location> getNearByLocation(Circle circle, long category)
     {
-        return locationRepository.findByCategoryAndCoordWithin(point,distance,category);
+        return locationRepository.findByCategoryAndCoordWithin(category, circle);
     }
 
     /**
@@ -42,7 +43,7 @@ public class LocationService {
      * @param locations : 저장하려는 위치 정보 리스트
      * @return 저장된 location 리스트 반환
      */
-    @Transactional
+
     public List<Location> saveAll(List<Location> locations)
     {
 
