@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface CommentRepository extends MongoRepository<Comment,Long> {
 
     public Optional<Comment> findByProfileId(Long profileId);
-    public Page<Comment> findByPostIdOrderByCreatedAt(Long postId, Pageable pageable);
+    public Page<Comment> findByPostId(Long postId, Pageable pageable);
     public List<Comment> findByPostId(long postId);
 }

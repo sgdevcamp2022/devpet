@@ -5,7 +5,9 @@ import com.smilegate.devpet.appserver.model.CommentRequest;
 import com.smilegate.devpet.appserver.model.UserInfo;
 import com.smilegate.devpet.appserver.repository.mongo.CommentRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +43,9 @@ public class CommentService {
 
     public List<Comment> getPostComment(Long postId,int start,int count)
     {
-        return commentRepository.findByPostIdOrderByCreatedAt(postId,PageRequest.of(start,count)).get().collect(Collectors.toList());
+        Sort sort = Sort.by("createdAt");
+        Page<Comment> pageResult = commentRepository.findByPostId(postId, PageRequest.of(start,count,sort));
+        return pageResult.get().collect(Collectors.toList());
 //        return commentRepository.findByPostId(postId);
     }
 
