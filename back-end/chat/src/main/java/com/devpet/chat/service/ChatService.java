@@ -34,6 +34,7 @@ public class ChatService {
      * publisher
      */
     public void sendChatMessage(ChatMessage chatMessage) {
+
 //        chatMessage.setUserCount(chatRoomRepository.getUserCount(chatMessage.getRoomId()));
         if (ChatMessage.MessageType.ENTER.equals(chatMessage.getType())) {
         } else if (ChatMessage.MessageType.QUIT.equals(chatMessage.getType())) {
@@ -45,6 +46,9 @@ public class ChatService {
         redisTemplate.convertAndSend(channelTopic.getTopic(), chatMessage);
     }
 
+    public void saveMessage(ChatMessage chatMessage){
+        chatRepository.saveMessage(chatMessage);
+    }
     /**
      * userId에 있는 메시지 큐 리스트를 반환
      * @param userId

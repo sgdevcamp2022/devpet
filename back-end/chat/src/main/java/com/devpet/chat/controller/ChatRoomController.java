@@ -2,7 +2,6 @@ package com.devpet.chat.controller;
 
 import com.devpet.chat.repo.ChatRepository;
 import com.google.gson.Gson;
-import com.devpet.chat.model.ChatMessage;
 import com.devpet.chat.model.ChatRoom;
 import com.devpet.chat.repo.ChatRoomRepository;
 import com.devpet.chat.service.BackUpService;
@@ -12,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @RequiredArgsConstructor
@@ -36,10 +34,12 @@ public class ChatRoomController {
 
     @GetMapping("/test")
     @ResponseBody
-    public String test() {
-        backUpService.WriteChatMessages();
-        backUpService.ReadChatMessages();
-        return "SUCCESS";
+    public List<String> test() {
+        List<String> t = new ArrayList<>();
+        t.add("u");
+        t.add("2");
+
+        return t;
     }
 
     @GetMapping("/rooms")
@@ -65,7 +65,7 @@ public class ChatRoomController {
 
     @PostMapping("/room")
     @ResponseBody
-    public ChatRoom createRoom(@RequestParam List<String> userId) {
+    public ChatRoom createRoom(@RequestBody List<String> userId) {
         ChatRoom chatRoom = ChatRoom.create(userId);
         return chatRoomRepository.createChatRoom(chatRoom);
     }
