@@ -9,6 +9,7 @@ import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
@@ -69,10 +70,10 @@ public class FeedService {
         // TODO: fcm to feed owner
         return true;
     }
-    public List<String> getSimpleFeedList(Point center, long distance, int category, java.lang.String word, int start, int size)
+    public List<String> getSimpleFeedList(String word, int category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        List<Feed> result = feedRepository.findByNear(center,distance,category,word,pageRequest);
+        List<Feed> result = feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithin(word,category,circle);
         return  result.stream().map((feed)->{
             if (feed.getImageUrl().size()<1)
                 return null;
@@ -87,10 +88,10 @@ public class FeedService {
         location.setCategory((long)category);
         return feedRepository.findByLocationAndContent(location,word, pageRequest);
     }
-    public List<Feed> getFeedList(Point center, long distance, int category, String word, int start, int size)
+    public List<Feed> getFeedList(String word, int category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        return feedRepository.findByNear(center,distance,category,word,pageRequest);
+        return feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithin(word,category,circle);
     }
 
     public List<Feed> postAllFeed(List<Feed> pushList) {

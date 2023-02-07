@@ -4,6 +4,7 @@ import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.service.CommentService;
 import com.smilegate.devpet.appserver.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
@@ -51,8 +52,8 @@ public class FeedController {
                                         @RequestParam("start") int start,
                                         @RequestParam("size") int size)
     {
-        Point center = new Point(longitude,latitude);
-        return feedService.getSimpleFeedList(center,distance,category,word,start,size);
+        Circle center = new Circle(longitude,latitude,distance);
+        return feedService.getSimpleFeedList(word,category,center,start,size);
     }
     @GetMapping
     public List<Feed> getNearByFeedList(
@@ -64,8 +65,8 @@ public class FeedController {
                                         @RequestParam("start") int start,
                                         @RequestParam("size") int size)
     {
-        Point center = new Point(longitude,latitude);
-        return feedService.getFeedList(center,distance,category,word,start,size);
+        Circle center = new Circle(longitude,latitude,distance);
+        return feedService.getFeedList(word,category,center,start,size);
     }
     @GetMapping("/marker")
     public List<Feed> getMarkerFeedList(

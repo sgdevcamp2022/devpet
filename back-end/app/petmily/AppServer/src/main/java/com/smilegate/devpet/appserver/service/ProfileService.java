@@ -14,12 +14,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProfileService {
     private final ProfileRepository profileRepository;
-    private final SequenceGeneratorService ProfileService;
+    private final SequenceGeneratorService profileSequenceGeneratorService;
     private final PetService petService;
     public Profile postProfile(ProfileRequest profileRequest,UserInfo userInfo)
     {
         Profile profile = new Profile(profileRequest,userInfo);
-        profile.setProfileId(profile.getProfileId());
+        profile.setProfileId(profileSequenceGeneratorService.longSequenceGenerate(Profile.SEQUENCE_NAME));
         profile.getPetList().forEach(item->item.setProfileId(profile.getProfileId()));
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);

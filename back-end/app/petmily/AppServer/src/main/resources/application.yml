@@ -26,3 +26,15 @@ spring:
           max-active: 8
       port: 6379
       host: localhost
+  devtools:
+    livereload:
+      enabled: true
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: DEBUG
