@@ -47,6 +47,7 @@ dependencies {
 
     implementation 'commons-io:commons-io:2.8.0'
 
+    implementation 'mysql:mysql-connector-java'
     implementation 'com.h2database:h2'
     implementation 'junit:junit:4.13.1'
     compileOnly 'org.projectlombok:lombok'
@@ -60,4 +61,13 @@ dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
     }
+}
+jar {
+    manifest { // 빌드시 Main-Class 설정
+        attributes 'Main-Class': 'com.example.solum_test.SolumTestApplication'
+    }
+}
+
+bootJar {
+    jar.enabled = true // 빌드시 jar 을 실행
 }

@@ -8,14 +8,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-@EnableFeignClients
+//@EnableFeignClients
 public class DevpetchatApplication {
 
-    @LoadBalanced
-    @Bean
-    public RestTemplate getRestTemplate(){
-        return new RestTemplate();
-    }
+//    @LoadBalanced
+//    @Bean
+//    public RestTemplate getRestTemplate(){
+//        return new RestTemplate();
+//    }
     public static void main(String[] args) {
         SpringApplication.run(DevpetchatApplication.class, args);
 
