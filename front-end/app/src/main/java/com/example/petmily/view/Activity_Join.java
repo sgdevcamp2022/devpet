@@ -10,8 +10,8 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityJoinBinding;
-import com.example.petmily.model.Join;
-import com.example.petmily.viewModel.LoginViewModel;
+import com.example.petmily.model.data.auth.remote.JoinEmail;
+import com.example.petmily.viewModel.AuthenticationViewModel;
 
 public class Activity_Join extends AppCompatActivity {
     private ActivityJoinBinding binding;
@@ -20,19 +20,19 @@ public class Activity_Join extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_join);
-        binding.setJoin(this);
+        binding.setJoinEmail(this);
 
-        String intent_data;
-        intent_data = getIntent().getStringExtra("username");
-        if(intent_data != null)
+        String provider;
+        provider = getIntent().getStringExtra("provider");
+        if(provider.equals("kakao"))
         {
             binding.username.setText(getIntent().getStringExtra("username"));
             binding.name.setText(getIntent().getStringExtra("name"));
-            binding.age.setText(Integer.parseInt(getIntent().getStringExtra("age")+""));
-            binding.nickname.setText(Integer.parseInt(getIntent().getStringExtra("password"))+"");
+            //binding.age.setText(getIntent().getStringExtra("age"));
+            binding.password.setText(getIntent().getStringExtra("password"));
         }
 
-        LoginViewModel loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
+        AuthenticationViewModel authenticationViewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
 
         binding.save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,18 +41,23 @@ public class Activity_Join extends AppCompatActivity {
                 String nickname = binding.nickname.getText().toString();
                 String name = binding.name.getText().toString();
                 String password = binding.password.getText().toString();
-                int age = Integer.parseInt(binding.age.getText().toString());
+                String age = binding.age.getText().toString();
                 String gender = binding.gender.getText().toString();
-                int phone = Integer.parseInt(binding.phone.getText().toString());
-                Join join = new Join(username, nickname, name);
-                Join test_join = new Join("계정", "채채현수", "채현수");
+                String phone = binding.phone.getText().toString();
 
-                loginViewModel.join(test_join);
+                JoinEmail kakaoAuthJoinEmail = new JoinEmail(username, name, password);
+                JoinEmail kakaoAuthJoinEmail2 = new JoinEmail(username, nickname, age, gender, phone);
+
+
+                JoinEmail emailAuthJoinEmail = new JoinEmail(username, nickname, name, password, age, gender, phone, "");
+
+
+                JoinEmail test__joinEmail = new JoinEmail("계정", "채채현수", "채현수");
+
+
+                //authenticationViewModel.join(test_join);
 
                 Intent intent = new Intent(view.getContext(), Activity_Join_Profile.class);
-
-                //
-
                 startActivity(intent);
                 finish();
 

@@ -1,33 +1,31 @@
-package com.example.petmily.model;
+package com.example.petmily.model.data.chat.list.local;
 
-import androidx.room.ColumnInfo;
+
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "ChatRoom")
+@Entity(tableName = "ChatContentSQL")
 public class ChatContentSQL {
 
+    @NonNull
     @PrimaryKey
-    @ColumnInfo(name = "roodId")
-    String roodId;
+    public String roodId;
 
-    @ColumnInfo(name = "timeLog")
-    String timeLog;
+    public String timeLog;
 
-    @ColumnInfo(name = "senderNickname")
-    String senderNickname;
+    public String senderNickname;
 
-    @ColumnInfo(name = "profileImage")
-    String profileImage;
+    public String profileImage;
 
-    @ColumnInfo(name = "sender")
-    String sender;
+    public String sender;
 
-    public ChatContentSQL(String timeLog, String senderNickname, String profileImage, String roodId, String sender) {
+
+    public ChatContentSQL(@NonNull String roodId, String timeLog, String senderNickname, String profileImage, String sender) {
+        this.roodId = roodId;
         this.timeLog = timeLog;
         this.senderNickname = senderNickname;
         this.profileImage = profileImage;
-        this.roodId = roodId;
         this.sender = sender;
     }
 
@@ -71,3 +69,5 @@ public class ChatContentSQL {
         this.sender = sender;
     }
 }
+
+

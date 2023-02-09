@@ -1,46 +1,29 @@
 package com.example.petmily.view;
 
+
+
+
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
 
 import com.example.petmily.R;
-import com.example.petmily.databinding.ActivityChatBinding;
 import com.example.petmily.databinding.ActivityChatRoomBinding;
-
-import com.example.petmily.model.ChatMessage;
-import com.example.petmily.model.ChatRoom;
-import com.example.petmily.model.Place;
-import com.example.petmily.model.TestChatRoom;
-import com.example.petmily.model.TestInterface;
+import com.example.petmily.model.data.chat.room.Message;
 import com.example.petmily.viewModel.ChatRoomViewModel;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.kakao.sdk.user.model.User;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class Activity_Chat_Room extends AppCompatActivity {
 
@@ -56,16 +39,8 @@ public class Activity_Chat_Room extends AppCompatActivity {
         binding.setChatRoom(this);
         context = this;
         String roomId = "";
-        String senderNickname = "testname";
-        String receiverNickname = "ttestname";
-
-
-
-
-
-
-
-
+        String senderNickname = "유저1";
+        String receiverNickname = "유저2";
 
 
         roomId = getIntent().getStringExtra("roomId");
@@ -75,7 +50,20 @@ public class Activity_Chat_Room extends AppCompatActivity {
 
         initObserver();
         chatRoomViewModel.initChatRoom(roomId,senderNickname, receiverNickname);
+
+
         //chatRoomViewModel.getChatMessageSQL();
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -94,7 +82,8 @@ public class Activity_Chat_Room extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chatRoomViewModel.sendMessage(editText.getText().toString(), "유저1", "유저2");
+                chatRoomViewModel.sendMessage(editText.getText().toString(), "user1", "user2");
+
 
             }
         });
@@ -103,9 +92,9 @@ public class Activity_Chat_Room extends AppCompatActivity {
 
     }
     public void initObserver() {
-        final Observer<List<ChatMessage>> chatMessageObserver = new Observer<List<ChatMessage>>() {
+        final Observer<List<Message>> chatMessageObserver = new Observer<List<Message>>() {
             @Override
-            public void onChanged(@Nullable final List<ChatMessage> chatMessage) {
+            public void onChanged(@Nullable final List<Message> chatMessage) {
                 Adapter_Chat_Room newAdapter = new Adapter_Chat_Room(chatMessage);
                 chatlist.setAdapter(newAdapter);
             }
@@ -129,6 +118,7 @@ public class Activity_Chat_Room extends AppCompatActivity {
     public void onDestroy()
     {
         super.onDestroy();
+
         chatRoomViewModel.stompClose();
 
     }

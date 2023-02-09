@@ -1,13 +1,12 @@
-package com.example.petmily.model;
+package com.example.petmily.model.data.chat.room.remote;
 
-import androidx.room.ColumnInfo;
-import androidx.room.PrimaryKey;
 
+import com.example.petmily.model.data.chat.room.Message;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class ChatRoom {
+public class Room {
     @SerializedName("roomId")
     public String roomId;
 
@@ -18,12 +17,12 @@ public class ChatRoom {
     public String receiverName;
 
     @SerializedName("messages")
-    public List<ChatMessage> messages;
+    public List<Message> messages;
 
     @SerializedName("timelog")
     public String timelog;
 
-    public ChatRoom(String roomId, String senderName, String receiverName, List<ChatMessage> messages, String timelog) {
+    public Room(String roomId, String senderName, String receiverName, List<Message> messages, String timelog) {
         this.roomId = roomId;
         this.senderName = senderName;
         this.receiverName = receiverName;
@@ -55,11 +54,11 @@ public class ChatRoom {
         this.receiverName = receiverName;
     }
 
-    public List<ChatMessage> getMessages() {
+    public List<Message> getMessages() {
         return messages;
     }
 
-    public void setMessages(List<ChatMessage> messages) {
+    public void setMessages(List<Message> messages) {
         this.messages = messages;
     }
 
@@ -69,5 +68,16 @@ public class ChatRoom {
 
     public void setTimelog(String timelog) {
         this.timelog = timelog;
+    }
+
+    @Override
+    public String toString() {
+        return "ChatRoom{" +
+                "roomId='" + roomId + '\'' +
+                ", senderName='" + senderName + '\'' +
+                ", receiverName='" + receiverName + '\'' +
+                ", messages=" + messages +
+                ", timelog='" + timelog + '\'' +
+                '}';
     }
 }

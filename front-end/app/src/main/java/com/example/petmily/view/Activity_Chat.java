@@ -1,5 +1,6 @@
 package com.example.petmily.view;
 
+
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,7 +28,7 @@ public class Activity_Chat extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat);
-        binding.setChat(this);
+        binding.setChatList(this);
 
         Toolbar toolbar = binding.backToolbar;
         setSupportActionBar(toolbar);

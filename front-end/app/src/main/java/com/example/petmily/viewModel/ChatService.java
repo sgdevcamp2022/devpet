@@ -1,10 +1,7 @@
 package com.example.petmily.viewModel;
 
-import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -12,38 +9,28 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-
 import com.example.petmily.R;
-import com.example.petmily.model.Access_Token;
-
-import com.example.petmily.model.TempInterface;
-import com.example.petmily.model.TestBody;
-import com.example.petmily.model.TestChatRoom;
-import com.example.petmily.model.TestInterface;
+import com.example.petmily.model.data.chat.room.Message;
+import com.example.petmily.model.data.chat.room.remote.API_Interface;
 import com.example.petmily.view.MainActivity;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.kakao.sdk.user.model.User;
 
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import ua.naiksoftware.stomp.Stomp;
-import ua.naiksoftware.stomp.StompClient;
-import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class ChatService extends Service{
     NotificationManager Notifi_M;
@@ -51,6 +38,7 @@ public class ChatService extends Service{
     NotificationCompat.Builder Notifi;
     //List<ChatRoom_SQL> list;
 
+    OkHttpClient.Builder httpClient;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -60,11 +48,39 @@ public class ChatService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        httpClient = new OkHttpClient.Builder();
 
+
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept(Chain chain) throws IOException {
+                Request original = chain.request();
+
+                Request request = original.newBuilder()
+                        .addHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcl9uYW1lIjoidXNlcjIiLCJpYXQiOjE1MTYyMzkwMjJ9.5QkfscdoCw-tRVGvFzko4WlgJ8fORVh3nFq68LMFZ3Q")
+                        .build();
+
+                return chain.proceed(request);
+            }
+        });
+
+
+
+        test test = new test();
+
+
+        httpClient.addInterceptor(test);
+
+
+        //httpClient.addNetworkInterceptor(test);
         Notifi_M = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         myServiceHandler handler = new myServiceHandler();
         thread = new ChatServiceThread(handler);
         thread.start();
+
+
+
+
 
         return START_STICKY;
     }
@@ -91,60 +107,92 @@ public class ChatService extends Service{
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
 
-            Notifi_M.notify(0, Notifi.build());
+            //Notifi_M.notify(0, Notifi.build());
 
-            //GET 요청을 보내는 로직으로 변경
+
+
             /*
-            @GET
-            localhost:4444/chat/message
-            ChatRoomSQL에 저장
+
+            OkHttpClient client = new OkHttpClient.Builder()
+                    .addInterceptor(new HttpLoggingInterceptor()
+                            .setLevel(HttpLoggingInterceptor.Level.BASIC)
+                            .setLevel(HttpLoggingInterceptor.Level.BODY)
+                            .setLevel(HttpLoggingInterceptor.Level.HEADERS))
+                    .addInterceptor(new Interceptor() {
+                        @Override
+                        public Response intercept(Chain chain) throws IOException {
+                            Request mRequest = chain.request();
+                            Request newRequest  = mRequest.newBuilder()
+                                    .addHeader("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcl9uYW1lIjoidXNlcjIiLCJpYXQiOjE1MTYyMzkwMjJ9.5QkfscdoCw-tRVGvFzko4WlgJ8fORVh3nFq68LMFZ3Q")
+                                    .build();
+                            Response mResponse = chain.proceed(newRequest);
+
+                            return mResponse;
+                        }
+                    }).build();
+
+
+
+
 
              */
 
-            //토스트 띄우기
 
-           // Log.e("서비스 실행" , "실행 중");
-
-
-            /*
-            AppDatabase db = Room.databaseBuilder(getApplicationContext(),
-                    AppDatabase.class, "ChatRoom_SQL").build();
-
-            List<ChatRoom_SQL> list = db.chatRoomSQL_dao().getAll();
-
-            db.chatRoomSQL_dao().insert(list.get(0));
-
-             */
+            OkHttpClient client = httpClient.build();
 
 
 
-            /*
+            //String URL = "http://121.187.22.37:8080/chat/";
+            String URL = "http://10.0.2.2:4444/chat/";
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    //.client(client)
+                    .build();
 
-            Access_Token accessToken = new Access_Token(token);
-            access_tokenCall = logininterface.accessToken(accessToken);
+            API_Interface chatInterface = retrofit.create(API_Interface.class);
 
-
-            access_tokenCall.enqueue(new retrofit2.Callback<TempInterface>(){
+            Call<List<String>> testCallback = chatInterface.getMessage("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcl9uYW1lIjoidXNlcjIiLCJpYXQiOjE1MTYyMzkwMjJ9.5QkfscdoCw-tRVGvFzko4WlgJ8fORVh3nFq68LMFZ3Q");
+            testCallback.enqueue(new retrofit2.Callback<List<String>>(){
+                //"133a8c93-7952-4e7d-8891-dc4758f554eb"
                 @Override
-                public void onResponse(Call<TempInterface> call, Response<TempInterface> response) {
-                    Access_Token result =(Access_Token) response.body();
+                public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
 
+                    List<Message> result = null;
+
+                    if(response.body()!=null) {
+                        Gson gson = new Gson();
+                        Type listType = new TypeToken<ArrayList<Message>>(){}.getType();
+                        result = new Gson().fromJson(response.body().toString(), listType);
+                        for(int i = 0 ; i <result.size(); i++)
+                        {
+
+                            Log.e("get 통신 테스트", result.get(i).toString());
+                        }
+                    }
+                    else
+                    {
+                        Log.e("null", "");
+                    }
 
                 }
 
                 @Override
-                public void onFailure(Call<TempInterface> call, Throwable t) {
-                    Log.e("결과 테스트 : ", "실패");
+                public void onFailure(Call<List<String>> call, Throwable t) {
+                    Log.e("통신 테스트 실패", t.getMessage());
+                    t.printStackTrace();
                 }
-
             });
 
-             */
+
+
+
+
 
 
 
         }
-    };
+    }
 
 
     private void createNotificationChannel() {
@@ -172,4 +220,25 @@ public class ChatService extends Service{
      */
 
 
+    public class test implements Interceptor
+    {
+
+        @Override
+        public Response intercept(Chain chain) throws IOException {
+            Request response = null;
+
+            Request original = chain.request();
+
+            Request.Builder request = original.newBuilder();
+            request.addHeader("token", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwidXNlcl9uYW1lIjoidXNlcjIiLCJpYXQiOjE1MTYyMzkwMjJ9.5QkfscdoCw-tRVGvFzko4WlgJ8fORVh3nFq68LMFZ3Q");
+
+            response = request.build();
+
+            Log.e("여기내용 오류 ", chain.proceed(response).headers().toString());
+
+
+            return chain.proceed(response);
+        }
+
+    }
 }

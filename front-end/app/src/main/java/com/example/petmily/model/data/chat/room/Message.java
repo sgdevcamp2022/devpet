@@ -1,16 +1,20 @@
-package com.example.petmily.model;
-
-public class ChatMessage {
-    String type; //이미지 비디오 토크 기타등등
-    String roomId;
-    String sender;
-    String receiver;
-    String message;
-    String timeLog;
-    //String profileImage;
+package com.example.petmily.model.data.chat.room;
 
 
-    public ChatMessage(String type, String roomId, String sender, String receiver, String message, String timeLog) {
+public class Message {
+
+    public String type; //이미지 비디오 토크 기타등등
+    public String roomId;
+    public String sender;
+    public String receiver;
+    public String message;
+    public String timeLog;
+    public int profileImage;
+
+
+
+
+    public Message(String type, String roomId, String sender, String receiver, String message, String timeLog) {
         this.type = type;
         this.roomId = roomId;
         this.sender = sender;
@@ -19,12 +23,14 @@ public class ChatMessage {
         this.timeLog = timeLog;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
+    public Message(String type, String roomId, String sender, String receiver, String message, String timeLog, int profileImage) {
         this.type = type;
+        this.roomId = roomId;
+        this.sender = sender;
+        this.receiver = receiver;
+        this.message = message;
+        this.timeLog = timeLog;
+        this.profileImage = profileImage;
     }
 
     public String getRoomId() {
@@ -66,6 +72,23 @@ public class ChatMessage {
     public void setTimeLog(String timeLog) {
         this.timeLog = timeLog;
     }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public int getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(int profileImage) {
+        this.profileImage = profileImage;
+    }
+
     @Override
     public String toString() {
         return "ChatMessage{" +

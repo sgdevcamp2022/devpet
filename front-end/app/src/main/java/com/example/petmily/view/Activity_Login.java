@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityLoginBinding;
-import com.example.petmily.viewModel.LoginViewModel;
+import com.example.petmily.viewModel.AuthenticationViewModel;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.user.UserApiClient;
 import com.kakao.sdk.user.model.User;
@@ -32,12 +32,12 @@ public class Activity_Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login);
-        binding.setJoin(this);
+        binding.setAuthJoinEmail(this);
 
-        intent = new Intent(this, Activity_Join.class);
-        LoginViewModel loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
 
-        binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
+        AuthenticationViewModel authenticationViewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
+
+        binding.login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 /*
@@ -68,27 +68,26 @@ public class Activity_Login extends AppCompatActivity {
         binding.join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                intent = new Intent(view.getContext(), Activity_Join.class);
                 startActivity(intent);
             }
         });
 
-        // 카카오가 설치되어 있는지 확인 하는 메서드또한 카카오에서 제공 콜백 객체를 이용함
         callback = new  Function2<OAuthToken, Throwable, Unit>() {
             @Override
             public Unit invoke(OAuthToken oAuthToken, Throwable throwable) {
-                // 이때 토큰이 전달이 되면 로그인이 성공한 것이고 토큰이 전달되지 않았다면 로그인 실패
                 if(oAuthToken != null) {
                     kakaologin();
                 }
                 if (throwable != null) {
-
+                    Log.e("카카오 로그인 실패 : ", throwable.getMessage());
                 }
 
                 return null;
             }
         };
         // 로그인 버튼
-        binding.btnKakaoLogin.setOnClickListener(new View.OnClickListener() {
+        binding.kakaoLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(UserApiClient.getInstance().isKakaoTalkLoginAvailable(Activity_Login.this)) {
@@ -107,14 +106,12 @@ public class Activity_Login extends AppCompatActivity {
                 UserApiClient.getInstance().logout(new Function1<Throwable, Unit>() {
                     @Override
                     public Unit invoke(Throwable throwable) {
-                        updateKakaoLoginUi();
                         return null;
                     }
                 });
                 UserApiClient.getInstance().unlink(new Function1<Throwable, Unit>() {
                     @Override
                     public Unit invoke(Throwable throwable) {
-                        updateKakaoLoginUi();
                         return null;
                     }
                 });
@@ -122,7 +119,6 @@ public class Activity_Login extends AppCompatActivity {
             }
         });
 
-        updateKakaoLoginUi();
 
     }
     private void updateKakaoLoginUi(){
@@ -145,7 +141,6 @@ public class Activity_Login extends AppCompatActivity {
                     Log.e(TAG,"invoke: age\t" + user.getKakaoAccount().getAgeRange());
 
                 }else {
-                    // 로그인이 되어 있지 않다면 위와 반대로
                     Log.e(TAG,"로그인 되어있지 않습니다.");
                 }
                 return null;
@@ -157,21 +152,15 @@ public class Activity_Login extends AppCompatActivity {
         UserApiClient.getInstance().me(new Function2<User, Throwable, Unit>() {
             @Override
             public Unit invoke(User user, Throwable throwable) {
-                // 로그인이 되어있으면
                 if (user!=null){
 
-                    // 유저의 아이디
-                    Log.d(TAG,"invoke: id\t" + user.getId());
-
-
-
+                    intent.putExtra("provider", "kakao");
                     intent.putExtra("username", user.getKakaoAccount().getEmail());
                     intent.putExtra("name", user.getKakaoAccount().getProfile().getNickname());
-                    intent.putExtra("age", user.getKakaoAccount().getAgeRange());
-                    intent.putExtra("password", user.getId());
+                    intent.putExtra("age", user.getKakaoAccount().getAgeRange()+"");
+                    intent.putExtra("password", user.getId()+"");
                     startActivity(intent);
                 }else {
-                    // 로그인이 되어 있지 않다면 위와 반대로
                     Log.d(TAG,"로그인 되어있지 않습니다.");
                 }
                 return null;

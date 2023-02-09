@@ -9,10 +9,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petmily.R;
-import com.example.petmily.databinding.AlarmListBinding;
 import com.example.petmily.databinding.MessageListBinding;
-import com.example.petmily.model.Alarm;
-import com.example.petmily.model.Message;
+import com.example.petmily.model.data.chat.list.Chat_List;
+import com.example.petmily.model.data.chat.room.Message;
 
 import java.util.ArrayList;
 
@@ -27,9 +26,9 @@ public class Adapter_Message extends RecyclerView.Adapter<Adapter_Message.Holder
     public void setOnItemClickListener(OnItemClickListener listener){
         this.itemClickListener = listener;
     }
-    ArrayList<Message> list;
+    ArrayList<Chat_List> list;
 
-    public Adapter_Message(ArrayList<Message> list) {
+    public Adapter_Message(ArrayList<Chat_List> list) {
         this.list = list;
     }
 
@@ -47,7 +46,7 @@ public class Adapter_Message extends RecyclerView.Adapter<Adapter_Message.Holder
 
     @Override
     public void onBindViewHolder(@NonNull Adapter_Message.Holder holder, int position) {
-        Message message = list.get(position);
+        Chat_List message = list.get(position);
         holder.messageListBinding.setMessage(message);
     }
 
@@ -73,7 +72,7 @@ public class Adapter_Message extends RecyclerView.Adapter<Adapter_Message.Holder
                     if(pos != RecyclerView.NO_POSITION){
                         //동작 호출 (onItemClick 함수 호출)
                         if(itemClickListener != null){
-                            itemClickListener.onItemClick(v, pos, messageListBinding.getMessage().getRoodId());
+                            itemClickListener.onItemClick(v, pos, messageListBinding.getMessage().getRoomId());
 
                         }
                     }

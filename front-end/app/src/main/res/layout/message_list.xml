@@ -4,7 +4,7 @@
     <data>
         <variable
             name="message"
-            type="com.example.petmily.model.Message" />
+            type="com.example.petmily.model.data.chat.list.Chat_List" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -42,14 +42,14 @@
                 android:id="@+id/alarm_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={message.last_text}" />
+                android:text="대충 마지막 텍스트" />
         </LinearLayout>
 
         <TextView
             android:id="@+id/check"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@={message.check}"
+            android:text="1"
             android:background="#ff0000"
             android:textColor="#ffffff"
             android:padding="10dp"

@@ -25,7 +25,7 @@ public class ChatServiceThread extends Thread {
         //반복적으로 수행할 작업을 한다.
         while (isRun) {
             try {
-                Thread.sleep( 3000 ); //10초씩 쉰다.
+                Thread.sleep( 5000 ); //10초씩 쉰다.
                 //getMessage() 챗 리스트 가져오기
 
 

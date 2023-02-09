@@ -4,7 +4,7 @@
 
     <data>
         <variable
-            name="chat"
+            name="chatList"
             type="com.example.petmily.view.Activity_Chat" />
     </data>
 

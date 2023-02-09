@@ -11,19 +11,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petmily.R;
 import com.example.petmily.databinding.ChatListBinding;
-import com.example.petmily.model.ChatMessage;
+import com.example.petmily.model.data.chat.room.Message;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Adapter_Chat_Room extends RecyclerView.Adapter<Adapter_Chat_Room.Holder>{
-    List<ChatMessage> list;
 
-    public Adapter_Chat_Room(List<ChatMessage> list) {
+public class Adapter_Chat_Room extends RecyclerView.Adapter<Adapter_Chat_Room.Holder>{
+    List<Message> list;
+
+    public Adapter_Chat_Room(List<Message> list) {
         this.list = list;
     }
 
-    public void setItemList(List<ChatMessage> list)
+    public void setItemList(List<Message> list)
     {
         this.list = list;
         notifyDataSetChanged();
@@ -43,7 +43,7 @@ public class Adapter_Chat_Room extends RecyclerView.Adapter<Adapter_Chat_Room.Ho
 
     @Override
     public void onBindViewHolder(@NonNull Adapter_Chat_Room.Holder holder, int position) {
-        ChatMessage chat = list.get(position);
+        Message chat = list.get(position);
 
         ImageView imageView = holder.chatListBinding.profileImage;
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -52,7 +52,7 @@ public class Adapter_Chat_Room extends RecyclerView.Adapter<Adapter_Chat_Room.Ho
                 //그룹페이지 이동
             }
         });
-        holder.chatListBinding.setChatMessage(chat);
+        holder.chatListBinding.setMessage(chat);
     }
 
     @Override

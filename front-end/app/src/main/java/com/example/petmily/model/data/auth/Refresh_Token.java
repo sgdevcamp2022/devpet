@@ -1,6 +1,6 @@
-package com.example.petmily.model;
+package com.example.petmily.model.data.auth;
 
-public class Refresh_Token implements TempInterface {
+public class Refresh_Token {
     String access_token;
     String token_type;
     String refresh_token;
@@ -17,8 +17,5 @@ public class Refresh_Token implements TempInterface {
         this.jti = jti;
     }
 
-    @Override
-    public String getRoomId() {
-        return null;
-    }
+
 }

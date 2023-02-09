@@ -1,10 +1,10 @@
-package com.example.petmily.model;
+package com.example.petmily.model.data.auth;
 
-public class Access_Token implements TempInterface{
+public class AccessToken {
     String token;
     String message;
 
-    public Access_Token(String token) {
+    public AccessToken(String token) {
         this.token = token;
     }
 
@@ -17,8 +17,4 @@ public class Access_Token implements TempInterface{
     }
 
 
-    @Override
-    public String getRoomId() {
-        return null;
-    }
 }

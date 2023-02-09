@@ -1,37 +1,23 @@
 package com.example.petmily.viewModel;
 
-import static ua.naiksoftware.stomp.dto.LifecycleEvent.Type.OPENED;
-
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
 
 import com.example.petmily.R;
-import com.example.petmily.model.Chat;
-import com.example.petmily.model.ChatRoom;
+import com.example.petmily.model.data.chat.list.Chat_List;
 
 import com.google.gson.Gson;
-
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Flowable;
-import io.reactivex.FlowableSubscriber;
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
-import ua.naiksoftware.stomp.dto.LifecycleEvent;
 import ua.naiksoftware.stomp.dto.StompHeader;
-import ua.naiksoftware.stomp.dto.StompMessage;
 
 public class ChatViewModel extends AndroidViewModel{
 
@@ -82,8 +68,8 @@ public class ChatViewModel extends AndroidViewModel{
 
 
         Gson gson = new Gson();
-        Chat chat=new Chat(R.drawable.ic_launcher_background, "이름", "테스트");//이 클래스에서 필요한 데이터 형식
-        stompClient.send("/sub/chat/room/message", gson.toJson(chat)).subscribe();//메시지 전송
+        Chat_List chatList =new Chat_List(R.drawable.ic_launcher_background, "이름", "테스트");//이 클래스에서 필요한 데이터 형식
+        stompClient.send("/sub/chat/room/message", gson.toJson(chatList)).subscribe();//메시지 전송
     }
 
 
@@ -91,8 +77,8 @@ public class ChatViewModel extends AndroidViewModel{
     public void sendMessage(String text)
     {
         Gson gson = new Gson();
-        Chat chat=new Chat(R.drawable.ic_launcher_background, "이름", text);//이 클래스에서 필요한 데이터 형식
-        stompClient.send("/sub/chat/room/message", gson.toJson(chat)).subscribe();//메시지 전송
+        Chat_List chatList =new Chat_List(R.drawable.ic_launcher_background, "이름", text);//이 클래스에서 필요한 데이터 형식
+        stompClient.send("/sub/chat/room/message", gson.toJson(chatList)).subscribe();//메시지 전송
 
     }
 

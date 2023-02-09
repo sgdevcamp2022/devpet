@@ -1,19 +1,18 @@
-package com.example.petmily.model;
+package com.example.petmily.model.data.auth.remote;
+
+import com.example.petmily.model.data.auth.Login;
 
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
-import retrofit2.http.PUT;
-import retrofit2.http.Path;
 
-public interface LoginInterface {
+public interface API_Interface {
 
     @FormUrlEncoded
     @Headers({"Content-Type: application/x-www-form-urlencoded", "Authorization:Basic ZGV2OnBldA=="})
@@ -22,18 +21,80 @@ public interface LoginInterface {
             @FieldMap Map<String, String> login
     ); //Login 클래스를 kakao와 email로 구분
 
+
+
+    @POST("sing-up")
+    Call<JoinEmail> createEmail(@Body JoinEmail authJoinEmail);
+
+
+    /*
     @FormUrlEncoded
     @Headers({"Content-Type: application/x-www-form-urlencoded", "Authorization:Basic ZGV2OnBldA=="})
     @POST("sing-up")
-    Call<Join> createUser(@Body Join post);
+    Call<Join> createUser(@Body Join join);
 
+
+     */
+
+
+
+
+
+
+
+
+    @POST("sing-up")
+    Call<JoinEmail> createUser(@Body JoinEmail authJoinEmail);
+
+
+
+
+
+
+
+
+    /*
+
+    @FormUrlEncoded
+    @POST("sing-up")
+    Call<Auth_JoinEmail> createUser(
+            @Field("username") String username,
+            @Field("nickname") String nickname,
+            @Field("name") String name,
+            @Field("password") String password,
+            @Field("age") String age,
+            @Field("gender") String gender,
+            @Field("phone") String phone,
+            @Field("provider") String provider
+    );
+
+
+     */
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @FormUrlEncoded
     @Headers({"Content-Type: application/x-www-form-urlencoded", "Authorization:Basic ZGV2OnBldA=="})
     @POST("kakao")//1차 카카오 로그인
-    Call<Join> createKakao(@Body Join post);
+    Call<JoinEmail> createKakao(@Body JoinEmail authJoinEmail);
 
-    @Headers({"Content-Type: application/x-www-form-urlencoded", "Authorization:Basic ZGV2OnBldA=="})
-    @POST("check_token")
-    Call<TempInterface> accessToken(@Body Access_Token token);
+
+    @GET("user")
+    Call<String> user();
+
+    //@Headers({"Content-Type: application/x-www-form-urlencoded", "Authorization:Basic ZGV2OnBldA=="})
+    //@POST("check_token")
+    //Call<TempInterface> accessToken(@Body Access_Token token);
 
 
 

@@ -1,6 +1,7 @@
-package com.example.petmily.model;
+package com.example.petmily.model.data.auth;
 
 public class Login {
+
     String grant_type;
     String username;
     String password;

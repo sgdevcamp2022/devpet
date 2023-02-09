@@ -1,8 +1,8 @@
-package com.example.petmily.model;
+package com.example.petmily.model.data.auth.remote;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Join {
+public class JoinEmail {
 
     @SerializedName("username")
     private String username;
@@ -25,15 +25,11 @@ public class Join {
     @SerializedName("phone")
     private String phone;
 
-    private int Image;
-
     @SerializedName("provider")
     private String provider;
 
-    @SerializedName("message")
-    private String message;
 
-    public Join(String username, String name, String password) {//카카오 1차 회원가입
+    public JoinEmail(String username, String name, String password) {//카카오 1차 회원가입
         this.username = username;
         this.nickname = null;
         this.name = name;
@@ -42,10 +38,9 @@ public class Join {
         this.gender = null;
         this.phone = null;
         this.provider = null;
-        this.message = "";
     }
 
-    public Join(String username, String nickname, String age, String gender, String phone, String provider) {
+    public JoinEmail(String username, String nickname, String age, String gender, String phone) {
         this.username = username;
         this.nickname = nickname;
         this.name = "";
@@ -54,10 +49,19 @@ public class Join {
         this.gender = gender;
         this.phone = phone;
         this.provider = "카카오";
-        this.message = "";
     }
 
-
+    //이메일 회원가입
+    public JoinEmail(String username, String nickname, String name, String password, String age, String gender, String phone, String provider) {
+        this.username = username;
+        this.nickname = nickname;
+        this.name = name;
+        this.password = password;
+        this.age = age;
+        this.gender = gender;
+        this.phone = phone;
+        this.provider = provider;
+    }
 
     public String getUsername() {
         return username;
@@ -103,14 +107,6 @@ public class Join {
         return gender;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public void setGender(String gender) {
         this.gender = gender;
     }
@@ -133,13 +129,15 @@ public class Join {
 
     @Override
     public String toString() {
-        return "Login{" +
+        return "Join{" +
                 "username='" + username + '\'' +
                 ", nickname='" + nickname + '\'' +
+                ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", age=" + age +
+                ", age='" + age + '\'' +
                 ", gender='" + gender + '\'' +
-                ", phone=" + phone +
+                ", phone='" + phone + '\'' +
+                ", provider='" + provider + '\'' +
                 '}';
     }
 }
