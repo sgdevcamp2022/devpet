@@ -1,18 +1,15 @@
 package com.devpet.feed.repository;
 
-import com.devpet.feed.entity.PostInfo;
 import com.devpet.feed.entity.UserInfo;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface PostInfoRepository extends Neo4jRepository<PostInfo, String> {
-    @Query("MATCH (m:PostInfo {postId: $followedUser}) " +
-            "MATCH (n:Tag {id: $followUser})"+
+public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
+    @Query("MATCH (m:UserInfo {id: $followedUser}) " +
+            "MATCH (n:UserInfo {id: $followUser})"+
             "MATCH (m)<-[F:Follow]-(n)"+
             "DELETE F;" )
-    UserInfo savePostAndTags(String postId, String Tag);
-
-
+    UserInfo deleteFollowById(String followedUser, String followUser);
 }
