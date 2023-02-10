@@ -68,4 +68,8 @@ public class FeedService {
 
         redisRepository.setCachedScore(userHash, average);
     }
+
+    public List<String> getPostList(String userId) {
+        return userInfoRepository.getPostList(userId);
+    }
 }

@@ -1,9 +1,12 @@
 package com.devpet.feed.repository;
 
 import com.devpet.feed.entity.UserInfo;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
@@ -21,4 +24,13 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return n"
     )
     UserInfo existsLike(String postId, String userId);
+
+    @Query("match(u:UserInfo{userId : $userId})-[r:has_Recommended]->(p:PostInfo) " +
+            "with u, r, p " +
+            "ORDER BY r.score DESC " +
+            "LIMIT 4 " +
+            "match (u)-[r]->(p) " +
+            "match (p)-[:tagged]->(t:Tag)<-[:tagged]-(n:PostInfo) " +
+            "return n.postId")
+    List<String> getPostList(@Param("userId") String userId);
 }
