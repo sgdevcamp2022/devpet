@@ -1,0 +1,24 @@
+
+spring:
+  neo4j:
+    database: movies
+    uri: neo4j://localhost:7687
+    authentication:
+      username: neo4j
+      password: dkswowls
+#  devtools:
+#    livereload:
+#      enabled: true
+#  freemarker:
+#    cache: false
+
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          neo4j: DEBUG
+      neo4j:
+        driver:
+          GraphDatabase: debug
+          Driver: debug
