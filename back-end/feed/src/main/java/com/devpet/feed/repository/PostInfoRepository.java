@@ -6,13 +6,22 @@ import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface PostInfoRepository extends Neo4jRepository<PostInfo, String> {
-    @Query("MATCH (m:PostInfo {postId: $followedUser}) " +
-            "MATCH (n:Tag {id: $followUser})"+
-            "MATCH (m)<-[F:Follow]-(n)"+
-            "DELETE F;" )
-    UserInfo savePostAndTags(String postId, String Tag);
+    @Query("MATCH (m:PostInfo {postId : $postId}) "+
+            "RETURN m"
+    )
+    PostInfo findNodeById(String postId);
+
+
+
+    @Query("MATCH (m:PostInfo {postId: $postId}) " +
+            "MATCH (n:UserInfo {userId: $userId}) "+
+            "MATCH (m)<-[L:likes]-(n)"+
+            "DELETE L;" )
+    PostInfo dislikePost(String postId, String userId);
 
 
 }

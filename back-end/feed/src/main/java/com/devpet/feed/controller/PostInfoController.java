@@ -1,6 +1,8 @@
 package com.devpet.feed.controller;
 
+import com.devpet.feed.dto.LikePostDto;
 import com.devpet.feed.dto.PostInfoDto;
+import com.devpet.feed.entity.PostInfo;
 import com.devpet.feed.entity.Tag;
 import com.devpet.feed.service.PostInfoService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +33,15 @@ public class PostInfoController {
     @PostMapping("")
     public PostInfoDto savePostInfo(@RequestBody PostInfoDto postInfoDto) throws Exception {
         return postInfoService.savePostInfo(postInfoDto);
+    }
+    @PostMapping("/like")
+    public PostInfoDto likePost(@RequestBody LikePostDto likePostDto) throws Exception {
+        return postInfoService.likePostInfo(likePostDto);
+    }
+
+    @PatchMapping("/like")
+    public PostInfo dislikePost(@RequestBody LikePostDto likePostDto) throws Exception{
+        return postInfoService.dislikePostInfo(likePostDto);
     }
 
 }

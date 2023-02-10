@@ -32,7 +32,7 @@ public class UserInfoService {
         return new UserInfoDto(info);
     }
 
-
+    @Transactional
     public UserInfoDto saveUserInfo(UserInfoDto userInfo) {
         UserInfo save = new UserInfo(userInfo);
 
@@ -63,6 +63,7 @@ public class UserInfoService {
         return userInfoToUserInfoDto(userRepository.save(user));
     }
 
+    @Transactional
     public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) throws Exception {
         UserInfo userInfo = userDtoToUserInfo(userInfoDto);
         if (userRepository.existsById(userInfo.getUserId())) {

@@ -12,6 +12,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.Set;
 
+import static org.springframework.data.neo4j.core.schema.Relationship.Direction.INCOMING;
 import static org.springframework.data.neo4j.core.schema.Relationship.Direction.OUTGOING;
 
 @Node
@@ -29,7 +30,7 @@ public class PostInfo {
 
     @Relationship(type="tagged" , direction = OUTGOING)
     private Set<Tag> tags ;
-    @Relationship(type="likes" , direction = OUTGOING)
+    @Relationship(type="likes" , direction = INCOMING)
     private Set<Like> likes ;
     public PostInfo(PostInfoDto postInfoDto){
         this.postId = postInfoDto.getPostId();
