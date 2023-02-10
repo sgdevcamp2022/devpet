@@ -3,6 +3,7 @@ package com.devpet.feed.entity;
 import com.devpet.feed.dto.UserInfoDto;
 import com.devpet.feed.relationship.Follow;
 import com.devpet.feed.relationship.Post;
+import com.devpet.feed.relationship.Recommend;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -39,6 +40,8 @@ public class UserInfo {
     @Relationship(type = "has_Post", direction = OUTGOING)
     private Set<Post> posts;
 
+    @Relationship(type = "has_Recommended" , direction = OUTGOING)
+    private Set<Recommend> recommends;
 
     public UserInfo(UserInfoDto dto){
         this.userId = dto.getUserId();

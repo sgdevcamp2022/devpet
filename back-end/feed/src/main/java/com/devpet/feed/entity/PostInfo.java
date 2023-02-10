@@ -4,6 +4,7 @@ import com.devpet.feed.dto.PostInfoDto;
 import com.devpet.feed.relationship.Like;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
@@ -16,9 +17,9 @@ import static org.springframework.data.neo4j.core.schema.Relationship.Direction.
 import static org.springframework.data.neo4j.core.schema.Relationship.Direction.OUTGOING;
 
 @Node
-@NoArgsConstructor
 @Getter
 @Setter
+@RequiredArgsConstructor
 public class PostInfo {
 
     @Id

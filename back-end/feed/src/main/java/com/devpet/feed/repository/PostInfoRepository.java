@@ -10,18 +10,24 @@ import java.util.Optional;
 
 @Repository
 public interface PostInfoRepository extends Neo4jRepository<PostInfo, String> {
-    @Query("MATCH (m:PostInfo {postId : $postId}) "+
+    @Query("MATCH (m:PostInfo {postId : $postId}) " +
             "RETURN m"
     )
     PostInfo findNodeById(String postId);
 
 
+    @Query("MATCH (m:PostInfo {postId: $postId}) " +
+            "MATCH (n:UserInfo {userId: $userId}) " +
+            "MATCH (m)<-[L:likes]-(n)" +
+            "DELETE L;")
+    PostInfo dislikePost(String postId, String userId);
 
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
-            "MATCH (n:UserInfo {userId: $userId}) "+
-            "MATCH (m)<-[L:likes]-(n)"+
-            "DELETE L;" )
-    PostInfo dislikePost(String postId, String userId);
+            "MATCH (n:UserInfo {userId : $userId}) " +
+            "MATCH (n)-[r:has_Recommended]->(m) " +
+            "return m;"
+    )
+    PostInfo existsRecommended(String postId, String userId);
 
 
 }
