@@ -51,8 +51,6 @@ public class Fragment_Profile extends Fragment {
     }
          */
 
-        Log.e("테스트 \t\t\t", "asdasd");
-
         return view;
     }
 

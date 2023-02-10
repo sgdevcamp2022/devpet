@@ -3,37 +3,37 @@ package com.example.petmily.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityJoinBinding;
-import com.example.petmily.model.data.auth.remote.JoinEmail;
 import com.example.petmily.viewModel.AuthenticationViewModel;
 
 public class Activity_Join extends AppCompatActivity {
     private ActivityJoinBinding binding;
+    private AuthenticationViewModel authenticationViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_join);
         binding.setJoinEmail(this);
+        init();
+    }
+    public void init()
+    {
+        authenticationViewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
+        initView();
+    }
 
-        String provider;
-        provider = getIntent().getStringExtra("provider");
-        if(provider.equals("kakao"))
-        {
-            binding.username.setText(getIntent().getStringExtra("username"));
-            binding.name.setText(getIntent().getStringExtra("name"));
-            //binding.age.setText(getIntent().getStringExtra("age"));
-            binding.password.setText(getIntent().getStringExtra("password"));
-        }
-
-        AuthenticationViewModel authenticationViewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
-
+    public void initView()
+    {
         binding.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -41,21 +41,8 @@ public class Activity_Join extends AppCompatActivity {
                 String nickname = binding.nickname.getText().toString();
                 String name = binding.name.getText().toString();
                 String password = binding.password.getText().toString();
-                String age = binding.age.getText().toString();
-                String gender = binding.gender.getText().toString();
-                String phone = binding.phone.getText().toString();
 
-                JoinEmail kakaoAuthJoinEmail = new JoinEmail(username, name, password);
-                JoinEmail kakaoAuthJoinEmail2 = new JoinEmail(username, nickname, age, gender, phone);
-
-
-                JoinEmail emailAuthJoinEmail = new JoinEmail(username, nickname, name, password, age, gender, phone, "");
-
-
-                JoinEmail test__joinEmail = new JoinEmail("계정", "채채현수", "채현수");
-
-
-                //authenticationViewModel.join(test_join);
+                authenticationViewModel.join(username, name, nickname, password);
 
                 Intent intent = new Intent(view.getContext(), Activity_Join_Profile.class);
                 startActivity(intent);
@@ -63,9 +50,40 @@ public class Activity_Join extends AppCompatActivity {
 
             }
         });
-
-
-
+        initObserver();
     }
 
+    public void initObserver()
+    {
+        final Observer<Boolean> emailDuplication = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable final Boolean emailDuplication) {
+                if(emailDuplication)
+                {
+                    finish();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "중복되는 이메일이 존재합니다", Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        authenticationViewModel.getEventEmailDuplication().observe(this, emailDuplication);
+
+        final Observer<Boolean> nicknameDuplication = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable final Boolean nicknameDuplication) {
+                if(nicknameDuplication)
+                {
+                    finish();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "중복되는 닉네임이 존재합니다", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        };
+        authenticationViewModel.getEventNickNameDuplication().observe(this, nicknameDuplication);
+    }
 }

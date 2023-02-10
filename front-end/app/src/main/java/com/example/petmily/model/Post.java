@@ -1,6 +1,10 @@
 package com.example.petmily.model;
 
 public class Post {
+    /*
+    int
+     */
+
     int image;
     String nickname;
     String text;

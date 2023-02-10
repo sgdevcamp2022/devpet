@@ -1,5 +1,7 @@
 package com.example.petmily.viewModel;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -47,6 +49,9 @@ public class ChatService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+
+
 
         httpClient = new OkHttpClient.Builder();
 
@@ -239,6 +244,17 @@ public class ChatService extends Service{
 
             return chain.proceed(response);
         }
+    }
 
+
+
+    public boolean isServiceRunningCheck() {
+        ActivityManager manager = (ActivityManager) this.getSystemService(Activity.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (ChatService.class.equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
