@@ -1,7 +1,6 @@
 package com.devpet.feed.relationship;
 
-import com.devpet.feed.entity.PostInfo;
-import com.devpet.feed.entity.Tag;
+import com.devpet.feed.entity.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,15 +13,18 @@ import org.springframework.data.neo4j.core.schema.TargetNode;
 @RelationshipProperties
 @Getter
 @Setter
-public class Post {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Follow {
     @Id
     @GeneratedValue
     private Long id;
 
     @TargetNode
-    private PostInfo postInfo;
+    private UserInfo userInfo;
 
-    public Post(PostInfo postInfo){
-        this.postInfo = postInfo;
+    public Follow(UserInfo userInfo){
+
+        this.userInfo = userInfo;
     }
 }

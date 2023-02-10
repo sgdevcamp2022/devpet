@@ -1,28 +1,24 @@
 package com.devpet.feed.relationship;
 
-import com.devpet.feed.entity.PostInfo;
-import com.devpet.feed.entity.Tag;
-import lombok.AllArgsConstructor;
+import com.devpet.feed.entity.UserInfo;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 
+import java.util.Set;
+
 @RelationshipProperties
-@Getter
-@Setter
-public class Post {
-    @Id
-    @GeneratedValue
+@Getter @Setter
+public class Join {
+    @Id @GeneratedValue
     private Long id;
-
     @TargetNode
-    private PostInfo postInfo;
+    private UserInfo userInfo;
 
-    public Post(PostInfo postInfo){
-        this.postInfo = postInfo;
+    public Join(UserInfo userInfo){
+        this.userInfo = userInfo;
     }
 }

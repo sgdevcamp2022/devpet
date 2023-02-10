@@ -11,6 +11,7 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -40,7 +41,7 @@ public class ChatController {
 
     @GetMapping("/messages")
     @ResponseBody
-    public List<String> getMessageList(@Header ("token") String token){
+    public List<String> getMessageList(@RequestHeader("token") String token){
         String userId = jwtTokenProvider.getEmail(token);
         List<String> ChatMessageList = chatService.getUserMessages(userId);
         return ChatMessageList;
