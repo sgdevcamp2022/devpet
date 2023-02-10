@@ -73,7 +73,7 @@ public class FeedService {
     public List<String> getSimpleFeedList(String word, int category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        List<Feed> result = feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithin(word,category,circle);
+        List<Feed> result = feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithin(word,category,circle,pageRequest);
         return  result.stream().map((feed)->{
             if (feed.getImageUrl().size()<1)
                 return null;
@@ -91,7 +91,7 @@ public class FeedService {
     public List<Feed> getFeedList(String word, int category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        return feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithin(word,category,circle);
+        return feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithin(word,category,circle,pageRequest);
     }
 
     public List<Feed> postAllFeed(List<Feed> pushList) {

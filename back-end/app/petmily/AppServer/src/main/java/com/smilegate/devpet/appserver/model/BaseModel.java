@@ -4,7 +4,9 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.LocalDateTime;
@@ -16,9 +18,9 @@ public abstract class BaseModel {
     private boolean isUsed;
 
     @Field
-    @CreatedBy
-    private LocalDateTime createdAt;
+    @CreatedDate
+    private LocalDateTime createdAt = LocalDateTime.now();
     @Field
-    @LastModifiedBy
-    private LocalDateTime updatedAt;
+    @LastModifiedDate
+    private LocalDateTime updatedAt = LocalDateTime.now();
 }

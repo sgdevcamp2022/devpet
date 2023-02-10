@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.redis.core.RedisHash;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,7 +17,8 @@ import java.util.List;
 @RedisHash("feed")
 @Document(collection = "feed")
 @RequiredArgsConstructor
-public class Feed extends BaseModel {
+public class Feed extends BaseModel implements Serializable {
+    private static final long serialVersionUID = -1;
     public static enum FEED_SEARCH_MODE {GALLERY,POST,MARKER}
     @Transient
     public static final String SEQUENCE_NAME = "feed_sequence";
