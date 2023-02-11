@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @Slf4j
 @RestController
 @RequestMapping("/oauth")
@@ -31,7 +33,7 @@ public class UserController {
                 .provider(provider)
                 .build();
 
-        if (provider != "") {
+        if (!Objects.equals(provider, "")) {
             userService.saveKaKaoUserLast(signUpRequest);
             return ResponseEntity.ok("카카오 회원가입");
         }
