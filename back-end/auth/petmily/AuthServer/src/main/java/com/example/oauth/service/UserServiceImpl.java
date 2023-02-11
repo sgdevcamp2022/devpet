@@ -83,4 +83,12 @@ public class UserServiceImpl implements UserService {
             user.setGender(signUpRequest.getGender());
             userRepository.save(user);
     }
+
+    public void changePassword (Long id,String password)
+    {
+        userRepository.findById(id).ifPresent(user->{
+            user.setPassword(password);
+            userRepository.save(user);
+        });
+    }
 }
