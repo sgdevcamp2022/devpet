@@ -130,4 +130,26 @@ public class UserInfoController {
         return ResponseEntity.ok(userService.getFollowingList(followDto.getFollower()));
     }
 
+    @GetMapping("/list/follow/post")
+    public ResponseEntity<List<String>> getFollowPostList(@RequestBody FollowDto followDto) {
+
+        return ResponseEntity.ok(userService.getFollowPostList(followDto.getFollower()));
+    }
+    @GetMapping("/list/like/post")
+    public ResponseEntity<List<String>> getLikePostList(@RequestBody FollowDto followDto) {
+
+        return ResponseEntity.ok(userService.getLikePostList(followDto.getFollower()));
+    }
+    @GetMapping("/list/comment/post")
+    public ResponseEntity<List<String>> getCommentPostList(@RequestBody FollowDto followDto) {
+
+        return ResponseEntity.ok(userService.getCommentPostList(followDto.getFollower()));
+    }
+    @GetMapping("/list/recommend/post")
+    public ResponseEntity<List<String>> getFollowRecommendPostList(@RequestBody FollowDto followDto) {
+
+        return ResponseEntity.ok(userService.getFollowRecommendPostList(followDto.getFollower()));
+    }
+
+
 }

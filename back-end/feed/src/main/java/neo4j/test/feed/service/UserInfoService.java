@@ -13,8 +13,11 @@ import neo4j.test.feed.model.relationship.Follow;
 import neo4j.test.feed.model.relationship.Like;
 import neo4j.test.feed.repository.PostInfoRepository;
 import neo4j.test.feed.repository.UserInfoRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Optional;
@@ -250,4 +253,24 @@ public class UserInfoService {
         }
     }
 
+
+    public List<String> getFollowPostList(String userId) {
+
+        return userRepository.getFollowPostList(userId);
+    }
+
+    public List<String> getLikePostList(String userId) {
+
+        return userRepository.getLikePostList(userId);
+    }
+
+    public List<String> getCommentPostList(String userId) {
+
+        return userRepository.getCommentPostList(userId);
+    }
+
+    public List<String> getFollowRecommendPostList(String userId) {
+
+        return userRepository.getFollowRecommendPostList(userId);
+    }
 }
