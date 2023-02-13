@@ -104,6 +104,8 @@ public class UserInfoService {
 
         userRepository.save(userInfo);
     }
+
+    @Transactional
     public void putUser(UserInfoDto userInfoDto) {
 
         UserInfo userInfo = userRepository.findByUserId(userInfoDto.getUserId());
@@ -116,6 +118,8 @@ public class UserInfoService {
         userInfo.setGender(userInfoDto.getGender());
         userRepository.save(userInfo);
     }
+
+    @Transactional
     public void deleteUser(String userId) {
 
         UserInfo userInfo = userRepository.findByUserId(userId);
@@ -129,23 +133,34 @@ public class UserInfoService {
 
     /// 팔로우, 팔로우 취소, 팔로워 팔로잉 수 또는 userId 리스트로 불러오기, 좋아요 , 좋아요 취소
 
+    @Transactional
     public void follow(FollowDto followDto) {
 
         UserInfo following = userRepository.findByUserId(followDto.getFollowing());
         UserInfo follower = userRepository.findByUserId(followDto.getFollower());
 
-        Set<Follow> userFollower = following.getFollower();
-        for (Follow entity : userFollower) {
-            if (entity.getUserInfo().getUserId().equals(follower.getUserId())) {
-                throw new DuplicateUserException("이미 존재하는 계정입니다.");
-            }
+        checkExistFollowerAndFollowing(following, follower);
+
+        UserInfo check = userRepository.checkFollow(followDto.getFollower(), followDto.getFollowing());
+
+        if (check != null) {
+            throw new DuplicateUserException("이미 존재하는 관계입니다.");
         }
+
+//        Set<Follow> userFollower = following.getFollower();
+//        for (Follow entity : userFollower) {
+//            if (entity.getUserInfo().getUserId().equals(follower.getUserId())) {
+//                throw new DuplicateUserException("이미 존재하는 계정입니다.");
+//            }
+//        }
 
         Follow followerNode = new Follow(follower);
         following.getFollower().add(followerNode);
 
         userRepository.save(following);
     }
+
+    @Transactional
     public void like(LikeDto likeDto) {
 
         UserInfo userInfo = userRepository.findByUserId(likeDto.getUserId());
@@ -164,6 +179,7 @@ public class UserInfoService {
         userRepository.save(userInfo);
     }
 
+    @Transactional
     public void cancelLike(LikeDto likeDto) {
 
 //        UserInfo follower = userRepository.findByUserId(likeDto.getUserId());
@@ -173,32 +189,36 @@ public class UserInfoService {
 
     }
 
+    @Transactional
     public void cancelFollow(FollowDto followDto) {
 
         UserInfo follower = userRepository.findByUserId(followDto.getFollower());
         UserInfo following = userRepository.findByUserId(followDto.getFollowing());
 
         checkExistFollowerAndFollowing(follower, following);
-//        if (follower == null || following == null) {
-//            throw new DataNotFoundException("존재하지 않는 계정입니다.");
-//        }
 
         userRepository.cancelFollow(followDto.getFollower(), followDto.getFollowing());
     }
 
+    @Transactional
     public Long countFollower(String userId) {
 
-        Long followerCount = userRepository.countFollower(userId);
+        UserInfo userInfo = userRepository.findByUserId(userId);
+        checkExistUser(userInfo);
 
-        return followerCount;
+        return userRepository.countFollower(userId);
     }
+
+    @Transactional
     public Long countFollowing(String userId) {
 
-        Long followingCount = userRepository.countFollowing(userId);
+        UserInfo userInfo = userRepository.findByUserId(userId);
+        checkExistUser(userInfo);
 
-        return followingCount;
+        return userRepository.countFollowing(userId);
     }
 
+    @Transactional
     public List<String> getFollowerList(String userId) {
 
         UserInfo userInfo = userRepository.findByUserId(userId);
@@ -206,6 +226,8 @@ public class UserInfoService {
 
         return userRepository.getFollowerList(userId);
     }
+
+    @Transactional
     public List<String> getFollowingList(String userId) {
 
         UserInfo userInfo = userRepository.findByUserId(userId);

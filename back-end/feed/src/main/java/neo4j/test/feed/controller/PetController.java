@@ -3,7 +3,7 @@ package neo4j.test.feed.controller;
 import lombok.RequiredArgsConstructor;
 import neo4j.test.feed.model.dto.PetDto;
 import neo4j.test.feed.model.dto.PetInfoDto;
-import neo4j.test.feed.service.PetService;
+import neo4j.test.feed.service.PetInfoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,61 +13,50 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class PetController {
 
-    private final PetService petService;
+    private final PetInfoService petInfoService;
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<String> savePet(@RequestBody PetInfoDto petInfoDto) {
 
-        String uuId = petService.savePet(petInfoDto);
+        String uuId = petInfoService.savePet(petInfoDto);
 
         return ResponseEntity.ok(uuId);
     }
-    @PutMapping
+    @PutMapping()
     public ResponseEntity<String> putPet(@RequestBody PetInfoDto petInfoDto) {
 
-        petService.putPet(petInfoDto);
+        petInfoService.putPet(petInfoDto);
         return ResponseEntity.ok("수정 성공");
     }
-    @DeleteMapping("/{petId}")
-    public ResponseEntity<String> deletePet(@PathVariable("petId") String petId) {
+    @DeleteMapping()
+    public ResponseEntity<String> deletePet(@RequestBody PetInfoDto petInfoDto) {
 
-        petService.deletePet(petId);
+        petInfoService.deletePet(petInfoDto.getPetId());
         return ResponseEntity.ok("삭제 성공");
     }
 
-
     @PostMapping("/raise")
-    public ResponseEntity<String> pet(@RequestBody PetDto petDto) {
+    public ResponseEntity<String> raisePet(@RequestBody PetDto petDto) {
 
-        petService.pet(petDto);
+        petInfoService.raisePet(petDto);
 
         return ResponseEntity.ok("관계 성립");
     }
-//    @PostMapping("/raise/{userId}/{petId}")
-//    public ResponseEntity<String> raisePet(@PathVariable("userId") String userId,
-//                                           @PathVariable("petId") String petId) {
-//
-//        petService.raisePet(userId, petId);
-//
-//        return ResponseEntity.ok("관계 성립");
-//    }
 
-    @PostMapping("/raise/cancel/{userId}/{petId}")
-    public ResponseEntity<String> raisePetCancel(@PathVariable("userId") String userId,
-                                                 @PathVariable("petId") String petId) {
+    @PostMapping("/raise/cancel")
+    public ResponseEntity<String> raisePetCancel(@RequestBody PetDto petDto) {
 
-        petService.raisePetCancel(userId, petId);
+        petInfoService.raisePetCancel(petDto);
 
         return ResponseEntity.ok("관계 취소");
     }
 
-    @GetMapping("/{petId}")
-    public ResponseEntity<PetInfoDto> getPet(@PathVariable("petId") String petId) {
+    @GetMapping()
+    public ResponseEntity<PetInfoDto> getPet(@RequestBody PetInfoDto pet) {
 
-        PetInfoDto petInfoDto = petService.getPet(petId);
+        PetInfoDto petInfoDto = petInfoService.getPet(pet.getPetId());
 
         return ResponseEntity.ok(petInfoDto);
     }
-
 
 }

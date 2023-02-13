@@ -27,31 +27,34 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
 //    @Query("MATCH (m:UserInfo{userId: $userId}) " + " RETURN m;" )
 //    UserInfo findNodeById (@Param("userId")String userId);
 
-    @Query("match(u:UserInfo{userId : $userId})" + "return u")
-    UserInfo findByUserId(@Param("userId") String userId);
+//    @Query("match(u:UserInfo{userId : $userId})" + "return u")
+//    UserInfo findByUserId(@Param("userId") String userId);
 
-    /////
+    @Query("match(u:UserInfo{userId : $userId})" + "return u")
+    UserInfo findByUserId(@org.springframework.data.repository.query.Param("userId") String userId);
+
+    ///////////
 
     @Query("match(u:UserInfo{userId : $userId})" + "DETACH DELETE u")
-    void deleteUser(@Param("userId") String userId);
+    void deleteUser(@org.springframework.data.repository.query.Param("userId") String userId);
 
     @Query("match(u:UserInfo{userId : $userId})-[r:LIKE]->(p:PostInfo{postId : $postId}) " + "delete r")
-    void cancelLike(@Param("userId") String userId, @Param("postId") String postId);
+    void cancelLike(@org.springframework.data.repository.query.Param("userId") String userId, @org.springframework.data.repository.query.Param("postId") String postId);
 
     @Query("match(f1:UserInfo {userId : $follower})-[r:FOLLOW]->(f2:UserInfo{userId: $following}) " + "delete r")
-    void cancelFollow(@Param("follower") String follower, @Param("following") String following);
+    void cancelFollow(@org.springframework.data.repository.query.Param("follower") String follower, @org.springframework.data.repository.query.Param("following") String following);
 
     @Query("match(f:UserInfo{userId : $userId})<-[:FOLLOW]-()" + "RETURN COUNT(f)")
-    Long countFollower(@Param("userId") String userId);
+    Long countFollower(@org.springframework.data.repository.query.Param("userId") String userId);
 
     @Query("match(f:UserInfo{userId : $userId})-[:FOLLOW]->()" + "RETURN COUNT(f)")
-    Long countFollowing(@Param("userId") String userId);
+    Long countFollowing(@org.springframework.data.repository.query.Param("userId") String userId);
 
     @Query("match(f1:UserInfo{userId : $userId})<-[:FOLLOW]-(f2:UserInfo)" + "return f2.userId")
-    List<String> getFollowerList(@Param("userId") String userId);
+    List<String> getFollowerList(@org.springframework.data.repository.query.Param("userId") String userId);
 
     @Query("match(f1:UserInfo{userId : $userId})-[:FOLLOW]->(f2:UserInfo)" + "return f2.userId")
-    List<String> getFollowingList(@Param("userId") String userId);
+    List<String> getFollowingList(@org.springframework.data.repository.query.Param("userId") String userId);
 
     @Query("match(u:UserInfo{userId : $userId})-[r:has_Recommended]->(p:PostInfo) " +
             "with u, r, p " +
@@ -60,5 +63,10 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "match (u)-[r]->(p) " +
             "match (p)-[:tagged]->(t:Tag)<-[:tagged]-(n:PostInfo) " +
             "return n.postId")
-    List<String> getPostList(@Param("userId") String userId);
+    List<String> getPostList(@org.springframework.data.repository.query.Param("userId") String userId);
+
+    @Query("match(u1:UserInfo{userId: $follower}) " +
+            "match(u2:UserInfo{userId: $following}) " +
+            "WHERE EXISTS((u1)-[:FOLLOW]->(u2)) " + "RETURN u1")
+    UserInfo checkFollow(@org.springframework.data.repository.query.Param("follower") String follower, @org.springframework.data.repository.query.Param("following") String following);
 }

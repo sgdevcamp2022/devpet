@@ -11,27 +11,29 @@ import neo4j.test.feed.model.relationship.Pet;
 import neo4j.test.feed.repository.PetRepository;
 import neo4j.test.feed.repository.UserInfoRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
-public class PetService {
+public class PetInfoService {
 
     private final UserInfoRepository userRepository;
     private final PetRepository petRepository;
 
     /// cud
 
+    @Transactional
     public String savePet(PetInfoDto petInfoDto) {
 
         // 수정 필요
-        PetInfo check = petRepository.findByPetId(petInfoDto.getPetId());
-
-        if (check != null) {
-            throw new DuplicateUserException("이미 존재하는 계정입니다.");
-        }
+//        PetInfo check = petRepository.findByPetId(petInfoDto.getPetId());
+//
+//        if (check != null) {
+//            throw new DuplicateUserException("이미 존재하는 계정입니다.");
+//        }
 
         PetInfo petInfo = PetInfo.builder()
                 .petName(petInfoDto.getPetName())
@@ -42,6 +44,8 @@ public class PetService {
         String uuId = petRepository.save(petInfo).getPetId();
         return uuId;
     }
+
+    @Transactional
     public void putPet(@RequestBody PetInfoDto petInfoDto) {
 
         PetInfo petInfo = petRepository.findByPetId(petInfoDto.getPetId());
@@ -52,6 +56,8 @@ public class PetService {
         petInfo.setPetSpecies(petInfoDto.getPetSpecies());
         petRepository.save(petInfo);
     }
+
+    @Transactional
     public void deletePet(String petId) {
 
         PetInfo petInfo = petRepository.findByPetId(petId);
@@ -62,17 +68,25 @@ public class PetService {
 
     /// cud
 
-    public void pet(PetDto petDto) {
+    @Transactional
+    public void raisePet(PetDto petDto) {
 
         UserInfo userInfo = userRepository.findByUserId(petDto.getUserId());
         PetInfo petInfo = petRepository.findByPetId(petDto.getPetId());
 
-        Set<Pet> user = userInfo.getPet();
-        for (Pet entity : user) {
-            if (entity.getPetInfo().getPetId().equals(petInfo.getPetId())) {
-                throw new DuplicateUserException("이미 존재하는 계정입니다.");
-            }
+        checkExistPetOrUser(userInfo, petInfo);
+
+        PetInfo check = petRepository.checkPet(userInfo.getUserId(), petInfo.getPetId());
+        if (check != null) {
+            throw new DuplicateUserException("이미 존재하는 관계입니다.");
         }
+
+//        Set<Pet> user = userInfo.getPet();
+//        for (Pet entity : user) {
+//            if (entity.getPetInfo().getPetId().equals(petInfo.getPetId())) {
+//                throw new DuplicateUserException("이미 존재하는 계정입니다.");
+//            }
+//        }
 
         Pet pet = new Pet(petInfo);
         userInfo.getPet().add(pet);
@@ -80,25 +94,18 @@ public class PetService {
         userRepository.save(userInfo);
     }
 
-//    public void raisePet(String userId, String petId) {
-//
-//        UserInfo userInfo = userRepository.findNodeById(userId);
-//        PetInfo petInfo = petRepository.findNodeById(petId);
-//
-//        checkExistPetOrUser(userInfo, petInfo);
-//
-//        petRepository.raisePet(userId, petId);
-//    }
-    public void raisePetCancel(String userId, String petId) {
+    @Transactional
+    public void raisePetCancel(PetDto petDto) {
 
-        UserInfo userInfo = userRepository.findByUserId(userId);
-        PetInfo petInfo = petRepository.findByPetId(petId);
+        UserInfo userInfo = userRepository.findByUserId(petDto.getUserId());
+        PetInfo petInfo = petRepository.findByPetId(petDto.getPetId());
 
         checkExistPetOrUser(userInfo, petInfo);
 
-        petRepository.raisePetCancel(userId, petId);
+        petRepository.raisePetCancel(petDto.getUserId(), petDto.getPetId());
     }
 
+    @Transactional
     public PetInfoDto getPet(String petId) {
 
         PetInfo petInfo = petRepository.findByPetId(petId);
@@ -129,3 +136,13 @@ public class PetService {
 
 
 }
+
+//    public void raisePet(String userId, String petId) {
+//
+//        UserInfo userInfo = userRepository.findNodeById(userId);
+//        PetInfo petInfo = petRepository.findNodeById(petId);
+//
+//        checkExistPetOrUser(userInfo, petInfo);
+//
+//        petRepository.raisePet(userId, petId);
+//    }

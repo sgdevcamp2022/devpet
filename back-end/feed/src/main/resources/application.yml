@@ -1,4 +1,3 @@
-
 spring:
   neo4j:
     database: movies

@@ -64,22 +64,22 @@ public class UserInfoController {
 
     private final UserInfoService userService;
 
-    @PostMapping
+    @PostMapping()
     public void createUser(@RequestBody UserInfoDto userInfoDto) {
 
         userService.createUser(userInfoDto);
     }
-    @PutMapping
+    @PutMapping()
     public ResponseEntity<String> putUser(@RequestBody UserInfoDto userInfoDto) {
 
         userService.putUser(userInfoDto);
 
         return ResponseEntity.ok("수정 성공");
     }
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable("userId") String userId) {
+    @DeleteMapping()
+    public ResponseEntity<String> deleteUser(@RequestBody UserInfoDto userInfoDto) {
 
-        userService.deleteUser(userId);
+        userService.deleteUser(userInfoDto.getUserId());
 
         return ResponseEntity.ok("삭제 성공");
     }
@@ -108,26 +108,26 @@ public class UserInfoController {
     }
 
 
-    @GetMapping("/count/follower/{userId}")
-    public ResponseEntity<Long> countFollower(@PathVariable("userId") String userId) {
+    @GetMapping("/count/follower")
+    public ResponseEntity<Long> countFollower(@RequestBody FollowDto followDto) {
 
-        return ResponseEntity.ok(userService.countFollower(userId));
+        return ResponseEntity.ok(userService.countFollower(followDto.getFollower()));
     }
-    @GetMapping("/count/following/{userId}")
-    public ResponseEntity<Long> countFollowing(@PathVariable("userId") String userId) {
+    @GetMapping("/count/following")
+    public ResponseEntity<Long> countFollowing(@RequestBody FollowDto followDto) {
 
-        return ResponseEntity.ok(userService.countFollowing(userId));
+        return ResponseEntity.ok(userService.countFollowing(followDto.getFollower()));
     }
 
-    @GetMapping("/list/follower/{userId}")
-    public ResponseEntity<List<String>> getFollowerList(@PathVariable("userId") String userId) {
+    @GetMapping("/list/follower")
+    public ResponseEntity<List<String>> getFollowerList(@RequestBody FollowDto followDto) {
 
-        return ResponseEntity.ok(userService.getFollowerList(userId));
+        return ResponseEntity.ok(userService.getFollowerList(followDto.getFollower()));
     }
-    @GetMapping("/list/following/{userId}")
-    public ResponseEntity<List<String>> getFollowingList(@PathVariable("userId") String userId) {
+    @GetMapping("/list/following")
+    public ResponseEntity<List<String>> getFollowingList(@RequestBody FollowDto followDto) {
 
-        return ResponseEntity.ok(userService.getFollowingList(userId));
+        return ResponseEntity.ok(userService.getFollowingList(followDto.getFollower()));
     }
 
 }
