@@ -15,12 +15,6 @@ public class PetController {
 
     private final PetService petService;
 
-    @PostMapping("/test")
-    public void like(@RequestBody PetDto petDto) {
-
-        petService.pet(petDto);
-    }
-
     @PostMapping
     public ResponseEntity<String> savePet(@RequestBody PetInfoDto petInfoDto) {
 
@@ -34,34 +28,33 @@ public class PetController {
         petService.putPet(petInfoDto);
         return ResponseEntity.ok("수정 성공");
     }
-    @DeleteMapping("/{petId}")
-    public ResponseEntity<String> deletePet(@PathVariable("petId") String petId) {
+    @DeleteMapping
+    public ResponseEntity<String> deletePet(@RequestBody PetInfoDto petInfoDto) {
 
-        petService.deletePet(petId);
+        petService.deletePet(petInfoDto.getPetId());
         return ResponseEntity.ok("삭제 성공");
     }
 
-    @PostMapping("/raise/{userId}/{petId}")
-    public ResponseEntity<String> raisePet(@PathVariable("userId") String userId,
-                                           @PathVariable("petId") String petId) {
+    @PostMapping("/raise")
+    public ResponseEntity<String> raisePet(@RequestBody PetDto petDto) throws Exception {
 
-        petService.raisePet(userId, petId);
+        petService.raisePet(petDto);
 
         return ResponseEntity.ok("관계 성립");
     }
-    @PostMapping("/raise/cancel/{userId}/{petId}")
-    public ResponseEntity<String> raisePetCancel(@PathVariable("userId") String userId,
-                                                 @PathVariable("petId") String petId) {
 
-        petService.raisePetCancel(userId, petId);
+    @PostMapping("/raise/cancel")
+    public ResponseEntity<String> raisePetCancel(@RequestBody PetDto petDto) {
+
+        petService.raisePetCancel(petDto);
 
         return ResponseEntity.ok("관계 취소");
     }
 
-    @GetMapping("/{petId}")
-    public ResponseEntity<PetInfoDto> getPet(@PathVariable("petId") String petId) {
+    @GetMapping()
+    public ResponseEntity<PetInfoDto> getPet(@RequestBody PetInfoDto pet) {
 
-        PetInfoDto petInfoDto = petService.getPet(petId);
+        PetInfoDto petInfoDto = petService.getPet(pet.getPetId());
 
         return ResponseEntity.ok(petInfoDto);
     }

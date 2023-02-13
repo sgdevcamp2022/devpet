@@ -23,7 +23,7 @@ import static org.springframework.data.neo4j.core.schema.Relationship.Direction.
 @NoArgsConstructor
 public class UserInfo {
 
-    @Id @GeneratedValue(UUIDStringGenerator.class)
+    @Id
     private String userId;
     @Property
     private String nickname;
@@ -33,22 +33,24 @@ public class UserInfo {
     private String address;
     @Property
     private String gender;
+
     @Relationship(type = "Follow", direction = INCOMING) //RelationShip 설정
     private Set<Follow> followers;
     @Relationship(type = "Follow", direction = OUTGOING) //RelationShip 설정
     private Set<Follow> follows;
     @Relationship(type = "has_Post", direction = OUTGOING)
     private Set<Post> posts;
-
     @Relationship(type = "has_Recommended" , direction = OUTGOING)
     private Set<Recommend> recommends;
-
     @Relationship(type = "PET", direction = Relationship.Direction.OUTGOING)
     private Set<Pet> pet;
+
     @Builder
     public UserInfo(UserInfoDto dto){
+
         if (dto.getUserId()!=null)
             this.userId = dto.getUserId();
+
         this.nickname= dto.getNickname();
         this.birth = dto.getBirth();
         this.address = dto.getAddress();

@@ -11,14 +11,17 @@ import java.util.Optional;
 
 @Repository
 public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
+
     @Query("MATCH (m:UserInfo {id: $followedUser}) " +
             "MATCH (n:UserInfo {id: $followUser}) "+
             "MATCH (m)<-[F:Follow]-(n)"+
             "DELETE F;" )
     UserInfo deleteFollowById(String followedUser, String followUser);
+
     @Query("MATCH (m:UserInfo {userId: $userId}) " +
             "RETURN m;" )
     Optional<UserInfo> findNodeById (String userId);
+
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +
             "MATCH (n)-[l:likes]->(m) "+
@@ -56,4 +59,34 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     @Query("match(f1:UserInfo{userId : $userId})-[:FOLLOW]->(f2:UserInfo)" + "return f2.userId")
     List<String> getFollowingList(@Param("userId") String userId);
 
+    // follow 관계가 있는지 체크
+    @Query("match(u1:UserInfo{userId: $follower}) " +
+            "match(u2:UserInfo{userId: $following}) " +
+            "WHERE EXISTS((u1)-[:FOLLOW]->(u2)) " + "RETURN u1")
+    UserInfo checkFollow(@Param("follower") String follower, @Param("following") String following);
+
+
+    // 내가 팔로우 한 유저들이 작성한 게시글들 가져오기(시간순으로 정렬 과 개수 조정 필요)
+    @Query("Match(u:UserInfo{userId: $userId})-[:FOLLOW]->(:UserInfo)-[:POST]->(p:PostInfo)" + "return p.postId")
+    List<String> getFollowPostList(@Param("userId") String userId);
+
+    // 내가 좋아요를 누른 게시글의 tag 에 관련된 다른 게시글들 불러오기(시간순으로 정렬 과 개수 조정 필요)
+    @Query("match(u:UserInfo{userId: $userId})-[:LIKE]->(:PostInfo)-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo)" + "return p.postId")
+    List<String> getLikePostList(@Param("userId") String userId);
+
+    // 내가 댓글을 쓴 게시글의 tag에 관련된 다른 게시글들 불러오기(시간순으로 정렬 과 개수 조정 필요)
+    @Query("match(u:UserInfo{userId: $userId})-[:COMMENT]->(:PostInfo)-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo)" + "return p.postId")
+    List<String> getCommentPostList(@Param("userId") String userId);
+
+    /*
+     * 내가 팔로우 한 유저들의 recommend 관계가 있는 게시글의 tag에 관련된 게시글들 불러오기
+     * (시간순으로 정렬 과 개수 조정 필요)
+     * */
+    @Query("Match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[r:RECOMMENDED]->(p:PostInfo) " +
+            "with r, p " +
+            "ORDER BY r.score DESC " +
+            "LIMIT 4 " +
+            "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo) " +
+            "return n.postId")
+    List<String> getFollowRecommendPostList(@Param("userId") String userId);
 }
