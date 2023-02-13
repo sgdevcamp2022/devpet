@@ -1,6 +1,5 @@
 package neo4j.test.feed.repository;
 
-import io.lettuce.core.dynamic.annotation.Param;
 import neo4j.test.feed.model.entity.UserInfo;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
