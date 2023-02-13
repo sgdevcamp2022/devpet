@@ -1,6 +1,6 @@
-package com.devpet.feed.data.relationship;
+package com.devpet.feed.model.relationship;
 
-import com.devpet.feed.data.node.PetInfo;
+import com.devpet.feed.model.entity.PetInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
-package com.devpet.feed.relationship;
+package com.devpet.feed.model.relationship;
 
-import com.devpet.feed.entity.Tag;
+import com.devpet.feed.model.entity.Tag;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.*;

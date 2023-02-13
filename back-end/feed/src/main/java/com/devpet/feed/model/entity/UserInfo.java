@@ -1,16 +1,16 @@
-package com.devpet.feed.entity;
+package com.devpet.feed.model.entity;
 
-import com.devpet.feed.dto.UserInfoDto;
-import com.devpet.feed.relationship.Follow;
-import com.devpet.feed.relationship.Post;
-import com.devpet.feed.relationship.Recommend;
+import com.devpet.feed.model.dto.UserInfoDto;
+import com.devpet.feed.model.relationship.Pet;
+import com.devpet.feed.model.relationship.Follow;
+import com.devpet.feed.model.relationship.Post;
+import com.devpet.feed.model.relationship.Recommend;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Property;
-import org.springframework.data.neo4j.core.schema.Relationship;
+import org.springframework.data.neo4j.core.schema.*;
+import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 
 import java.util.Set;
 
@@ -23,7 +23,7 @@ import static org.springframework.data.neo4j.core.schema.Relationship.Direction.
 @NoArgsConstructor
 public class UserInfo {
 
-    @Id //
+    @Id @GeneratedValue(UUIDStringGenerator.class)
     private String userId;
     @Property
     private String nickname;
@@ -43,8 +43,12 @@ public class UserInfo {
     @Relationship(type = "has_Recommended" , direction = OUTGOING)
     private Set<Recommend> recommends;
 
+    @Relationship(type = "PET", direction = Relationship.Direction.OUTGOING)
+    private Set<Pet> pet;
+    @Builder
     public UserInfo(UserInfoDto dto){
-        this.userId = dto.getUserId();
+        if (dto.getUserId()!=null)
+            this.userId = dto.getUserId();
         this.nickname= dto.getNickname();
         this.birth = dto.getBirth();
         this.address = dto.getAddress();
@@ -52,16 +56,4 @@ public class UserInfo {
         this.followers = dto.getFollowers();
         this.posts = dto.getPosts();
     }
-
-    public UserInfo(UserInfo dto){
-        this.userId = dto.getUserId();
-        this.nickname= dto.getNickname();
-        this.birth = dto.getBirth();
-        this.address = dto.getAddress();
-        this.gender = dto.getGender();
-        this.followers = dto.getFollowers();
-        this.posts = dto.getPosts();
-    }
-
-
 }

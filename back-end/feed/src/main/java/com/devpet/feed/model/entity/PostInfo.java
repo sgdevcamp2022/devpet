@@ -1,9 +1,8 @@
-package com.devpet.feed.entity;
+package com.devpet.feed.model.entity;
 
-import com.devpet.feed.dto.PostInfoDto;
-import com.devpet.feed.relationship.Like;
+import com.devpet.feed.model.dto.PostInfoDto;
+import com.devpet.feed.model.relationship.Like;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.Id;

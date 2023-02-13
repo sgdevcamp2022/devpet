@@ -1,4 +1,4 @@
-package com.devpet.feed.data.dto;
+package com.devpet.feed.model.dto;
 
 import lombok.Builder;
 import lombok.Getter;

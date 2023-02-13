@@ -1,14 +1,13 @@
-package com.devpet.feed.entity;
+package com.devpet.feed.model.entity;
 
-import com.devpet.feed.dto.GroupInfoDto;
-import com.devpet.feed.relationship.Join;
+import com.devpet.feed.model.dto.GroupInfoDto;
+import com.devpet.feed.model.relationship.Join;
 import lombok.*;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.springframework.data.neo4j.core.schema.Relationship.Direction.INCOMING;

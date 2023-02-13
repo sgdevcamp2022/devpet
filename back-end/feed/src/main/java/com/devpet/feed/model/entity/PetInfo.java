@@ -1,5 +1,6 @@
-package com.devpet.feed.data.node;
+package com.devpet.feed.model.entity;
 
+import com.devpet.feed.model.dto.PetInfoDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,5 +36,12 @@ public class PetInfo {
         this.petBirth = petBirth;
         this.petSpecies = petSpecies;
     }
-
+    public PetInfo(PetInfoDto dto)
+    {
+        if (dto.getPetId()!=null)
+            this.petId = dto.getPetId();
+        this.petName = dto.getPetName();
+        this.petBirth = dto.getPetBirth();
+        this.petSpecies = dto.getPetSpecies();
+    }
 }

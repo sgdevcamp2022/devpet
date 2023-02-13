@@ -1,31 +1,27 @@
-package com.devpet.feed.data.relationship;
+package com.devpet.feed.model.relationship;
 
-import com.devpet.feed.data.node.PostInfo;
-import lombok.AllArgsConstructor;
+import com.devpet.feed.model.entity.PostInfo;
+import com.devpet.feed.model.entity.UserInfo;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.RelationshipProperties;
 import org.springframework.data.neo4j.core.schema.TargetNode;
 
+@RelationshipProperties
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@RelationshipProperties
 public class Like {
-
     @Id
     @GeneratedValue
     private Long id;
 
     @TargetNode
-    private PostInfo postInfo;
+    private UserInfo userInfo;
 
-    public Like(PostInfo postInfo) {
-
-        this.postInfo = postInfo;
+    public Like(UserInfo userInfo){
+        this.userInfo = userInfo;
     }
+
 }

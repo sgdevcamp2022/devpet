@@ -1,8 +1,8 @@
-package com.devpet.feed.dto;
+package com.devpet.feed.model.dto;
 
 
-import com.devpet.feed.entity.GroupInfo;
-import com.devpet.feed.relationship.Join;
+import com.devpet.feed.model.entity.GroupInfo;
+import com.devpet.feed.model.relationship.Join;
 import lombok.*;
 
 import java.util.Set;

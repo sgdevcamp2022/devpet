@@ -1,8 +1,8 @@
 package com.devpet.feed.controller;
 
-import com.devpet.feed.dto.FollowMemberDto;
-import com.devpet.feed.dto.UserInfoDto;
-import com.devpet.feed.entity.UserInfo;
+import com.devpet.feed.model.dto.FollowMemberDto;
+import com.devpet.feed.model.dto.UserInfoDto;
+import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

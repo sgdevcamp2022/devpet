@@ -1,9 +1,8 @@
-package com.devpet.feed.dto;
+package com.devpet.feed.model.dto;
 
-import com.devpet.feed.entity.Tag;
-import com.devpet.feed.entity.UserInfo;
-import com.devpet.feed.relationship.Follow;
-import com.devpet.feed.relationship.Post;
+import com.devpet.feed.model.entity.UserInfo;
+import com.devpet.feed.model.relationship.Follow;
+import com.devpet.feed.model.relationship.Post;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,5 +30,4 @@ public class UserInfoDto {
         this.gender = userInfo.getGender();
         this.followers = userInfo.getFollowers();
     }
-
 }

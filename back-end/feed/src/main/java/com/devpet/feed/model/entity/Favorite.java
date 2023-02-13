@@ -1,4 +1,4 @@
-package com.devpet.feed.data.node;
+package com.devpet.feed.model.entity;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

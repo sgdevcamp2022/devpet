@@ -1,8 +1,7 @@
-package com.devpet.feed.dto;
+package com.devpet.feed.model.dto;
 
-import com.devpet.feed.entity.PostInfo;
-import com.devpet.feed.entity.Tag;
-import lombok.AllArgsConstructor;
+import com.devpet.feed.model.entity.PostInfo;
+import com.devpet.feed.model.entity.Tag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

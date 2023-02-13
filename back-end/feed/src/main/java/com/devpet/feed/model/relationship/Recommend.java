@@ -1,7 +1,7 @@
-package com.devpet.feed.relationship;
+package com.devpet.feed.model.relationship;
 
-import com.devpet.feed.dto.ScoreDto;
-import com.devpet.feed.entity.PostInfo;
+import com.devpet.feed.model.dto.ScoreDto;
+import com.devpet.feed.model.entity.PostInfo;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

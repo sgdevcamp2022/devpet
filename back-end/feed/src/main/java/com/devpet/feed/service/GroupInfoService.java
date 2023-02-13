@@ -1,10 +1,10 @@
 package com.devpet.feed.service;
 
-import com.devpet.feed.dto.GroupInfoDto;
-import com.devpet.feed.dto.JoinGroupDto;
-import com.devpet.feed.entity.GroupInfo;
-import com.devpet.feed.entity.UserInfo;
-import com.devpet.feed.relationship.Join;
+import com.devpet.feed.model.dto.GroupInfoDto;
+import com.devpet.feed.model.dto.JoinGroupDto;
+import com.devpet.feed.model.entity.GroupInfo;
+import com.devpet.feed.model.entity.UserInfo;
+import com.devpet.feed.model.relationship.Join;
 import com.devpet.feed.repository.GroupInfoRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class GroupInfoService {
     }
     @Transactional
     public GroupInfoDto joinGroup(JoinGroupDto joinGroupDto) {
-        UserInfo userInfo = userInfoRepository.findNodeById(joinGroupDto.getUserId());
+        UserInfo userInfo = userInfoRepository.findNodeById(joinGroupDto.getUserId()).orElseThrow(RuntimeException::new);
         GroupInfo groupInfo = groupInfoRepository.findNodeById(joinGroupDto.getGroupName());
 
         Join member = new Join(userInfo);
@@ -51,13 +51,10 @@ public class GroupInfoService {
     }
 
     @Transactional
-    public GroupInfo leaveGroup(JoinGroupDto joinGroupDto) throws Exception{
-        if (userInfoRepository.existsById(joinGroupDto.getUserId()) &&
-                groupInfoRepository.existsById(joinGroupDto.getGroupName())){
-            return groupInfoRepository.leaveGroup(joinGroupDto.getGroupName(), joinGroupDto.getUserId());
-        }
-        else {
-            throw new Exception("존재하지 않는 데이터");
-        }
+    public GroupInfo leaveGroup(JoinGroupDto joinGroupDto){
+        if (!userInfoRepository.existsById(joinGroupDto.getUserId()) ||
+                !groupInfoRepository.existsById(joinGroupDto.getGroupName()))
+            throw new RuntimeException("not found data");
+        return groupInfoRepository.leaveGroup(joinGroupDto.getGroupName(), joinGroupDto.getUserId());
     }
 }

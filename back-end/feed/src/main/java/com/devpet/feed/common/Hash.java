@@ -5,21 +5,21 @@ import java.security.NoSuchAlgorithmException;
 
 public class Hash {
     public static String getHash(String str) {
-        String MD5 = "";
+        String result = "";
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
             md.update(str.getBytes());
-            byte byteData[] = md.digest();
-            StringBuffer sb = new StringBuffer();
-            for (int i = 0; i < byteData.length; i++) {
-                sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+            byte[] bytes = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (byte data : bytes) {
+                sb.append(Integer.toString((data & 0xff) + 0x100, 16).substring(1));
             }
-            MD5 = sb.toString();
+            result = sb.toString();
 
         } catch (Exception e) {
             e.printStackTrace();
-            MD5 = null;
+            result = null;
         }
-        return MD5;
+        return result;
     }
 }

@@ -1,4 +1,4 @@
-package com.devpet.feed.dto;
+package com.devpet.feed.model.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
