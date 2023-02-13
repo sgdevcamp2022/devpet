@@ -30,6 +30,8 @@ public class CommentService {
         }
         Comment comment = new Comment(commentRequest,feedId,sequenceGeneratorService.longSequenceGenerate(Comment.SEQUENCE_NAME));
         commentRepository.save(comment);
+        // TODO: 게시글 작성자 또는 댓글 작성자가 읽어야할 게시글로 redis에 추가.
+        // TODO: kafka로 사용자가 comment 달았음을 전송
         return comment;
     }
 

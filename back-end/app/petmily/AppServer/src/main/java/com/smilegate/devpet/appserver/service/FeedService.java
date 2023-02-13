@@ -1,11 +1,11 @@
 package com.smilegate.devpet.appserver.service;
 
 
-import com.smilegate.devpet.appserver.model.Feed;
-import com.smilegate.devpet.appserver.model.FeedRequest;
-import com.smilegate.devpet.appserver.model.Location;
-import com.smilegate.devpet.appserver.model.UserInfo;
+import com.google.common.collect.Lists;
+import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
+import com.smilegate.devpet.appserver.repository.redis.FeedRedisRepository;
+import com.smilegate.devpet.appserver.repository.redis.NotReadRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
@@ -13,6 +13,9 @@ import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.repository.query.MongoEntityInformation;
+import org.springframework.data.redis.core.ListOperations;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,19 +30,25 @@ import java.util.stream.Stream;
 @RequiredArgsConstructor
 public class FeedService {
     private final FeedRepository feedRepository;
+    private final FeedRedisRepository feedRedisRepository;
     private final LocationService locationService;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final MongoOperations mongoOperations;
     private final KafkaProducerService kafkaProducerService;
+    private final NotReadRedisRepository notReadRedisRepository;
 
     public Feed postFeed(FeedRequest feedRequest, UserInfo userInfo)
     {
+        // feed 저장
         Feed feed = new Feed(feedRequest,userInfo);
         feed.setFeedId(sequenceGeneratorService.longSequenceGenerate(Feed.SEQUENCE_NAME));
         locationService.postLocation(feed.getLocation());
         feed = feedRepository.save(feed);
+
+        // 저장된 피드 kafka로 메세지 전송
         kafkaProducerService.feedSubscribeSend(feed);
-        // TODO: fcm implements
+        // TODO: fcm 구독자에게 전송
+        // TODO: redis에 작성자 읽지 않은 게시글 추가
         return feed;
     }
 
@@ -62,12 +71,11 @@ public class FeedService {
         return feed;
     }
 
-    public boolean setFeedEmotion(long feedId,int emotion,UserInfo userInfo)
+    public boolean setFeedFavorite(long feedId, FavoriteRequest feedRequest, UserInfo userInfo)
     {
-        Feed feedO = feedRepository.findById(feedId).orElseThrow(RuntimeException::new);
-        // TODO: call rest api graph server
-        // TODO: 그래프 서버로 카프카 전송.
-        // TODO: fcm to feed owner
+        kafkaProducerService.feedFavoriteSend(feedId,feedRequest.isFavorite(),userInfo.getUserId());
+        // TODO: redis에서 postId에 대해서 좋아요를 표시한 대상 리스트로 저장.
+//        feedRedisRepository.
         return true;
     }
     public List<String> getSimpleFeedList(String word, int category, Circle circle, int start, int size)
@@ -105,5 +113,13 @@ public class FeedService {
         });
         List<Feed> result = new ArrayList<>(mongoOperations.insert(pushList,"feed"));
         return result;
+    }
+
+    public List<Feed> getFeedList(UserInfo userInfo)
+    {
+        List<Long> feedIds = notReadRedisRepository.findById(userInfo.getUserId(), 20);
+        // TODO: 관계 서버에서 피드 아이디 리스트 조회 20 - notReadFeedIds.size()
+        // feedIds.addAll()
+        return Lists.newArrayList(feedRepository.findAllById(feedIds));
     }
 }
