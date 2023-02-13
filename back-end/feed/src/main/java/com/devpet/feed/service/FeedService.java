@@ -1,20 +1,16 @@
 package com.devpet.feed.service;
 
 import com.devpet.feed.common.Hash;
-import com.devpet.feed.dto.ScoreDto;
-import com.devpet.feed.entity.PostInfo;
-import com.devpet.feed.entity.UserInfo;
-import com.devpet.feed.relationship.Post;
-import com.devpet.feed.relationship.Recommend;
-import com.devpet.feed.repository.PostInfoRepository;
-import com.devpet.feed.repository.RedisRepository;
-import com.devpet.feed.repository.UserInfoRepository;
+import com.devpet.feed.model.dto.ScoreDto;
+import com.devpet.feed.model.entity.PostInfo;
+import com.devpet.feed.model.entity.UserInfo;
+import com.devpet.feed.model.relationship.Recommend;
+import com.devpet.feed.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.security.MessageDigest;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -51,13 +47,13 @@ public class FeedService {
             for (ScoreDto scoreDto : scoreList) {
                 Optional<PostInfo> relationCheck = Optional.ofNullable(postInfoRepository.existsRecommended(scoreDto.getPostId(), userId));
                 if(relationCheck.isEmpty()){
-                    PostInfo postInfo = postInfoRepository.findNodeById(scoreDto.getPostId());
+                    PostInfo postInfo = postInfoRepository.findNodeById(scoreDto.getPostId()).orElseThrow(RuntimeException::new);
                     Recommend recommend = new Recommend(postInfo, scoreDto);
                     recommends.add(recommend);
                 }
             }
 
-            UserInfo userInfo = userInfoRepository.findNodeById(userId);
+            UserInfo userInfo = userInfoRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
             userInfo.getRecommends().addAll(recommends);
             userInfoRepository.save(userInfo);
         } else {
@@ -72,4 +68,27 @@ public class FeedService {
     public List<String> getPostList(String userId) {
         return userInfoRepository.getPostList(userId);
     }
+
+
+
+    public void recommended(ScoreDto scoreDto) {
+        // 추천하려는 대상이 db에 존재하는지 확인
+        UserInfo userInfo = userInfoRepository.findNodeById(scoreDto.getUserId()).orElseThrow(RuntimeException::new);
+
+        // 추천하려는 포스트가 db에 존재하는지 확인
+        PostInfo postInfo = postInfoRepository.findNodeById(scoreDto.getPostId()).orElseThrow(RuntimeException::new);
+
+        Set<Recommend> user = userInfo.getRecommends();
+        for (Recommend entity : user) {
+            if (entity.getPostInfo().getPostId().equals(postInfo.getPostId())) {
+                throw new RuntimeException("이미 존재하는 계정입니다.");
+            }
+        }
+
+        Recommend recommended = new Recommend(postInfo,scoreDto);
+        userInfo.getRecommends().add(recommended);
+
+        userInfoRepository.save(userInfo);
+    }
+
 }

@@ -1,8 +1,8 @@
 package com.devpet.feed.controller;
 
-import com.devpet.feed.dto.GroupInfoDto;
-import com.devpet.feed.dto.JoinGroupDto;
-import com.devpet.feed.entity.GroupInfo;
+import com.devpet.feed.model.dto.GroupInfoDto;
+import com.devpet.feed.model.dto.JoinGroupDto;
+import com.devpet.feed.model.entity.GroupInfo;
 import com.devpet.feed.service.GroupInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

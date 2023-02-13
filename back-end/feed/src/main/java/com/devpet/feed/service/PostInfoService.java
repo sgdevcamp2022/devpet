@@ -1,12 +1,12 @@
 package com.devpet.feed.service;
 
-import com.devpet.feed.dto.LikePostDto;
-import com.devpet.feed.dto.PostInfoDto;
-import com.devpet.feed.entity.PostInfo;
-import com.devpet.feed.entity.Tag;
-import com.devpet.feed.entity.UserInfo;
-import com.devpet.feed.relationship.Like;
-import com.devpet.feed.relationship.Post;
+import com.devpet.feed.model.dto.LikePostDto;
+import com.devpet.feed.model.dto.PostInfoDto;
+import com.devpet.feed.model.entity.PostInfo;
+import com.devpet.feed.model.entity.Tag;
+import com.devpet.feed.model.entity.UserInfo;
+import com.devpet.feed.model.relationship.Like;
+import com.devpet.feed.model.relationship.Post;
 import com.devpet.feed.repository.PostInfoRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,22 +39,17 @@ public class PostInfoService {
      * @throws Exception
      */
     @Transactional
-    public PostInfoDto savePostInfo(PostInfoDto postInfoDto) throws Exception {
-        Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findNodeById(postInfoDto.getUserId()));
-        if(userInfo.isPresent()) {
-
-            UserInfo user = userInfo.get();
-            PostInfo postInfo = postInfoDtoToPostInfo(postInfoDto);
+    public PostInfoDto savePostInfo(PostInfoDto postInfoDto){
+        UserInfo userInfo = userInfoRepository.findNodeById(postInfoDto.getUserId()).orElseThrow(RuntimeException::new);
+        PostInfo postInfo = postInfoDtoToPostInfo(postInfoDto);
 
 
-            Set<Tag> postTags = postInfo.getTags();
+        Set<Tag> postTags = postInfo.getTags();
 
-            Post post = new Post(postInfo);
-            user.getPosts().add(post);
-            userInfoRepository.save(user);
-            return postInfoToPostInfoDto(postInfoRepository.save(postInfo));
-        }
-        else throw new Exception("사용자 정보가 없습니다.");
+        Post post = new Post(postInfo);
+        userInfo.getPosts().add(post);
+        userInfoRepository.save(userInfo);
+        return postInfoToPostInfoDto(postInfoRepository.save(postInfo));
     }
 
     /**
@@ -64,44 +59,36 @@ public class PostInfoService {
      * @throws Exception
      */
     @Transactional
-    public PostInfoDto likePostInfo(LikePostDto likePostDto) throws Exception {
-
-        Optional<UserInfo> user = Optional.ofNullable(userInfoRepository.existsLike(likePostDto.getPostId(), likePostDto.getUserId()));
-        if (user.isEmpty()) {
-            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findNodeById(likePostDto.getUserId()));
-            Optional<PostInfo> postInfo = Optional.ofNullable(postInfoRepository.findNodeById(likePostDto.getPostId()));
-            if (userInfo.isPresent() && postInfo.isPresent()) {
-                Like like = new Like(userInfo.get());
-                PostInfo post = postInfo.get();
-                post.getLikes().add(like);
-                return postInfoToPostInfoDto(postInfoRepository.save(post));
-            } else {
-                throw new Exception("해당 정보가 없습니다.");
-            }
-        } else {
-            throw new Exception("이미 like 한 게시물입니다");
-        }
+    public PostInfoDto likePostInfo(LikePostDto likePostDto){
+        // 게시글을 사용자가 좋아요 했는지 확인
+        Optional<UserInfo> userInfoOptional = userInfoRepository.existsLike(likePostDto.getPostId(), likePostDto.getUserId());
+        // 게시글 정보 가져오기
+        PostInfo postInfo = postInfoRepository.findNodeById(likePostDto.getPostId()).orElseThrow(RuntimeException::new);
+        // 이미 좋아요 했다면 해당 게시글Dto 반환
+        if(userInfoOptional.isPresent())
+            return postInfoToPostInfoDto(postInfo);
+        // 사용자 정보 가져오기
+        UserInfo userInfo = userInfoRepository.findNodeById(likePostDto.getUserId()).orElseThrow(RuntimeException::new);
+        // 좋아요 정보 생성
+        Like like = new Like(userInfo);
+        // 포스트에 좋아요 객체 연결
+        postInfo.getLikes().add(like);
+        return postInfoToPostInfoDto(postInfoRepository.save(postInfo));
     }
 
     /**
-     * 포스트 좋아요 취소
-     * @param likePostDto
-     * @return
-     * @throws Exception
+     * 게시글 좋아요 취소
+     * @param likePostDto 게시글 좋아요 정보
+     * @return 게시글 정보
      */
     @Transactional
-    public PostInfo dislikePostInfo(LikePostDto likePostDto) throws Exception {
-        Optional<UserInfo> user = Optional.ofNullable(userInfoRepository.existsLike(likePostDto.getPostId(), likePostDto.getUserId()));
-        if (user.isPresent()) {
-            Optional<UserInfo> userInfo = Optional.ofNullable(userInfoRepository.findNodeById(likePostDto.getUserId()));
-            Optional<PostInfo> postInfo = Optional.ofNullable(postInfoRepository.findNodeById(likePostDto.getPostId()));
-            if (userInfo.isPresent() && postInfo.isPresent()) {
-                return postInfoRepository.dislikePost(likePostDto.getPostId(), likePostDto.getUserId());
-            } else {
-                throw new Exception("해당 정보가 없습니다.");
-            }
-        } else {
-            throw new Exception("해당 정보가 없습니다.");
-        }
+    public PostInfo dislikePostInfo(LikePostDto likePostDto){
+        // 해당 사용자가 포스트를 좋아요 했는지 검사
+        userInfoRepository.existsLike(likePostDto.getPostId(), likePostDto.getUserId()).orElseThrow(RuntimeException::new);
+        // 사용자가 db에 존재하는지 검사
+        userInfoRepository.findNodeById(likePostDto.getUserId()).orElseThrow(RuntimeException::new);
+        // 게시글이 db에 존재하는지 검사
+        postInfoRepository.findNodeById(likePostDto.getPostId()).orElseThrow(RuntimeException::new);
+        return postInfoRepository.dislikePost(likePostDto.getPostId(), likePostDto.getUserId());
     }
 }

@@ -1,6 +1,6 @@
 package com.devpet.feed.controller;
 
-import com.devpet.feed.dto.ScoreDto;
+import com.devpet.feed.model.dto.ScoreDto;
 import com.devpet.feed.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -51,4 +51,17 @@ public class FeedController {
     public void feedScore(@RequestBody List<ScoreDto> scoreDtoList) {
         feedService.feedScore(scoreDtoList);
     }
+
+//
+//    @GetMapping("/feed/list")
+//    public void firstAverage(@RequestBody List<ScoreDto> scoreList) {
+//
+//        feedService.firstAverage(scoreList);
+//    }
+//
+//    @PostMapping("/feed")
+//    public void createRecommend(@RequestBody List<ScoreDto> scoreList) {
+//
+//        feedService.createRecommend(scoreList);
+//    }
 }

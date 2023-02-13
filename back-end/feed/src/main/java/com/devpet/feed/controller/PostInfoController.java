@@ -1,9 +1,9 @@
 package com.devpet.feed.controller;
 
-import com.devpet.feed.dto.LikePostDto;
-import com.devpet.feed.dto.PostInfoDto;
-import com.devpet.feed.entity.PostInfo;
-import com.devpet.feed.entity.Tag;
+import com.devpet.feed.model.dto.LikePostDto;
+import com.devpet.feed.model.dto.PostInfoDto;
+import com.devpet.feed.model.entity.PostInfo;
+import com.devpet.feed.model.entity.Tag;
 import com.devpet.feed.service.PostInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

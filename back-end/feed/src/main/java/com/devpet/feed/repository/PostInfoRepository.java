@@ -1,7 +1,6 @@
 package com.devpet.feed.repository;
 
-import com.devpet.feed.entity.PostInfo;
-import com.devpet.feed.entity.UserInfo;
+import com.devpet.feed.model.entity.PostInfo;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.stereotype.Repository;
@@ -13,9 +12,7 @@ public interface PostInfoRepository extends Neo4jRepository<PostInfo, String> {
     @Query("MATCH (m:PostInfo {postId : $postId}) " +
             "RETURN m"
     )
-    PostInfo findNodeById(String postId);
-
-
+    Optional<PostInfo> findNodeById(String postId);
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId: $userId}) " +
             "MATCH (m)<-[L:likes]-(n)" +
