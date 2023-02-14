@@ -3,6 +3,7 @@ package com.smilegate.devpet.appserver.repository.redis;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@Repository
 public class FavoriteRedisRepository{
     public static final String KEY_GENERATOR = "favorite";
     public final HashOperations<String,Long,Boolean> favoriteHashOperation;

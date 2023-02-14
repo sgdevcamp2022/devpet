@@ -30,7 +30,7 @@ public class JobConfig {
 
         try {
             // 스케줄 시간 설정 후  스케줄 실행
-            scheduler.scheduleJob(detail, createJobTrigger("0 0/2 * * * * ?"));
+            scheduler.scheduleJob(detail, createJobTrigger("10/10 * * * * ?"));
         } catch (SchedulerException e) {
             e.printStackTrace();
         }
