@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/userinfo")
@@ -115,5 +116,17 @@ public class UserInfoController {
 
         return ResponseEntity.ok(userInfoService.getFollowRecommendPostList(followDto.getFollower()));
     }
+
+    /**
+     * 내가 알 수 있는 사람의 게시물
+     * @param followDto
+     * @return
+     */
+    @GetMapping("/list/follow/recommend/post")
+    public ResponseEntity<List<String>> getFollowingRecommendPostList(@RequestBody FollowDto followDto){
+        return ResponseEntity.ok(userInfoService.getFollowingRecommendPostList(followDto.getFollowing()));
+    }
+
+
 
 }

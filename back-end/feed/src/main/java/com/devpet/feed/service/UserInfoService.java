@@ -157,4 +157,9 @@ public class UserInfoService {
         return userRepository.getFollowRecommendPostList(userId);
     }
 
+
+    public List<String> getFollowingRecommendPostList(String following) {
+        return userRepository.getFollowingRecommendPostList(following);
+    }
+
 }

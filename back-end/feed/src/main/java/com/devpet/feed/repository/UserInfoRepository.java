@@ -71,11 +71,11 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     List<String> getFollowPostList(@Param("userId") String userId);
 
     // 내가 좋아요를 누른 게시글의 tag 에 관련된 다른 게시글들 불러오기(시간순으로 정렬 과 개수 조정 필요)
-    @Query("match(u:UserInfo{userId: $userId})-[:LIKE]->(:PostInfo)-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo)" + "return p.postId")
+    @Query("match(u:UserInfo{userId: $userId})-[:LIKE]->(:PostInfo)-[:tagged]->(:Tag)<-[:tagged]-(p:PostInfo)" + "return p.postId")
     List<String> getLikePostList(@Param("userId") String userId);
 
     // 내가 댓글을 쓴 게시글의 tag에 관련된 다른 게시글들 불러오기(시간순으로 정렬 과 개수 조정 필요)
-    @Query("match(u:UserInfo{userId: $userId})-[:COMMENT]->(:PostInfo)-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo)" + "return p.postId")
+    @Query("match(u:UserInfo{userId: $userId})-[:COMMENT]->(:PostInfo)-[:TAGD]->(:Tag)<-[:tagged]-(p:PostInfo)" + "return p.postId")
     List<String> getCommentPostList(@Param("userId") String userId);
 
     /*
@@ -86,7 +86,15 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "with r, p " +
             "ORDER BY r.score DESC " +
             "LIMIT 4 " +
-            "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo) " +
+            "MATCH (p)-[:tagged]->(:Tag)<-[:tagged]-(n:PostInfo) " +
             "return n.postId")
     List<String> getFollowRecommendPostList(@Param("userId") String userId);
+
+    @Query("Match (u:UserInfo{userId: $userId1})-[:Follow]->()-[f:Follow]-()-[:has_Post]->(p:PostInfo)" +
+            "Match (n:PostInfo)<-[:has_Recommended]-(u)" +
+            "with n" +
+            "limit 4" +
+            "MATCH (p)-[:tagged]->(:Tag)<-[:tagged]-(n:PostInfo)" +
+            "return DISTINCT p.postId")
+    List<String> getFollowingRecommendPostList(String userId);
 }
