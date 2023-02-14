@@ -26,14 +26,14 @@ public class JobConfig {
     @Deprecated
     public void run() {
         // job 객체 생성
-//        JobDetail detail = creatPostAveJob();
-//
-//        try {
-//            // 스케줄 시간 설정 후  스케줄 실행
-//            scheduler.scheduleJob(detail, createJobTrigger("0 0/2 * * * * ?"));
-//        } catch (SchedulerException e) {
-//            e.printStackTrace();
-//        }
+        JobDetail detail = creatFavoriteSaveJob();
+
+        try {
+            // 스케줄 시간 설정 후  스케줄 실행
+            scheduler.scheduleJob(detail, createJobTrigger("0 0/2 * * * * ?"));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
