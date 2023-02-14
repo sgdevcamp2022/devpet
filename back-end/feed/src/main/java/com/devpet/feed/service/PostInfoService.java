@@ -109,4 +109,10 @@ public class PostInfoService {
         postInfo.getComments().add(comment);
         return ResponseEntity.ok(postInfoRepository.save(postInfo));
     }
+
+    @Transactional
+    public ResponseEntity<?> getCommentPost(String userId) {
+        UserInfo userInfo = userInfoRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+        return ResponseEntity.ok(postInfoRepository.findCommentedPostById(userInfo.getUserId()));
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -40,6 +41,11 @@ public class PostInfoController {
         return postInfoService.dislikePostInfo(likePostDto);
     }
 
+    @GetMapping("/comment")
+    public ResponseEntity<?> getCommentPost(@RequestBody Map<String, String> userId){
+        String user = userId.get("userId");
+        return postInfoService.getCommentPost(user);
+    }
     @PostMapping("/comment")
     public ResponseEntity<?> postComment(@RequestBody CommentDto commentDto) throws Exception{
         return postInfoService.postComment(commentDto);
