@@ -118,6 +118,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return DISTINCT p.postId")
     List<String> getFollowingRecommendPostList(String userId);
 
+
     // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
     @Query("match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[:COMMENT]->(:PostInfo)-[:TAGD]->(t:Tag)<-[:TAGD]-(p:PostInfo) " +
             "WITH p, datetime() AS now, p.createdAt AS date " +
