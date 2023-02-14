@@ -38,8 +38,8 @@ public class FeedController {
     }
 
     @PostMapping("/{feedId}/emotion")
-    public boolean postEmotion(@PathVariable long feedId, @RequestBody int emotion, UserInfo userInfo) {
-        return feedService.setFeedEmotion(feedId, emotion, userInfo);
+    public boolean postFavorite(@PathVariable long feedId, @RequestBody FavoriteRequest favoriteRequest, UserInfo userInfo) {
+        return feedService.setFeedFavorite(feedId, favoriteRequest, userInfo);
     }
 
     @GetMapping("/gallery")

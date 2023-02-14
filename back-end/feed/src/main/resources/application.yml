@@ -1,9 +1,10 @@
-server:
-  port: 4000
+#server:
+#  port: 8080
 
 spring:
     neo4j:
 #      : movies # neo4j 데스크톱에서 movies 데이터 베이스를 하나 만들어주자.
+
       uri: neo4j://121.187.22.37:9001
 #      uri: neo4j://localhost:7687
       authentication:

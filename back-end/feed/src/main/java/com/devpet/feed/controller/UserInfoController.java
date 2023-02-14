@@ -1,15 +1,13 @@
 package com.devpet.feed.controller;
 
 import com.devpet.feed.model.dto.FollowDto;
-import com.devpet.feed.model.dto.FollowMemberDto;
-import com.devpet.feed.model.dto.LikeDto;
 import com.devpet.feed.model.dto.UserInfoDto;
-import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.List;
 import java.util.Map;
 
@@ -34,13 +32,13 @@ public class UserInfoController {
 
     /**
      * 사용자 Follow
-     * @param followMemberDto
+     * @param followDto
      * @return
      * @throws Exception
      */
     @PostMapping("/follow")
-    public UserInfoDto followUser(@RequestBody FollowMemberDto followMemberDto)throws Exception{
-        return userInfoService.followUser(followMemberDto.getUsername(), followMemberDto.getFollowUser());
+    public UserInfoDto followUser(@RequestBody FollowDto followDto)throws Exception{
+        return userInfoService.followUser(followDto.getFollowing(), followDto.getFollower());
     }
 
     /**
@@ -55,23 +53,17 @@ public class UserInfoController {
         return userInfoDto;
     }
 
-    @PatchMapping("/follow")
-    public UserInfo patchUserFollower(@RequestBody FollowMemberDto followMemberDto) throws Exception {
-        UserInfo userInfoDto = userInfoService.patchFollower(followMemberDto.getUsername(), followMemberDto.getFollowUser());
-        return userInfoDto;
-    }
-
     @PostMapping("/follow/cancel")
     public void cancelFollow(@RequestBody FollowDto followDto) {
 
         userInfoService.cancelFollow(followDto);
     }
 
-    @PostMapping("/like/cancel")
-    public void cancelLike(@RequestBody LikeDto likeDto) {
-
-        userInfoService.cancelLike(likeDto);
-    }
+//    @PostMapping("/like/cancel")
+//    public void cancelLike(@RequestBody LikeDto likeDto) {
+//
+//        userInfoService.cancelLike(likeDto);
+//    }
 
 
     @GetMapping("/count/follower")
@@ -86,35 +78,41 @@ public class UserInfoController {
     }
 
     @GetMapping("/list/follower")
-    public ResponseEntity<List<String>> getFollowerList(@RequestBody FollowDto followDto) {
+    public ResponseEntity<Set<String>> getFollowerList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getFollowerList(followDto.getFollower()));
     }
     @GetMapping("/list/following")
-    public ResponseEntity<List<String>> getFollowingList(@RequestBody FollowDto followDto) {
+    public ResponseEntity<Set<String>> getFollowingList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getFollowingList(followDto.getFollower()));
     }
 
     @GetMapping("/list/follow/post")
-    public ResponseEntity<List<String>> getFollowPostList(@RequestBody FollowDto followDto) {
+    public ResponseEntity<Set<String>> getFollowPostList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getFollowPostList(followDto.getFollower()));
     }
     @GetMapping("/list/like/post")
-    public ResponseEntity<List<String>> getLikePostList(@RequestBody FollowDto followDto) {
+    public ResponseEntity<Set<String>> getLikePostList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getLikePostList(followDto.getFollower()));
     }
     @GetMapping("/list/comment/post")
-    public ResponseEntity<List<String>> getCommentPostList(@RequestBody FollowDto followDto) {
+    public ResponseEntity<Set<String>> getCommentPostList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getCommentPostList(followDto.getFollower()));
     }
     @GetMapping("/list/recommend/post")
-    public ResponseEntity<List<String>> getFollowRecommendPostList(@RequestBody FollowDto followDto) {
+    public ResponseEntity<Set<String>> getFollowRecommendPostList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getFollowRecommendPostList(followDto.getFollower()));
+    }
+
+    @GetMapping("/list/pet/post")
+    public ResponseEntity<Set<String>> getPetPostList(@RequestBody FollowDto followDto) {
+
+        return ResponseEntity.ok(userInfoService.getPetPostList(followDto.getFollower()));
     }
 
     /**
@@ -126,7 +124,5 @@ public class UserInfoController {
     public ResponseEntity<List<String>> getFollowingRecommendPostList(@RequestBody FollowDto followDto){
         return ResponseEntity.ok(userInfoService.getFollowingRecommendPostList(followDto.getFollowing()));
     }
-
-
 
 }

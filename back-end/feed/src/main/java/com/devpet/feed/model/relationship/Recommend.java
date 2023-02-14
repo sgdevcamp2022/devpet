@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.*;
 
+import java.util.Objects;
+
 @RelationshipProperties
 @Getter @Setter
 @RequiredArgsConstructor
@@ -22,5 +24,18 @@ public class Recommend {
     public Recommend(PostInfo postInfo, ScoreDto scoreDto){
         this.postInfo = postInfo;
         this.score = scoreDto.getScore();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Recommend recommend = (Recommend) o;
+        return Objects.equals(postInfo.getPostId(), recommend.postInfo.getPostId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(postInfo.getPostId());
     }
 }
