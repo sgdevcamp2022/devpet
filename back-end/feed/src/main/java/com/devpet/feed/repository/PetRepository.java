@@ -20,10 +20,10 @@ public interface PetRepository extends Neo4jRepository<PetInfo, String> {
 
     @Query("match(u:UserInfo{userId : $userId})" +
             "match(p:PetInfo{petId : $petId})" +
-            "create (u)-[:RAISE]->(p)")
+            "create (u)-[:PET]->(p)")
     void raisePet(@Param("userId") String userId , @Param("petId") String petId);
 
-    @Query("match(u:UserInfo{userId : $userId})-[r:RAISE]->(p:PetInfo{petId : $petId})" + "delete r")
+    @Query("match(u:UserInfo{userId : $userId})-[r:PET]->(p:PetInfo{petId : $petId})" + "delete r")
     void raisePetCancel(@Param("userId") String userId, @Param("petId") String petId);
 
     @Query("match(u:UserInfo{userId: $userId}) " +

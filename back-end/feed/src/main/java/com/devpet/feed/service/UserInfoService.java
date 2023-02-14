@@ -1,23 +1,17 @@
 package com.devpet.feed.service;
 
 import com.devpet.feed.model.dto.FollowDto;
-import com.devpet.feed.model.dto.LikeDto;
 import com.devpet.feed.model.dto.UserInfoDto;
-import com.devpet.feed.model.entity.PostInfo;
 import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Follow;
 
-import com.devpet.feed.model.relationship.Like;
 import com.devpet.feed.repository.PostInfoRepository;
 import com.devpet.feed.repository.UserInfoRepository;
-import com.sun.jdi.request.DuplicateRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 
@@ -49,12 +43,13 @@ public class UserInfoService {
         UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
 
         // 서로 관계가 있는지 체크
-        UserInfo check = userRepository.checkFollow(followedUser, followUser);
+        UserInfo check = userRepository.checkFollow(followUser, followedUser);
         if (check != null) {
             throw new Exception("이미 존재하는 관계입니다.");
         }
 
         Set<Follow> userFollower = user.getFollowers();
+//        Set<Follow> userFollower = new HashSet<>();
         Follow followerNode = new Follow(follower);
         userFollower.add(followerNode);
         return userInfoToUserInfoDto(userRepository.save(user));
@@ -62,29 +57,25 @@ public class UserInfoService {
 
     @Transactional
     public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) throws Exception {
+
+        // 유저가 db에 존재하는지 확인
+        userRepository.findNodeById(userInfoDto.getUserId()).orElseThrow(RuntimeException::new);
         UserInfo userInfo = userDtoToUserInfo(userInfoDto);
-        if (userRepository.existsById(userInfo.getUserId())) {
-            return userInfoToUserInfoDto(userRepository.save(userInfo));
-        } else throw new Exception("계정이 존재하지 않습니다.");
-    }
 
-    public UserInfo patchFollower(String followedUser, String followUser) {
-
-        return userRepository.deleteFollowById(followedUser , followUser);
-
+        return userInfoToUserInfoDto(userRepository.save(userInfo));
     }
 
     /**
      * 좋아요를 취소합니다.
      * @param likeDto
      */
-    public void cancelLike(LikeDto likeDto) {
-        //
-        userRepository.findNodeById(likeDto.getUserId()).orElseThrow(RuntimeException::new);
-        postRepository.findNodeById(likeDto.getPostId()).orElseThrow(RuntimeException::new);
-        userRepository.cancelLike(likeDto.getUserId(), likeDto.getPostId());
-
-    }
+//    public void cancelLike(LikeDto likeDto) {
+//        //
+//        userRepository.findNodeById(likeDto.getUserId()).orElseThrow(RuntimeException::new);
+//        postRepository.findNodeById(likeDto.getPostId()).orElseThrow(RuntimeException::new);
+//        userRepository.cancelLike(likeDto.getUserId(), likeDto.getPostId());
+//
+//    }
 
     /**
      * 팔로우를 취소 합니다.

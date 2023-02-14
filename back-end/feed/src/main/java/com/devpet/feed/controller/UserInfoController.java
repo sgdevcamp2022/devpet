@@ -1,16 +1,12 @@
 package com.devpet.feed.controller;
 
 import com.devpet.feed.model.dto.FollowDto;
-import com.devpet.feed.model.dto.FollowMemberDto;
-import com.devpet.feed.model.dto.LikeDto;
 import com.devpet.feed.model.dto.UserInfoDto;
-import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.service.UserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -34,13 +30,13 @@ public class UserInfoController {
 
     /**
      * 사용자 Follow
-     * @param followMemberDto
+     * @param followDto
      * @return
      * @throws Exception
      */
     @PostMapping("/follow")
-    public UserInfoDto followUser(@RequestBody FollowMemberDto followMemberDto)throws Exception{
-        return userInfoService.followUser(followMemberDto.getUsername(), followMemberDto.getFollowUser());
+    public UserInfoDto followUser(@RequestBody FollowDto followDto)throws Exception{
+        return userInfoService.followUser(followDto.getFollowing(), followDto.getFollower());
     }
 
     /**
@@ -55,23 +51,17 @@ public class UserInfoController {
         return userInfoDto;
     }
 
-    @PatchMapping("/follow")
-    public UserInfo patchUserFollower(@RequestBody FollowMemberDto followMemberDto) throws Exception {
-        UserInfo userInfoDto = userInfoService.patchFollower(followMemberDto.getUsername(), followMemberDto.getFollowUser());
-        return userInfoDto;
-    }
-
     @PostMapping("/follow/cancel")
     public void cancelFollow(@RequestBody FollowDto followDto) {
 
         userInfoService.cancelFollow(followDto);
     }
 
-    @PostMapping("/like/cancel")
-    public void cancelLike(@RequestBody LikeDto likeDto) {
-
-        userInfoService.cancelLike(likeDto);
-    }
+//    @PostMapping("/like/cancel")
+//    public void cancelLike(@RequestBody LikeDto likeDto) {
+//
+//        userInfoService.cancelLike(likeDto);
+//    }
 
 
     @GetMapping("/count/follower")

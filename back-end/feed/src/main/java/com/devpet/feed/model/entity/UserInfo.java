@@ -34,13 +34,13 @@ public class UserInfo {
     @Property
     private String gender;
 
-    @Relationship(type = "Follow", direction = INCOMING) //RelationShip 설정
+    @Relationship(type = "FOLLOW", direction = INCOMING) //RelationShip 설정
     private Set<Follow> followers;
-    @Relationship(type = "Follow", direction = OUTGOING) //RelationShip 설정
+    @Relationship(type = "FOLLOW", direction = OUTGOING) //RelationShip 설정
     private Set<Follow> follows;
-    @Relationship(type = "has_Post", direction = OUTGOING)
+    @Relationship(type = "POST", direction = OUTGOING)
     private Set<Post> posts;
-    @Relationship(type = "has_Recommended" , direction = OUTGOING)
+    @Relationship(type = "RECOMMENDED" , direction = OUTGOING)
     private Set<Recommend> recommends;
     @Relationship(type = "PET", direction = Relationship.Direction.OUTGOING)
     private Set<Pet> pet;
