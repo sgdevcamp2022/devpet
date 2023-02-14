@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -161,6 +162,13 @@ public class UserInfoService {
 
     public List<String> getFollowingRecommendPostList(String following) {
         return userRepository.getFollowingRecommendPostList(following);
+    }
+
+    // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
+    public Set<String> getFollowingCommentPostList(String userId) {
+
+        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+        return userRepository.getFollowingCommentPostList(userId);
     }
 
 }
