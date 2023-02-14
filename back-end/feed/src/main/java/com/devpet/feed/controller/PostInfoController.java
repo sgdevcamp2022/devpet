@@ -23,7 +23,7 @@ public class PostInfoController {
     public PostInfo getTest (){
         PostInfo postInfo = new PostInfo();
 
-        postInfo.setCreatedAt(new Timestamp(System.currentTimeMillis()));
+        postInfo.setCreatedAt(String.valueOf(new Timestamp(System.currentTimeMillis())));
         return postInfo;
 
     }

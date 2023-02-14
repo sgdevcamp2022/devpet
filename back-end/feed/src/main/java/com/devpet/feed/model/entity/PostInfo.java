@@ -31,7 +31,7 @@ public class PostInfo {
     private String postCategory;
 
     @Property
-    private Timestamp createdAt;
+    private String createdAt;
     @Relationship(type="TAGD" , direction = OUTGOING)
     private Set<Tag> tags ;
     @Relationship(type="LIKE" , direction = INCOMING)
@@ -43,5 +43,6 @@ public class PostInfo {
         this.postCategory = postInfoDto.getPostCategory();
         this.userId = postInfoDto.getUserId();
         this.tags = postInfoDto.getTags();
+        this.createdAt = String.valueOf(postInfoDto.getCreatedAt());
     }
 }
