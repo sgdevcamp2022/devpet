@@ -40,9 +40,9 @@ public class JobConfig {
      * redis에서 post 데이터를 읽어와서 mongodb에 저장하는 job 생성
      * @return PostSaveJob JobDetail 반환
      */
-    public JobDetail creatPostAveJob()
+    public JobDetail creatFavoriteSaveJob()
     {
-        return createJobDetail(PostSaveJob.class);
+        return createJobDetail(FavoriteSaveJob.class);
     }
     public Trigger createJobTrigger(String scheduleExp){
         // 크론 스케줄 사용
