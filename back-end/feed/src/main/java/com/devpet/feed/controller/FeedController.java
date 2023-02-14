@@ -1,6 +1,7 @@
 package com.devpet.feed.controller;
 
 import com.devpet.feed.model.dto.ScoreDto;
+import com.devpet.feed.model.dto.UserInfoDto;
 import com.devpet.feed.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,14 +44,16 @@ public class FeedController {
     }
 
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<List<String>> getPostList(@PathVariable("userId") String userId) {
+    @GetMapping("")
+    public ResponseEntity<List<String>> getPostList(@RequestBody Map<String, String> user) {
+        String userId = user.get("userId");
 
         return ResponseEntity.ok(feedService.getPostList(userId));
     }
     @PostMapping("")
-    public void feedScore(@RequestBody List<ScoreDto> scoreDtoList) {
+    public ResponseEntity<?> feedScore(@RequestBody List<ScoreDto> scoreDtoList) {
         feedService.feedScore(scoreDtoList);
+        return ResponseEntity.ok().build();
     }
 
 //

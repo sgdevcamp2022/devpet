@@ -158,4 +158,9 @@ public class UserInfoService {
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getPetPostList(userId);
     }
+
+    public List<String> getFollowingRecommendPostList(String following) {
+        return userRepository.getFollowingRecommendPostList(following);
+    }
+
 }

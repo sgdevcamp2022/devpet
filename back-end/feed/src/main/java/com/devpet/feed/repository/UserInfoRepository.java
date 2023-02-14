@@ -86,12 +86,23 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "with r, p " +
             "ORDER BY r.score DESC " +
             "LIMIT 4 " +
-            "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo) " +
+            "MATCH (p)-[:tagged]->(:Tag)<-[:tagged]-(n:PostInfo) " +
             "return n.postId")
+
     Set<String> getFollowRecommendPostList(@Param("userId") String userId);
 
     // 내가 키우는 펫과 관련된 태그의 게시물
     @Query("match(u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
             "return p.postId")
     Set<String> getPetPostList(@Param("userId") String userId);
+}
+    // List<String> getFollowRecommendPostList(@Param("userId") String userId);
+
+    @Query("Match (u:UserInfo{userId: $userId1})-[:Follow]->()-[f:Follow]-()-[:has_Post]->(p:PostInfo)" +
+            "Match (n:PostInfo)<-[:has_Recommended]-(u)" +
+            "with n" +
+            "limit 4" +
+            "MATCH (p)-[:tagged]->(:Tag)<-[:tagged]-(n:PostInfo)" +
+            "return DISTINCT p.postId")
+    List<String> getFollowingRecommendPostList(String userId);
 }
