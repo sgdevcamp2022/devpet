@@ -3,6 +3,7 @@ package com.devpet.feed.repository;
 import com.devpet.feed.model.entity.PostInfo;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -25,6 +26,9 @@ public interface PostInfoRepository extends Neo4jRepository<PostInfo, String> {
             "return m;"
     )
     PostInfo existsRecommended(String postId, String userId);
-
-
+    @Query("MATCH (m:PostInfo {postId: $postId}) " +
+            "MATCH (n:UserInfo {userId : $userId}) " +
+            "MATCH (n)-[c:COMMENT]->(m) " +
+            "return m;")
+    Optional<PostInfo> existsComment(String postId, String userId);
 }
