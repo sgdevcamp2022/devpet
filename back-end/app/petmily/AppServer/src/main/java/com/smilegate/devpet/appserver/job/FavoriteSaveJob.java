@@ -3,6 +3,7 @@ package com.smilegate.devpet.appserver.job;
 import com.smilegate.devpet.appserver.model.Favorite;
 import com.smilegate.devpet.appserver.model.FeedFavoriteKafkaRequest;
 import com.smilegate.devpet.appserver.repository.mongo.FavoriteRepository;
+import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
 import com.smilegate.devpet.appserver.repository.redis.FavoriteRedisRepository;
 import com.smilegate.devpet.appserver.repository.redis.NewPostRedisRepository;
 import com.smilegate.devpet.appserver.service.FavoriteService;
@@ -25,7 +26,7 @@ import java.util.Set;
 @Slf4j
 public class FavoriteSaveJob extends QuartzJobBean {
     private final RedisTemplate<String,byte[]> redisTemplate;
-    private final KafkaProducerService kafkaProducerService;
+    private final FeedRepository feedRepository;
     private final FavoriteService favoriteService;
     private final NewPostRedisRepository newPostRedisRepository;
     @Transactional
@@ -49,22 +50,23 @@ public class FavoriteSaveJob extends QuartzJobBean {
                 Long userId = (Long)favoritePair.getKey();
                 Boolean isFavorite = (Boolean)favoritePair.getValue();
                 favoriteArrayList.add(new Favorite(postId,isFavorite,userId));
+                // 좋아요를 누른 사람은 피드 캐시에 해당 게시글 추가.
                 if(isFavorite)
                 {
                     newPostRedisRepository.save(userId,postId);
                     favoriteCount++;
                 }
             }
-            // TODO: postId에 해당하는 작성자에게 좋아요 알람(true가 1개라도 있으면)
-//            if(favoriteCount>0)
-//            {
-//
-//            }
+
+            if(favoriteCount>0)
+            {
+                // TODO: postId에 해당하는 작성자에게 좋아요 알람(true가 1개라도 있으면)
+                feedRepository.findById(postId).ifPresent((feed)->{
+                    newPostRedisRepository.save(feed.getUserId(),postId);
+                });
+            }
         }
         // db에 bulk insert
         favoriteService.postAllFavorite(favoriteArrayList);
-
-        // kafka 전송
-        kafkaProducerService.feedFavoriteSend(favoriteArrayList);
     }
 }

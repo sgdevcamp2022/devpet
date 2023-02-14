@@ -26,6 +26,7 @@ public class FavoriteService {
     private final NewPostRedisRepository newPostRedisRepository;
     private final SequenceGeneratorService favoriteSequenceGeneratorService;
     private final MongoOperations mongoOperations;
+    private final KafkaProducerService kafkaProducerService;
     public Favorite postFavorite(Favorite favorite)
     {
         favorite.setFavoriteId(favoriteSequenceGeneratorService.longSequenceGenerate(Favorite.SEQUENCE_NAME));
@@ -81,6 +82,8 @@ public class FavoriteService {
         // bulk insert를 연산한 결과값을 가져옵니다.
         List<Favorite> result = new ArrayList<>(mongoOperations.insert(favoriteList,"favorite"));
 
+        // kafka 전송
+        kafkaProducerService.feedFavoriteSend(favoriteList);
         return result;
     }
 }
