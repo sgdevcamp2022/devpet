@@ -28,9 +28,9 @@ public class PostInfo {
     @Property
     private String postCategory;
 
-    @Relationship(type="tagged" , direction = OUTGOING)
+    @Relationship(type="TAGD" , direction = OUTGOING)
     private Set<Tag> tags ;
-    @Relationship(type="likes" , direction = INCOMING)
+    @Relationship(type="LIKE" , direction = INCOMING)
     private Set<Like> likes ;
     public PostInfo(PostInfoDto postInfoDto){
         this.postId = postInfoDto.getPostId();

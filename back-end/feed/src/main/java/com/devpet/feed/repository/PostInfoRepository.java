@@ -15,13 +15,13 @@ public interface PostInfoRepository extends Neo4jRepository<PostInfo, String> {
     Optional<PostInfo> findNodeById(String postId);
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId: $userId}) " +
-            "MATCH (m)<-[L:likes]-(n)" +
+            "MATCH (m)<-[L:LIKE]-(n)" +
             "DELETE L;")
     PostInfo dislikePost(String postId, String userId);
 
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +
-            "MATCH (n)-[r:has_Recommended]->(m) " +
+            "MATCH (n)-[r:RECOMMENDED]->(m) " +
             "return m;"
     )
     PostInfo existsRecommended(String postId, String userId);
