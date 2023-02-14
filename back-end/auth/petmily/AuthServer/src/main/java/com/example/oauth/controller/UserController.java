@@ -21,14 +21,14 @@ public class UserController {
     public ResponseEntity<?> signUpNewUser(
                             @RequestParam String username,
                             @RequestParam String name,
-                            @RequestParam String password,
                             @RequestParam String phone,
                             @RequestParam String provider){
+
+        //userService.checkDuplicateNickname(nickname);
 
         SignUpRequest signUpRequest = SignUpRequest.builder()
                 .username(username)
                 .name(name)
-                .password(password)
                 .phone(phone)
                 .provider(provider)
                 .build();
@@ -41,10 +41,8 @@ public class UserController {
         //userService.checkDuplicateEmail(username);
         userService.saveUser(signUpRequest);
 
-
         return ResponseEntity.ok("일반 회원가입");
     }
-
     @PutMapping("/{userId}/password")
     public ResponseEntity<?> changePassword(@PathVariable("userId") Long userId, @RequestParam String password)
     {
@@ -52,7 +50,6 @@ public class UserController {
 
         return ResponseEntity.ok("패스워드 변경 완료");
     }
-
     // 카카오 프로필 정보(자동 회원 가입)
 //    @PostMapping(value = "/kakao")
 //    public ResponseEntity<?> saveKaKaoUser(@RequestParam String username,
@@ -73,13 +70,6 @@ public class UserController {
 //                .build();
 //
 //        userService.saveKaKaoUser(signUpRequest);
-//
-//        ProfileDto profileDto = ProfileDto.builder()
-//                .name(signUpRequest.getName())
-//                .username(signUpRequest.getUsername())
-//                .build();
-//
-//        profileService.saveProfile(profileDto);
 //
 //        return ResponseEntity.ok("카카오 자동 회원 가입 성공(1차)");
 //    }

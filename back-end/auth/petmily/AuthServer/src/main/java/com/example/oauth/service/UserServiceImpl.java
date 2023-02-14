@@ -29,7 +29,10 @@ public class UserServiceImpl implements UserService {
         User user = User.builder()
                 .username(signUpRequest.getUsername())
                 .name(signUpRequest.getName())
+                .nickname(signUpRequest.getNickname())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
+                .age(signUpRequest.getAge())
+                .gender(signUpRequest.getGender())
                 .phone(signUpRequest.getPhone())
                 .provider(null)
                 .build();
@@ -84,7 +87,7 @@ public class UserServiceImpl implements UserService {
     public void changePassword (Long id,String password)
     {
         userRepository.findById(id).ifPresent(user->{
-            user.setPassword(passwordEncoder.encode(password));
+            user.setPassword(password);
             userRepository.save(user);
         });
     }
