@@ -95,7 +95,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     @Query("match(u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
             "return p.postId")
     Set<String> getPetPostList(@Param("userId") String userId);
-}
+
     // List<String> getFollowRecommendPostList(@Param("userId") String userId);
 
     @Query("Match (u:UserInfo{userId: $userId1})-[:Follow]->()-[f:Follow]-()-[:has_Post]->(p:PostInfo)" +
