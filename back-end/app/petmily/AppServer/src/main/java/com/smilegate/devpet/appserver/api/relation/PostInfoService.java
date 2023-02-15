@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import java.util.Map;
 
-@FeignClient(name = "relation", value = "post_info")
+@FeignClient(contextId = "post-info",name="relation")
 public interface PostInfoService {
     @GetMapping("/test")
     public PostInfo getTest ();

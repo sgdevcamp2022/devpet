@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@FeignClient(name = "relation", value = "feed")
+@FeignClient(contextId = "feed", name = "relation")
 public interface FeedService {
     @GetMapping(path="/feed")
     List<String> getPostList(UserInfo userInfo);

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 import java.util.Set;
 
-@FeignClient(name = "relation", value = "user_info")
+@FeignClient(contextId = "user-info",name="relation")
 public interface UserInfoService {
     @PostMapping("")
     public void saveUserInfo(UserInfoDto userInfo);
@@ -23,7 +23,6 @@ public interface UserInfoService {
 
     @PostMapping("/follow/cancel")
     public void cancelFollow(FollowDto followDto);
-
     @GetMapping("/count/follower")
     public Long countFollower(FollowDto followDto);
     @GetMapping("/count/following")

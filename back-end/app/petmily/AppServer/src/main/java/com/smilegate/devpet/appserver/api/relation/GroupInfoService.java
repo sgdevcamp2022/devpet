@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
-@FeignClient(name = "relation", value = "group_info")
+@FeignClient(contextId = "group-info", name="relation")
 public interface GroupInfoService {
     @PostMapping("")
     GroupInfo createGroup(GroupInfo userInfo);
