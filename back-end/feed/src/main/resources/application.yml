@@ -12,12 +12,26 @@ spring:
         password: 1q2w3e4r!@# #neo4j 데스크톱 콘솔에서 설정할 수 있다.
       database: feed
     redis:
-      host: localhost
+      host: 121.187.22.37
       port: 6379
       password: mypassword
+    kafka:
+      bootstrap-servers: 121.187.22.37:9092
+      consumer:
+        enable-auto-commit: true
+        auto-offset-reset: latest
 
 
-
+    application:
+      name: app
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://121.187.22.37:8761/eureka/
 
 logging:
   level:

@@ -112,4 +112,5 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 10" +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
+
 }
