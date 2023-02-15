@@ -29,7 +29,9 @@ public class KafkaProducerService {
             throw new RuntimeException("don't parse feed data error");
         }
     }
-
+    public void pingpongSend() {
+        kafkaTemplate.send("test", "test", "pingpong");
+    }
     public void feedFavoriteSend(List<Favorite> feedFavoriteKafkaRequestList) {
         try {
             String message = objectMapper.writeValueAsString(feedFavoriteKafkaRequestList);
