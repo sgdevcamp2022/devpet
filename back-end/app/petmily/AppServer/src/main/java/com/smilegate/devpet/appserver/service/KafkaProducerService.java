@@ -51,7 +51,7 @@ public class KafkaProducerService {
             throw new RuntimeException("don't parse comment data error");
         }
     }
-    public void pingpongSend() {
-        kafkaTemplate.send("test","test", "시바알시발 시바아아아아알");
+    public void pingpongSend(String message) {
+        kafkaTemplate.send("test", message);
     }
 }

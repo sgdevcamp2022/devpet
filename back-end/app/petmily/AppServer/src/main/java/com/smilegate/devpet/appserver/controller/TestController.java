@@ -21,13 +21,13 @@ public class TestController {
     }
 
     @GetMapping
-    public void test()
+    public void test(@RequestParam("message") String message)
     {
 //        newPostRedisRepository.save(1L, 1L);
 //        for(int i=1;i<saveSize;i++)
 //        {
 //            newPostRedisRepository.save(1L, (long) i);
 //        }
-        kafkaProducerService.pingpongSend();
+        kafkaProducerService.pingpongSend(message);
     }
 }
