@@ -140,4 +140,14 @@ public class UserInfoController {
     public ResponseEntity<Set<String>> getFollowingCommentPostList(@RequestBody FollowDto followDto){
         return ResponseEntity.ok(userInfoService.getFollowingCommentPostList(followDto.getFollower()));
     }
+
+    @GetMapping("/feed1/list/post")
+    public ResponseEntity<Set<String>> getPetLikeCommentPostList(@RequestBody FollowDto followDto){
+        return ResponseEntity.ok(userInfoService.getPetLikeCommentPostList(followDto.getFollower()));
+    }
+
+    @GetMapping("/feed2/list/post")
+    public ResponseEntity<Set<String>> getRecommendedFollowPostList(@RequestBody FollowDto followDto){
+        return ResponseEntity.ok(userInfoService.getRecommendedFollowPostList(followDto.getFollower()));
+    }
 }

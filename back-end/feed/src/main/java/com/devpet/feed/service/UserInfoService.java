@@ -176,5 +176,15 @@ public class UserInfoService {
         return userRepository.getFollowingCommentPostList(userId);
     }
 
+    public Set<String> getPetLikeCommentPostList(String userId) {
 
+        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+        return userRepository.getPetLikeCommentPostList(userId);
+    }
+
+    public Set<String> getRecommendedFollowPostList(String userId) {
+
+        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+        return userRepository.getRecommendedFollowPostList(userId);
+    }
 }
