@@ -135,4 +135,9 @@ public class UserInfoController {
         return ResponseEntity.ok(userInfoService.getFollowUserPost(userId.get("userId")));
     }
 
+
+    @GetMapping("/list/follow/comment/post")
+    public ResponseEntity<Set<String>> getFollowingCommentPostList(@RequestBody FollowDto followDto){
+        return ResponseEntity.ok(userInfoService.getFollowingCommentPostList(followDto.getFollower()));
+    }
 }
