@@ -170,11 +170,11 @@ public class UserInfoService {
     }
 
     // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
-    public Set<String> getFollowingCommentPostList(String userId) {
-
-        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
-        return userRepository.getFollowingCommentPostList(userId);
-    }
+//    public Set<String> getFollowingCommentPostList(String userId) {
+//
+//        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+//        return userRepository.getFollowingCommentPostList(userId);
+//    }
 
 
 }
