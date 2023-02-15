@@ -3,6 +3,7 @@ package com.smilegate.devpet.appserver.api.relation;
 import com.smilegate.devpet.appserver.model.FollowDto;
 import com.smilegate.devpet.appserver.model.UserInfo;
 import com.smilegate.devpet.appserver.model.UserInfoDto;
+import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 import java.util.Set;
 
+@FeignClient(name = "relation", value = "user_info")
 public interface UserInfoService {
     @PostMapping("")
     public void saveUserInfo(UserInfoDto userInfo);
