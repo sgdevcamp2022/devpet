@@ -26,6 +26,7 @@ public class PetService {
         UserInfo userInfo = userRepository.findNodeById(petInfoDto.getUserId()).orElseThrow(RuntimeException::new);
         // 수정 필요
         PetInfo petInfo = petRepository.findByPetName(petInfoDto.getPetName()).orElse(petRepository.save(new PetInfo(petInfoDto)));
+
         String uuid = petInfo.getPetId();
         Pet pet = new Pet(petInfo);
         userInfo.getPet().add(pet);
