@@ -104,11 +104,11 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "limit 4" +
             "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo)" +
             "return DISTINCT p.postId")
-    List<String> getFollowingRecommendPostList(String userId);
+    List<String> getFollowingRecommendPostList(@Param("userId") String userId);
 
     @Query("match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[:POST]->(p:PostInfo)" +
             "WITH datetime() AS now, datetime(p.createdAt) AS date , p" +
             "where duration.inSeconds(date, now).hours < 10" +
             "return p.postId")
-    List<String> getFollowingNewPostList(String userId);
+    List<String> getFollowingNewPostList(@Param("userId") String userId);
 }
