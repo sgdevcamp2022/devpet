@@ -15,16 +15,16 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
 
     @Query("MATCH (m:UserInfo {id: $followedUser}) " +
             "MATCH (n:UserInfo {id: $followUser}) "+
-            "MATCH (m)<-[F:Follow]-(n)"+
+            "MATCH (m)<-[F:FOLLOW]-(n)"+
             "DELETE F;" )
     UserInfo deleteFollowById(String followedUser, String followUser);
 
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
-    Optional<UserInfo> findNodeById (@Param("userId") String userId);
+    Optional<UserInfo> findNodeById (String userId);
 
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +
-            "MATCH (n)-[l:likes]->(m) "+
+            "MATCH (n)-[l:LIKE]->(m) "+
             "return n"
     )
     Optional<UserInfo> existsLike(String postId, String userId);
@@ -33,10 +33,11 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "with u, r, p " +
             "ORDER BY r.score DESC " +
             "LIMIT 4 " +
-//            "match (u)-[r]->(p) " +
+            "match (u)-[r]->(p) " +
             "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
             "return DISTINCT n.postId " +
             "order by n.createdAt DESC")
+
     List<String> getPostList(@Param("userId") String userId);
 
     @Query("match(u:UserInfo{userId : $userId})" + "DETACH DELETE u")
@@ -99,6 +100,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "with DISTINCT n, n.postId as id " +
             "return id " +
             "order by n.createdAt DESC")
+
     Set<String> getFollowRecommendPostList(@Param("userId") String userId);
 
     // 내가 키우는 펫과 관련된 태그의 게시물
@@ -119,6 +121,13 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     List<String> getFollowingRecommendPostList(String userId);
 
 
+    @Query("match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[:POST]->(p:PostInfo)" +
+            "WITH datetime() AS now, datetime(p.createdAt) AS date , p" +
+            "where duration.inSeconds(date, now).hours < 10" +
+            "return p.postId")
+    List<String> getFollowingNewPostList(String userId);
+
+
     // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
     @Query("match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[:COMMENT]->(:PostInfo)-[:TAGD]->(t:Tag)<-[:TAGD]-(p:PostInfo) " +
             "WITH p, datetime() AS now, p.createdAt AS date " +
@@ -127,3 +136,4 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return DISTINCT p.postId ")
     Set<String> getFollowingCommentPostList(@Param("userId") String userId);
 }
+

@@ -1,6 +1,7 @@
 package com.devpet.feed.model.entity;
 
 import com.devpet.feed.model.dto.PostInfoDto;
+import com.devpet.feed.model.relationship.Comment;
 import com.devpet.feed.model.relationship.Like;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Property;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.sql.Timestamp;
 import java.util.Set;
 
 import static org.springframework.data.neo4j.core.schema.Relationship.Direction.INCOMING;
@@ -28,14 +30,19 @@ public class PostInfo {
     @Property
     private String postCategory;
 
-    @Relationship(type="tagged" , direction = OUTGOING)
+    @Property
+    private String createdAt;
+    @Relationship(type="TAGD" , direction = OUTGOING)
     private Set<Tag> tags ;
-    @Relationship(type="likes" , direction = INCOMING)
+    @Relationship(type="LIKE" , direction = INCOMING)
     private Set<Like> likes ;
+    @Relationship(type="COMMENT" ,direction = INCOMING)
+    private Set<Comment> comments;
     public PostInfo(PostInfoDto postInfoDto){
         this.postId = postInfoDto.getPostId();
         this.postCategory = postInfoDto.getPostCategory();
         this.userId = postInfoDto.getUserId();
         this.tags = postInfoDto.getTags();
+        this.createdAt = String.valueOf(postInfoDto.getCreatedAt());
     }
 }

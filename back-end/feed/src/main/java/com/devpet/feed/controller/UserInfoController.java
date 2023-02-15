@@ -117,12 +117,22 @@ public class UserInfoController {
 
     /**
      * 내가 알 수 있는 사람의 게시물
-     * @param followDto
+     * @param userId
      * @return
      */
     @GetMapping("/list/follow/recommend/post")
-    public ResponseEntity<List<String>> getFollowingRecommendPostList(@RequestBody FollowDto followDto){
-        return ResponseEntity.ok(userInfoService.getFollowingRecommendPostList(followDto.getFollowing()));
+    public ResponseEntity<List<String>> getFollowingRecommendPostList(@RequestBody Map<String ,String > userId){
+        return ResponseEntity.ok(userInfoService.getFollowingRecommendPostList(userId.get("userId")));
+    }
+
+    /**
+     * 내가 팔로우 한 유저의 새로운 게시물 보기
+     * @param userId
+     * @return
+     */
+    @GetMapping("/list/follow/new")
+    public ResponseEntity<List<String>> getFollowUserPost(@RequestBody Map<String ,String > userId){
+        return ResponseEntity.ok(userInfoService.getFollowUserPost(userId.get("userId")));
     }
 
 
