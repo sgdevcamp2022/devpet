@@ -7,12 +7,14 @@ import lombok.Setter;
 
 @RequiredArgsConstructor
 @Getter @Setter
-@Builder
 public class FeedFavoriteKafkaRequest {
     private Long feedId;
     private Long userId;
-    private Long isFavorite;
+    private boolean isFavorite;
 
     public FeedFavoriteKafkaRequest(Long feedId, boolean isFavorite, Long userId) {
+        this.feedId = feedId;
+        this.isFavorite = isFavorite;
+        this.userId = userId;
     }
 }
