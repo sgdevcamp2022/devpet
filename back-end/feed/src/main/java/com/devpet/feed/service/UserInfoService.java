@@ -160,8 +160,13 @@ public class UserInfoService {
         return userRepository.getPetPostList(userId);
     }
 
-    public List<String> getFollowingRecommendPostList(String following) {
-        return userRepository.getFollowingRecommendPostList(following);
+    public List<String> getFollowingRecommendPostList(String userId) {
+        return userRepository.getFollowingRecommendPostList(userId);
+    }
+
+
+    public List<String> getFollowUserPost(String userId) {
+        return userRepository.getFollowingNewPostList(userId);
     }
 
     // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
@@ -170,5 +175,6 @@ public class UserInfoService {
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getFollowingCommentPostList(userId);
     }
+
 
 }

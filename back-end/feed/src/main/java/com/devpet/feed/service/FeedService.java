@@ -11,10 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -54,7 +53,6 @@ public class FeedService {
             // 게시글별 점수 리스트 계산된 평균보다 높은 점수 리스트만 추출
             List<ScoreDto> scoreList = scoreDtoList.stream().filter(s -> s.getScore() > finalAverage).collect(Collectors.toList());
             Set<Recommend> recommends = new HashSet<>();
-
             // 사용자 추천 리스트 갱신
             // TODO: 너무 많은 DB 조회
             //  있는 데이터만 가져와서 filter 처리로 빼고, 없는 데이터만 추가할 쿼리로 변경 필요.
@@ -66,6 +64,7 @@ public class FeedService {
                 if(relationCheck.isEmpty()){
                     PostInfo postInfo = postInfoRepository.findNodeById(scoreDto.getPostId()).orElseThrow(RuntimeException::new);
                     Recommend recommend = new Recommend(postInfo, scoreDto);
+                    recommend.setCreatedAt(String.valueOf(new Timestamp(System.currentTimeMillis())));
                     recommends.add(recommend);
                 }
             }

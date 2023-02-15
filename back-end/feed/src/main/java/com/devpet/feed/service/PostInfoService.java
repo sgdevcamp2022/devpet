@@ -1,16 +1,19 @@
 package com.devpet.feed.service;
 
+import com.devpet.feed.model.dto.CommentDto;
 import com.devpet.feed.model.dto.LikePostDto;
 import com.devpet.feed.model.dto.PostInfoDto;
 import com.devpet.feed.model.entity.PostInfo;
 import com.devpet.feed.model.entity.Tag;
 import com.devpet.feed.model.entity.UserInfo;
+import com.devpet.feed.model.relationship.Comment;
 import com.devpet.feed.model.relationship.Like;
 import com.devpet.feed.model.relationship.Post;
 import com.devpet.feed.repository.PostInfoRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,5 +93,26 @@ public class PostInfoService {
         // 게시글이 db에 존재하는지 검사
         postInfoRepository.findNodeById(likePostDto.getPostId()).orElseThrow(RuntimeException::new);
         return postInfoRepository.dislikePost(likePostDto.getPostId(), likePostDto.getUserId());
+    }
+
+    @Transactional
+    public ResponseEntity<?> postComment(CommentDto commentDto)  {
+        Optional<PostInfo> post = postInfoRepository.existsComment(commentDto.getPostId(), commentDto.getUserId());
+
+        if(post.isPresent()){
+            return ResponseEntity.badRequest().body("BadRequest");
+        }
+        UserInfo userInfo = userInfoRepository.findNodeById(commentDto.getUserId()).orElseThrow(RuntimeException::new);
+        PostInfo postInfo = postInfoRepository.findNodeById(commentDto.getPostId()).orElseThrow(RuntimeException::new);
+        Comment comment = new Comment(userInfo);
+        comment.setCreatedAt(commentDto.getCreatedAt());
+        postInfo.getComments().add(comment);
+        return ResponseEntity.ok(postInfoRepository.save(postInfo));
+    }
+
+    @Transactional
+    public ResponseEntity<?> getCommentPost(String userId) {
+        UserInfo userInfo = userInfoRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+        return ResponseEntity.ok(postInfoRepository.findCommentedPostById(userInfo.getUserId()));
     }
 }

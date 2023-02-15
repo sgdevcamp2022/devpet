@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.*;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @RelationshipProperties
@@ -21,6 +22,8 @@ public class Recommend {
     @TargetNode
     private PostInfo postInfo;
 
+    @Property
+    private String createdAt;
     public Recommend(PostInfo postInfo, ScoreDto scoreDto){
         this.postInfo = postInfo;
         this.score = scoreDto.getScore();
