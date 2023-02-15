@@ -20,14 +20,14 @@ spring:
       host: localhost
       port: 27017
       database: app_db
-    redis:
-      lettuce:
-        pool:
-          min-idle: 0
-          max-idle: 8
-          max-active: 8
-      port: 6379
-      host: localhost
+  redis:
+    lettuce:
+      pool:
+        min-idle: 0
+        max-idle: 8
+        max-active: 8
+    port: 6379
+    host: localhost
   devtools:
     livereload:
       enabled: true

@@ -42,10 +42,14 @@ public class ProfileService {
     }
     public Profile getProfile(UserInfo userInfo)
     {
-        Profile result = profileRepository.findByUserId(userInfo.getUserId()).orElseThrow(RuntimeException::new);
+        Profile result = getProfileByUserId(userInfo.getUserId());
         return result;
     }
-
+    public Profile getProfileByUserId(Long userId)
+    {
+        Profile result = profileRepository.findByUserId(userId).orElseThrow(RuntimeException::new);
+        return result;
+    }
     public List<Profile> getFollowerList(Long profileId)
     {
         List<Long> followerUserIds = null;// TODO: 관계 서버에서 follower 정보 읽어오기

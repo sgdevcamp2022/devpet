@@ -35,9 +35,13 @@ public class Feed extends BaseModel implements Serializable {
     @Field
     private ArrayList<String> imageUrl;
     @Field
+    private Long userId;
+    @Field
     private ArrayList<Long> hashTag;
     @Transient
     private List<Comment> comments;
+    @Transient
+    private boolean isFavorite;
 
     public Feed(Long feedId, String content, Location location, ArrayList<Long> tag, Long groupId, ArrayList<String> imageUrl, ArrayList<Long> hashTag) {
         this.feedId = feedId;
@@ -51,9 +55,14 @@ public class Feed extends BaseModel implements Serializable {
 
     public Feed(FeedRequest feedRequest, UserInfo userInfo)
     {
-        setFeedData(feedRequest);
+        setFeedData(feedRequest,userInfo);
     }
 
+    public void setFeedData(FeedRequest feedRequest,UserInfo userInfo)
+    {
+        this.setFeedData(feedRequest);
+        this.setUserId(userInfo.getUserId());
+    }
     public void setFeedData(FeedRequest feedRequest)
     {
         this.setLocation(feedRequest.getLocation());

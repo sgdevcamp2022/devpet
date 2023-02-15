@@ -3,12 +3,15 @@ package com.smilegate.devpet.appserver.service;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.smilegate.devpet.appserver.model.Favorite;
 import com.smilegate.devpet.appserver.model.Feed;
 import com.smilegate.devpet.appserver.model.FeedCommentKafkaRequest;
 import com.smilegate.devpet.appserver.model.FeedFavoriteKafkaRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -26,18 +29,17 @@ public class KafkaProducerService {
             throw new RuntimeException("don't parse feed data error");
         }
     }
-
-    public void feedFavoriteSend(Long feedId, boolean isFavorite, Long userId) {
+    public void pingpongSend() {
+        kafkaTemplate.send("test", "test", "pingpong");
+    }
+    public void feedFavoriteSend(List<Favorite> feedFavoriteKafkaRequestList) {
         try {
-            String message = objectMapper.writeValueAsString(
-                    new FeedFavoriteKafkaRequest(feedId, isFavorite, userId)
-            );
+            String message = objectMapper.writeValueAsString(feedFavoriteKafkaRequestList);
             kafkaTemplate.send(FEED_TOPIC, FEED_SUBSCRIBER_GROUP, message);
         } catch (JsonProcessingException jpe) {
             throw new RuntimeException("don't parse favorite data error");
         }
     }
-
     public void feedCommentSend(Long feedId, String comment, Long userId) {
         try {
             String message = objectMapper.writeValueAsString(

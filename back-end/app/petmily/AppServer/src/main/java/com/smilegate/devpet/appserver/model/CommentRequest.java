@@ -10,4 +10,5 @@ public class CommentRequest {
     private Long commentId;
     private Long profileId;
     private String comment;
+    private Long parentCommentId;
 }

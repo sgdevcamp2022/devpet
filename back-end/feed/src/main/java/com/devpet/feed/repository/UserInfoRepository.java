@@ -1,6 +1,7 @@
 package com.devpet.feed.repository;
 
 import com.devpet.feed.model.entity.UserInfo;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
