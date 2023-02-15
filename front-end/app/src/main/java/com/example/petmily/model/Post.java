@@ -1,15 +1,12 @@
 package com.example.petmily.model;
 
 public class Post {
-    /*
-    int
-     */
+    int image;//List<String> image;
+    String postId;
 
-    int image;
     String nickname;
     String text;
     String time;
-    String refresh_token;
 
     public Post(int image, String nickname, String text, String time) {
         this.image = image;

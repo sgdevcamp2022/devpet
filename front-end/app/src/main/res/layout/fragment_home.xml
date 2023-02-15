@@ -13,7 +13,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <com.sothree.slidinguppanel.SlidingUpPanelLayout
             android:id="@+id/sliding_layout"
@@ -32,27 +33,27 @@
                 android:orientation="horizontal">
 
 
-                <fragment
-                    android:id="@+id/map"
-                    android:name="com.naver.maps.map.MapFragment"
+                <com.naver.maps.map.MapView
+                    android:id="@+id/map_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:layout_constraintBottom_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/sliding"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="@drawable/post_corner"
+              >
 
 
                 <LinearLayout
@@ -62,16 +63,18 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                  >
+
 
                     <LinearLayout
-                        android:id="@+id/up"
+                        android:id="@+id/post_half_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
+                        android:orientation="vertical">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/up"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
@@ -102,23 +105,31 @@
                                 tools:layout_editor_absoluteY="10dp" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/place_list"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:listitem="@layout/place_list" >
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/post_half_frame"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center" />
 
                     </LinearLayout>
 
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/place_list"
+                        android:id="@+id/post_grid_frame"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        tools:listitem="@layout/place_list" />
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"/>
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/post_list"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
 
                 </LinearLayout>
-
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

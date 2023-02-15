@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="Post"
-            type="com.example.petmily.model.Post" />
+            name="postGrid"
+            type="com.example.petmily.model.data.post.PostGrid" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -26,8 +26,11 @@
             android:id="@+id/nickname"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="닉네임"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@={postGrid.nickname}"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:paddingStart="3dp"
+            android:textSize="15dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/post_image"
             app:layout_constraintBottom_toTopOf="@id/text"/>
@@ -36,8 +39,9 @@
             android:id="@+id/text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="내용"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@={postGrid.text}"
+            android:textSize="10dp"
+            android:padding="3dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nickname"
             app:layout_constraintBottom_toTopOf="@id/time"/>
@@ -46,9 +50,10 @@
             android:id="@+id/time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="1시간전"
+            android:text="@={postGrid.time}"
+            android:textSize="7dp"
+            android:paddingStart="3dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text" />
     </androidx.constraintlayout.widget.ConstraintLayout>

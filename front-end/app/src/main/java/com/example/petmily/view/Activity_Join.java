@@ -60,7 +60,8 @@ public class Activity_Join extends AppCompatActivity {
             public void onChanged(@Nullable final Boolean emailDuplication) {
                 if(emailDuplication)
                 {
-                    finish();
+                    Intent intent = new Intent(getApplicationContext(), Activity_MakeProfile.class);
+                    startActivity(intent);
                 }
                 else
                 {
@@ -75,7 +76,6 @@ public class Activity_Join extends AppCompatActivity {
             public void onChanged(@Nullable final Boolean nicknameDuplication) {
                 if(nicknameDuplication)
                 {
-                    finish();
                 }
                 else
                 {

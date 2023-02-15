@@ -5,8 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "ChatContentSQL")
-public class ChatContentSQL {
+@Entity(tableName = "ChatListSQL")
+public class ChatListSQL {
 
     @NonNull
     @PrimaryKey
@@ -20,13 +20,30 @@ public class ChatContentSQL {
 
     public String sender;
 
+    public int count;
 
-    public ChatContentSQL(@NonNull String roodId, String timeLog, String senderNickname, String profileImage, String sender) {
+    public String lastText;
+
+    public String alarm;
+
+    public ChatListSQL(@NonNull String roodId, String timeLog, String senderNickname, String profileImage, String sender, int count, String lastText, String alarm) {
         this.roodId = roodId;
         this.timeLog = timeLog;
         this.senderNickname = senderNickname;
         this.profileImage = profileImage;
         this.sender = sender;
+        this.count = count;
+        this.lastText = lastText;
+        this.alarm = alarm;
+    }
+
+    @NonNull
+    public String getRoodId() {
+        return roodId;
+    }
+
+    public void setRoodId(@NonNull String roodId) {
+        this.roodId = roodId;
     }
 
     public String getTimeLog() {
@@ -37,11 +54,11 @@ public class ChatContentSQL {
         this.timeLog = timeLog;
     }
 
-    public String getNickname() {
+    public String getSenderNickname() {
         return senderNickname;
     }
 
-    public void setNickname(String senderNickname) {
+    public void setSenderNickname(String senderNickname) {
         this.senderNickname = senderNickname;
     }
 
@@ -53,20 +70,36 @@ public class ChatContentSQL {
         this.profileImage = profileImage;
     }
 
-    public String getRoodId() {
-        return roodId;
-    }
-
-    public void setRoodId(String roodId) {
-        this.roodId = roodId;
-    }
-
     public String getSender() {
         return sender;
     }
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    public String getLastText() {
+        return lastText;
+    }
+
+    public void setLastText(String lastText) {
+        this.lastText = lastText;
+    }
+
+    public String getAlarm() {
+        return alarm;
+    }
+
+    public void setAlarm(String alarm) {
+        this.alarm = alarm;
     }
 }
 

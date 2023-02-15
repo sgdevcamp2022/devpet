@@ -26,7 +26,7 @@ public abstract class RoomDatabase extends androidx.room.RoomDatabase
         }
         return database;
     }
-    public abstract Dao_Interface chatRoomDao();
+    public abstract RoomDao_Interface chatRoomDao();
 
 }
 

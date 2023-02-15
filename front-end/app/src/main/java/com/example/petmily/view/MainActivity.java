@@ -28,8 +28,13 @@ import com.example.petmily.viewModel.AuthenticationViewModel;
 import com.example.petmily.viewModel.ChatRoomViewModel;
 import com.example.petmily.viewModel.ChatService;
 import com.example.petmily.viewModel.ChatViewModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -42,13 +47,36 @@ public class MainActivity extends AppCompatActivity {
 
     private AuthenticationViewModel authenticationViewModel;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding= DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
         init();
+
+        /*
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w("asdsad", "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        String token = task.getResult();
+
+                        // Log and toast
+
+                        Log.d("asdsad", token);
+                    }
+                });
+
+
+         */
+
+
 
     }
 
@@ -90,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
+
         fragment_home = new Fragment_Home();
         fragment_group = new Fragment_Group();
         fragment_profile = new Fragment_Profile();
@@ -98,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.main_frame, fragment_group);
         fragmentTransaction.add(R.id.main_frame, fragment_profile);
         fragmentTransaction.add(R.id.main_frame, fragment_home).commitAllowingStateLoss();
+
+
 
         BottomNavigationView bottomNavigationView = binding.bottomToolbar;
         bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
@@ -147,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case android.R.id.home:
                 //select back button
-                Intent intent = new Intent(this, Activity_Login.class);
+                Intent intent = new Intent(this, Activity_Make.class);
                 startActivity(intent);
 
                 //ChatRoomViewModel chatRoomViewModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);

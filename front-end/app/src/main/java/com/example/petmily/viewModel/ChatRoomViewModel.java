@@ -10,8 +10,6 @@ import com.example.petmily.model.data.chat.room.Message;
 
 import com.example.petmily.model.data.chat.room.local.RoomDatabase;
 import com.example.petmily.model.data.chat.room.local.RoomSQL;
-import com.example.petmily.model.data.chat.room.remote.API_Interface;
-import com.example.petmily.model.data.chat.room.remote.Room;
 import com.google.gson.Gson;
 
 
@@ -24,18 +22,17 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
 public class ChatRoomViewModel extends AndroidViewModel {
 
+    final private String URL = "10.0.2.2:4444";
+
     private StompClient stompClient;
     boolean isUnexpectedClosed;
     private String TAG = "테스트 :\t";
-    private String URL;
+    private String roomId;
     private RoomDatabase db;
     // private List<ChatRoomSQL> chatList;
 
@@ -79,27 +76,8 @@ public class ChatRoomViewModel extends AndroidViewModel {
 
     public ChatRoomViewModel(@NonNull Application application) {
         super(application);
-        db = RoomDatabase.getInstance(application.getApplicationContext());
 
 
-
-        Message message = new Message("TALK", "1", "유저1", "유저2", "텍스트", "0000");
-        List<Message> test1 = new ArrayList<Message>();
-        test1.add(message);
-        List<RoomSQL> test = new ArrayList<RoomSQL>();
-        test.add(new RoomSQL("1", "유저1", "유저2", test1, "0000"));
-        test.add(new RoomSQL("2", "유저3", "유저4", test1, "0000"));
-        db.chatRoomDao().insertMessage(test);
-
-
-
-
-
-        List<RoomSQL> test2 = db.chatRoomDao().getMessage();
-        for(int i = 0; i < test.size(); i++)
-        {
-            Log.e("룸 테스트 : ", test2.get(i).roomId + " " + test2.get(i).getSenderName());
-        }
 
 
         //"2023-01-31T20:50:59.759706"
@@ -207,7 +185,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
     public void sendMessage(String text, String myName, String yourName)
     {
         Gson parser=new Gson();
-        Message message = new Message("TALK", URL, myName, yourName, text, "0000");
+        Message message = new Message("TALK", roomId, myName, yourName, text, "0000");
         stompClient.send("/pub/chat/message", parser.toJson(message)).subscribe();
     }
 
@@ -215,7 +193,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
     @SuppressLint("CheckResult")
     public void topicMessage()
     {
-        stompClient.topic("/sub/chat/room/"+URL).subscribe(topicMessage -> {
+        stompClient.topic("/sub/chat/room/"+roomId).subscribe(topicMessage -> {
             Gson parser=new Gson();
             Message payLoad = parser.fromJson(topicMessage.getPayload(), Message.class);
             /*
@@ -240,7 +218,7 @@ public class ChatRoomViewModel extends AndroidViewModel {
     @SuppressLint("CheckResult")
     public void initStomp(String url){
         //stompClient= Stomp.over(Stomp.ConnectionProvider.JWS, "ws://121.187.22.37:8080/ws-stomp/websocket"); // /websocket 꼭 붙이기
-        stompClient= Stomp.over(Stomp.ConnectionProvider.JWS, "ws://10.0.2.2:4444/ws-stomp/websocket");
+        stompClient= Stomp.over(Stomp.ConnectionProvider.JWS, "ws://"+URL+"/ws-stomp/websocket");
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
                 case OPENED:
@@ -263,12 +241,13 @@ public class ChatRoomViewModel extends AndroidViewModel {
 
         });
         stompClient.connect();
-        URL = url;
+        roomId = url;
     }
     public void stompClose()
     {
         stompClient.disconnect();
     }
+
 
 
 

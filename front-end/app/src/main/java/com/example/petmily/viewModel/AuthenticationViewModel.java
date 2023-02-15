@@ -2,6 +2,7 @@ package com.example.petmily.viewModel;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
@@ -43,6 +44,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
     private Call<?> restApi;
 
     private TokenSQL token;
+    private String email;
 
     private SingleLiveEvent<Boolean> eventEmailDuplication;
     public SingleLiveEvent<Boolean> getEventEmailDuplication() {
@@ -82,7 +84,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
         init();
     }
 
-    public void init()//앱 시작시 사용할 메소드
+    public void init()
     {
         db = AuthDatabase.getInstance(context);
         authCallback = new AuthCallback(context);
@@ -135,6 +137,14 @@ public class AuthenticationViewModel extends AndroidViewModel {
             TokenSQL logout = new TokenSQL(token.getUid(), "", "");
             db.authDao().insertToken(logout);
         }
+    }
+    public void tokenSave(RefreshToken refreshToken)
+    {
+        String newAccessToken = refreshToken.getAccess_token();
+        String newRefreshToken = refreshToken.getRefresh_token();
+        String uid = refreshToken.getUid();
+        TokenSQL newToken = new TokenSQL(uid, newAccessToken, newRefreshToken);
+        db.authDao().insertToken(newToken);
     }
 
 
@@ -213,28 +223,23 @@ public class AuthenticationViewModel extends AndroidViewModel {
                 }
                 else if(body instanceof RefreshToken)
                 {
-                    RefreshToken refreshToken = (RefreshToken) body;
-                    String newAccessToken = refreshToken.getAccess_token();
-                    String newRefreshToken = refreshToken.getRefresh_token();
-                    String uid = refreshToken.getUid();
-                    TokenSQL newToken = new TokenSQL(uid, newAccessToken, newRefreshToken);
-                    db.authDao().insertToken(newToken);
+                    tokenSave((RefreshToken) body);
                     eventLoginExpiration.setValue(true);
                 }
             }
             else if(body instanceof RefreshToken)
             {
-                RefreshToken refreshToken = (RefreshToken) body;
-                String newAccessToken = refreshToken.getAccess_token();
-                String newRefreshToken = refreshToken.getRefresh_token();
-                String uid = refreshToken.getUid();
-                TokenSQL newToken = new TokenSQL(uid, newAccessToken, newRefreshToken);
-                db.authDao().insertToken(newToken);
+                tokenSave((RefreshToken) body);
                 eventRefreshExpiration.setValue(true);
             }
-
-
-
+            else
+            {
+                SharedPreferences sharedPreferences= context.getSharedPreferences("token", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor= sharedPreferences.edit();
+                editor.putString("token", token.getAccessToken()); // key,value 형식으로 저장
+                editor.putString("email", email);
+                editor.commit();
+            }
         }
 
         @Override

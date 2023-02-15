@@ -22,6 +22,7 @@ import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityChatRoomBinding;
 import com.example.petmily.model.data.chat.room.Message;
 import com.example.petmily.viewModel.ChatRoomViewModel;
+import com.example.petmily.viewModel.ChatViewModel;
 
 import java.util.List;
 
@@ -29,8 +30,9 @@ public class Activity_Chat_Room extends AppCompatActivity {
 
     private ActivityChatRoomBinding binding;
     private Context context;
-    private ChatRoomViewModel chatRoomViewModel;
-    private RecyclerView chatlist;
+    private ChatViewModel chatViewModel;
+    private RecyclerView messageList;
+    private String roomId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,42 +40,20 @@ public class Activity_Chat_Room extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_chat_room);
         binding.setChatRoom(this);
         context = this;
-        String roomId = "";
-        String senderNickname = "유저1";
-        String receiverNickname = "유저2";
 
-
+        init();
+    }
+    public void init()
+    {
+        roomId = "";
         roomId = getIntent().getStringExtra("roomId");
 
+        chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
+        chatViewModel.init();
+        chatViewModel.initChatRoom(roomId);
 
-        chatRoomViewModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
-
-        initObserver();
-        chatRoomViewModel.initChatRoom(roomId,senderNickname, receiverNickname);
-
-
-        //chatRoomViewModel.getChatMessageSQL();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        chatlist = binding.chatlist;
-        chatlist.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
-
-        Log.e("룸 내에서 Id 확인 : ", roomId);
-
-
-
+        messageList = binding.chatlist;
+        messageList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
         EditText editText = binding.content;
         editText.setText("");
@@ -82,16 +62,15 @@ public class Activity_Chat_Room extends AppCompatActivity {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                chatRoomViewModel.sendMessage(editText.getText().toString(), "user1", "user2");
-
-
+                chatViewModel.sendMessage(editText.getText().toString());
+                editText.setText("");
             }
         });
-
-
-
+        initObserver();
     }
+
     public void initObserver() {
+        /*
         final Observer<List<Message>> chatMessageObserver = new Observer<List<Message>>() {
             @Override
             public void onChanged(@Nullable final List<Message> chatMessage) {
@@ -110,17 +89,23 @@ public class Activity_Chat_Room extends AppCompatActivity {
         };
         chatRoomViewModel.getMessages().observe(this, messagesObserver);
 
+         */
+
+        final Observer<List<Message>> messageListObserver = new Observer<List<Message>>() {
+            @Override
+            public void onChanged(@Nullable final List<Message> chatMessage) {
+                Adapter_Chat_Room newAdapter = new Adapter_Chat_Room(chatMessage);
+                messageList.setAdapter(newAdapter);
+            }
+        };
+        chatViewModel.getMessageList().observe(this, messageListObserver);
     }
-
-
 
     @Override
     public void onDestroy()
     {
         super.onDestroy();
-
-        chatRoomViewModel.stompClose();
-
+        chatViewModel.stompClose();
     }
 
 }

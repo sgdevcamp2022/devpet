@@ -2,7 +2,6 @@ package com.example.petmily.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,12 +33,12 @@ public class Fragment_Profile extends Fragment {
         context = container.getContext();
 
 
-        Fragment_Post fragment_post = new Fragment_Post();
+        Fragment_Group fragment_postGrid = new Fragment_Group();
 
 
         fragmentManager = getParentFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.profile_frame, fragment_post).commitAllowingStateLoss();
+        fragmentTransaction.replace(R.id.profile_frame, fragment_postGrid).commitAllowingStateLoss();
 
 
                 /*

@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="message"
-            type="com.example.petmily.model.data.chat.list.Chat_List" />
+            name="chatList"
+            type="com.example.petmily.model.data.chat.list.ChatList" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -36,27 +36,43 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
                 android:layout_marginTop="20dp"
-                android:text="@={message.nickname}" />
+                android:text="@={chatList.sender}" />
 
             <TextView
                 android:id="@+id/alarm_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="대충 마지막 텍스트" />
+                android:text="@={chatList.lastText}" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/check"
+        <LinearLayout
+            android:id="@+id/right"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            android:background="#ff0000"
-            android:textColor="#ffffff"
-            android:padding="10dp"
-            android:layout_marginRight="20dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="5dp"
+                android:padding="3dp"
+                android:text="@={chatList.timeLog}" />
+
+            <TextView
+                android:id="@+id/check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dp"
+                android:background="#ff0000"
+                android:padding="10dp"
+                android:text="@={chatList.alarm}"
+                android:textColor="#ffffff" />
+
+        </LinearLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
