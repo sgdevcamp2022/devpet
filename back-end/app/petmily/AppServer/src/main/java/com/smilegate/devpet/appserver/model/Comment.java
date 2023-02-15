@@ -23,6 +23,8 @@ public class Comment extends BaseModel {
     @Field
     private long profileId;
     @Field
+    private long parentCommentId;
+    @Field
     private String comment;
     public Comment(CommentRequest commentRequest,long postId,long seq) {
         this.setComment(commentRequest);
@@ -31,8 +33,11 @@ public class Comment extends BaseModel {
     }
     public void setComment(CommentRequest commentRequest)
     {
+        if (commentRequest.getCommentId()!=null)
+            this.commentId = commentRequest.getCommentId();
         this.setProfileId(commentRequest.getProfileId());
         this.setComment(commentRequest.getComment());
+        this.setParentCommentId(commentRequest.getParentCommentId());
     }
     public void setComment(String comment)
     {

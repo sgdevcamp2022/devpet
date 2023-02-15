@@ -5,31 +5,39 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Repository
-public class CommentRedisRepository {
-    private final StringRedisTemplate stringRedisTemplate;
-    private final String KEY_GENERATOR = "_comment";
-    private final SetOperations<String,String> feedIdListOperation = stringRedisTemplate.opsForSet();
-    public void save(Long userId,Long feedId)
-    {
-        feedIdListOperation.add(keyGenerator(userId),feedId.toString());
+public class CommentRedisRepository implements RedisSetRepository<Long,Long>{
+    public static final String KEY_GENERATOR = "comment";
+    private final SetOperations<String,String> commentIdSetOperation;
+
+    public CommentRedisRepository(StringRedisTemplate stringRedisTemplate) {
+        this.commentIdSetOperation = stringRedisTemplate.opsForSet();
     }
-    public void saveAll(Long userId, Collection<Long> feedIds)
+
+    public void save(Long userId,Long commentId)
     {
-        feedIdListOperation.union(keyGenerator(userId),feedIds.stream().map(Object::toString).collect(Collectors.toList()));
+        commentIdSetOperation.add(keyGenerator(userId),commentId.toString());
+    }
+    public void saveAll(Long userId, Collection<Long> commentIds)
+    {
+        commentIdSetOperation.union(keyGenerator(userId),commentIds.stream().map(Object::toString).collect(Collectors.toList()));
     }
     public List<Long> findById(Long userId, int count)
     {
-        return feedIdListOperation.pop(keyGenerator(userId),count).stream().map(Long::parseLong).collect(Collectors.toList());
+        List<String> result = commentIdSetOperation.pop(keyGenerator(userId),count);
+        if (result==null)
+            return new ArrayList<>();
+        return result.stream().map(Long::parseLong).collect(Collectors.toList());
     }
 
     public String keyGenerator(Long userId)
     {
-        return userId+KEY_GENERATOR;
+        return String.format("%s_%s",userId,KEY_GENERATOR);
     }
 }
