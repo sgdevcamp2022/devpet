@@ -24,7 +24,7 @@ public class PetService {
     public String savePet(PetInfoDto petInfoDto) {
 
         // 수정 필요
-        PetInfo petInfo = petRepository.findByPetId(petInfoDto.getPetId()).orElse(petRepository.save(new PetInfo(petInfoDto)));
+        PetInfo petInfo = petRepository.findByPetName(petInfoDto.getPetName()).orElse(petRepository.save(new PetInfo(petInfoDto)));
 
         String uuid = petInfo.getPetId();
         return uuid;
