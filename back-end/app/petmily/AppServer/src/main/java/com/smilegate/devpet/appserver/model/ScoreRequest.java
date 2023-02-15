@@ -1,13 +1,15 @@
 package com.smilegate.devpet.appserver.model;
 
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
+@Setter
 @RequiredArgsConstructor
-public class LikePostDto {
+public class ScoreRequest {
     private String userId;
     private String postId;
+    private double score;
 }

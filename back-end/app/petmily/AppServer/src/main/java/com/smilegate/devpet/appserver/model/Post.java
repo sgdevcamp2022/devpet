@@ -1,6 +1,5 @@
-package com.devpet.feed.model.relationship;
+package com.smilegate.devpet.appserver.model;
 
-import com.devpet.feed.model.entity.PostInfo;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;

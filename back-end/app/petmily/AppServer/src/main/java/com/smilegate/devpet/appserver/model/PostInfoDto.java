@@ -1,12 +1,9 @@
-package com.devpet.feed.model.dto;
+package com.smilegate.devpet.appserver.model;
 
-import com.devpet.feed.model.entity.PostInfo;
-import com.devpet.feed.model.entity.Tag;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Timestamp;
 import java.util.Set;
 
 @Getter

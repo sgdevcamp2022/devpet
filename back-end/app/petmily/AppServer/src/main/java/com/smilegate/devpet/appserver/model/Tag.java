@@ -1,5 +1,6 @@
 package com.smilegate.devpet.appserver.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,13 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class FollowDto {
-
-    // 구독자
-    private String follower;
-
-    // 내가 구독
-    private String following;
-
-
+@AllArgsConstructor
+public class Tag {
+    private String tagName;
+    private String tagNumber;
 }

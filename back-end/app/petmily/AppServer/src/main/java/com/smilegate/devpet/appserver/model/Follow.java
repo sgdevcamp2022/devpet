@@ -1,6 +1,5 @@
-package com.devpet.feed.model.relationship;
+package com.smilegate.devpet.appserver.model;
 
-import com.devpet.feed.model.entity.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

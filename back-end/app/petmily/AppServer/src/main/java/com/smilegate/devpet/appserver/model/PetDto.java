@@ -5,20 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Set;
-
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfoDto {
-    private String userId;
-    private String nickname;
-    private String birth;
-    private String address;
-    private String gender;
-    private Set<Follow> followers;
+public class PetDto {
 
-    private Set<Post> posts;
+    private String userId;
+
+    private String petId;
 }
