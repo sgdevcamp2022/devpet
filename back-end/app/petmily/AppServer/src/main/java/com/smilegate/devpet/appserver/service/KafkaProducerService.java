@@ -19,7 +19,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @Service
 public class KafkaProducerService {
+
     private final String FEED_TOPIC = "FEED";
+    private final String PET_TOPIC = "PET";
+    private final String POST_INFO_TOPIC = "POST_INFO";
+    private final String USER_INFO_TOPIC = "USER_INFO";
     private final String FEED_SUBSCRIBER_GROUP = "FEED_SUBSCRIBER";//group-id 동적생성으로 변경
 
     @Autowired
@@ -34,6 +38,7 @@ public class KafkaProducerService {
             throw new RuntimeException("don't parse feed data error");
         }
     }
+
     public void pingpongSend(Map<String , String> info) {
         try {
             String json = objectMapper.writeValueAsString(info);
@@ -44,6 +49,7 @@ public class KafkaProducerService {
         }
 
     }
+
     public void feedFavoriteSend(List<Favorite> feedFavoriteKafkaRequestList) {
         try {
             String message = objectMapper.writeValueAsString(feedFavoriteKafkaRequestList);
@@ -61,5 +67,8 @@ public class KafkaProducerService {
         } catch (JsonProcessingException jpe) {
             throw new RuntimeException("don't parse comment data error");
         }
+    }
+    public void pingpongSend() {
+        kafkaTemplate.send("test","test", "시바알시발 시바아아아아알");
     }
 }

@@ -1,13 +1,10 @@
 package com.smilegate.devpet.appserver.job;
 
 import com.smilegate.devpet.appserver.model.Favorite;
-import com.smilegate.devpet.appserver.model.FeedFavoriteKafkaRequest;
-import com.smilegate.devpet.appserver.repository.mongo.FavoriteRepository;
 import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
 import com.smilegate.devpet.appserver.repository.redis.FavoriteRedisRepository;
 import com.smilegate.devpet.appserver.repository.redis.NewPostRedisRepository;
 import com.smilegate.devpet.appserver.service.FavoriteService;
-import com.smilegate.devpet.appserver.service.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;

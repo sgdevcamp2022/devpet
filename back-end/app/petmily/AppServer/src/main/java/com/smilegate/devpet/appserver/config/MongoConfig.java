@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @Configuration
 @EnableMongoRepositories(
@@ -43,7 +44,6 @@ public class MongoConfig {
     public MongoDatabaseFactory mongoDbFactory() {
 
         String url = String.format("mongodb://%s:%s@%s:%s/%s?authSource=admin",username,password,host,port,database);
-
         return new SimpleMongoClientDatabaseFactory(url);
     }
 

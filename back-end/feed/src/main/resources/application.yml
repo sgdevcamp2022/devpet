@@ -15,11 +15,13 @@ spring:
       host: 121.187.22.37
       port: 6379
       password: mypassword
+
     kafka:
       bootstrap-servers: 121.187.22.37:9092
       consumer:
         enable-auto-commit: true
         auto-offset-reset: latest
+
 
 
     application:
@@ -32,6 +34,7 @@ eureka:
     fetch-registry: true
     serviceUrl:
       defaultZone: http://121.187.22.37:8761/eureka/
+
 
 logging:
   level:
