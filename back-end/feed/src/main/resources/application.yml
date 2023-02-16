@@ -17,11 +17,9 @@ spring:
       port: 6379
       password: mypassword
 
-
-
-
     application:
-      name: app
+      name: feed
+
 eureka:
   instance:
     prefer-ip-address: true
