@@ -22,6 +22,7 @@ public class UserController {
                             @RequestParam String username,
                             @RequestParam String name,
                             @RequestParam String phone,
+                            @RequestParam String password,
                             @RequestParam String provider){
 
         //userService.checkDuplicateNickname(nickname);
@@ -31,6 +32,7 @@ public class UserController {
                 .name(name)
                 .phone(phone)
                 .provider(provider)
+                .password(password)
                 .build();
 
         if (!Objects.equals(provider, "")) {
