@@ -1,11 +1,13 @@
 package com.devpet.feed.service;
 
+import com.devpet.feed.common.Hash;
 import com.devpet.feed.model.dto.FollowDto;
 import com.devpet.feed.model.dto.UserInfoDto;
 import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Follow;
 
 import com.devpet.feed.repository.PostInfoRepository;
+import com.devpet.feed.repository.RedisRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,12 +24,13 @@ import java.util.Set;
 public class UserInfoService {
     private final UserInfoRepository userRepository;
     private final PostInfoRepository postRepository;
+    private final RedisRepository redisRepository;
     private UserInfo userDtoToUserInfo(UserInfoDto dto) {
         return new UserInfo(dto);
     }
 
     private UserInfoDto userInfoToUserInfoDto(UserInfo info) {
-        return new UserInfoDto(info);
+return new UserInfoDto(info);
     }
 
     @Transactional
@@ -37,8 +40,16 @@ public class UserInfoService {
         return userInfoToUserInfoDto(user);
     }
 
+    /**
+     * 사용자 팔로우 기능
+     * redis 에 저장하는 기능
+     * @param followedUser
+     * @param followUser
+     * @return
+     * @throws Exception
+     */
     @Transactional
-    public UserInfoDto followUser(String followedUser, String followUser) throws Exception{
+    public void followUser(String followedUser, String followUser) throws Exception{
 
         UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
         UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
@@ -48,12 +59,30 @@ public class UserInfoService {
         if (check != null) {
             throw new Exception("이미 존재하는 관계입니다.");
         }
+        redisRepository.cacheFollowRelation(followedUser, followUser);
+    }
 
-        Set<Follow> userFollower = user.getFollowers();
-//        Set<Follow> userFollower = new HashSet<>();
-        Follow followerNode = new Follow(follower);
-        userFollower.add(followerNode);
-        return userInfoToUserInfoDto(userRepository.save(user));
+    /**
+     * follow relation redis에 일괄 저장
+     * @throws Exception
+     */
+    @Transactional
+    public void saveFollowRelation() throws Exception{
+
+//        UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
+//        UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
+////
+//        // 서로 관계가 있는지 체크
+//        UserInfo check = userRepository.checkFollow(followUser, followedUser);
+//        if (check != null) {
+//            throw new Exception("이미 존재하는 관계입니다.");
+//        }
+//
+//        Set<Follow> userFollower = user.getFollowers();
+////        Set<Follow> userFollower = new HashSet<>();
+//        Follow followerNode = new Follow(follower);
+//        userFollower.add(followerNode);
+//        return userInfoToUserInfoDto(userRepository.save(user));
     }
 
     @Transactional
@@ -170,11 +199,11 @@ public class UserInfoService {
     }
 
     // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
-    public Set<String> getFollowingCommentPostList(String userId) {
-
-        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
-        return userRepository.getFollowingCommentPostList(userId);
-    }
+//    public Set<String> getFollowingCommentPostList(String userId) {
+//
+//        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+//        return userRepository.getFollowingCommentPostList(userId);
+//    }
 
 
 }

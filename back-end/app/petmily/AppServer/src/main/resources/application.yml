@@ -5,8 +5,7 @@ spring:
   application:
     name: app
   kafka:
-    bootstrap-severs:
-      - localhost:9092
+    bootstrap-servers: 121.187.22.37:9092
     consumer:
       enable-auto-commit: true
       auto-offset-reset: latest

@@ -37,7 +37,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "match (u)-[r]->(p) " +
             "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
             "return n.postId")
-    List<String> getPostList(@Param("userId") String userId);
+    Set<String> getPostList(@Param("userId") String userId);
 
     @Query("match(u:UserInfo{userId : $userId})" + "DETACH DELETE u")
     void deleteUser(@Param("userId") String userId);
@@ -112,4 +112,5 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 10" +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
+
 }

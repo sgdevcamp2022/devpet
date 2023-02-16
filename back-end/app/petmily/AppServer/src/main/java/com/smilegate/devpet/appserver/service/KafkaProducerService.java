@@ -30,7 +30,7 @@ public class KafkaProducerService {
         }
     }
     public void pingpongSend() {
-        kafkaTemplate.send("test", "test", "pingpong");
+        kafkaTemplate.send("test", "test3", "pingpong");
     }
     public void feedFavoriteSend(List<Favorite> feedFavoriteKafkaRequestList) {
         try {
