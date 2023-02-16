@@ -226,5 +226,17 @@ return new UserInfoDto(info);
 //        return userRepository.getFollowingCommentPostList(userId);
 //    }
 
+    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
+    public Set<String> getPetLikeCommentPostList(String userId) {
 
+        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+        return userRepository.getPetLikeCommentPostList(userId);
+    }
+
+    // 유저가 알 수 있는 사람, 행동 기반 추천 , 팔로우한 유저의 행동 기반 추천(하늘색 부분)
+    public Set<String> getRecommendedFollowPostList(String userId) {
+
+        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+        return userRepository.getRecommendedFollowPostList(userId);
+    }
 }
