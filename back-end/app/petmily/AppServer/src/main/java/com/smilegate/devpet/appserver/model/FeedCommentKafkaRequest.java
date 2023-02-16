@@ -8,7 +8,6 @@ import lombok.Setter;
 @RequiredArgsConstructor
 @Getter
 @Setter
-@Builder
 public class FeedCommentKafkaRequest {
     private Long feedId;
     private Long userId;

@@ -2,6 +2,7 @@ package com.smilegate.devpet.appserver.controller;
 
 import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.service.CommentService;
+import com.smilegate.devpet.appserver.service.FavoriteService;
 import com.smilegate.devpet.appserver.service.FeedService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Circle;
@@ -18,6 +19,8 @@ public class FeedController {
     private FeedService feedService;
     @Autowired
     private CommentService commentService;
+    @Autowired
+    private FavoriteService favoriteService;
 
     @PostMapping
     public long postFeed(@RequestBody FeedRequest feedRequest, UserInfo userInfo) {
@@ -39,7 +42,8 @@ public class FeedController {
 
     @PostMapping("/{feedId}/emotion")
     public boolean postFavorite(@PathVariable long feedId, @RequestBody FavoriteRequest favoriteRequest, UserInfo userInfo) {
-        return feedService.setFeedFavorite(feedId, favoriteRequest, userInfo);
+
+        return favoriteService.setFeedFavorite(feedId, favoriteRequest, userInfo);
     }
 
     @GetMapping("/gallery")

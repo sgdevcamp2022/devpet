@@ -1,14 +1,14 @@
 package com.smilegate.devpet.appserver.service;
 
-import com.smilegate.devpet.appserver.model.Pet;
-import com.smilegate.devpet.appserver.model.Profile;
-import com.smilegate.devpet.appserver.model.ProfileRequest;
-import com.smilegate.devpet.appserver.model.UserInfo;
+import com.smilegate.devpet.appserver.api.relation.UserInfoService;
+import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,6 +16,8 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final SequenceGeneratorService profileSequenceGeneratorService;
     private final PetService petService;
+    private final com.smilegate.devpet.appserver.api.relation.PetService petRelationService;
+    private final UserInfoService userInfoService;
     public Profile postProfile(ProfileRequest profileRequest,UserInfo userInfo)
     {
         Profile profile = new Profile(profileRequest,userInfo);
@@ -23,39 +25,71 @@ public class ProfileService {
         profile.getPetList().forEach(item->item.setProfileId(profile.getProfileId()));
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
+        sendToRelationServer(savePetList,profile.getUserId());
         return result;
     }
 
     public Profile putProfile(ProfileRequest profileRequest)
     {
-        Profile profile = profileRepository.findById(profileRequest.getId()).orElseThrow(RuntimeException::new);
+        Profile profile = profileRepository.findById(profileRequest.getId()).orElseThrow(NullPointerException::new);
         profile.setProfileData(profileRequest);
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
+        sendToRelationServer(savePetList,profile.getUserId());
         return result;
+    }
+    public void sendToRelationServer(List<Pet> petList,Long userId)
+    {
+        List<PetInfoDto> petInfoDtos = petList.stream().map(item->
+                PetInfoDto.builder()
+                        .petId(item.getPetId().toString())
+                        .petBirth(item.getBirth().toString())
+                        .petName(item.getName())
+                        .userId(userId.toString()).build()
+        ).collect(Collectors.toList());
+        petRelationService.savePet(petInfoDtos);
     }
 
     public Profile getProfile(Long profileId)
     {
-        Profile result = profileRepository.findById(profileId).orElseThrow(RuntimeException::new);
+        Profile result = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
+        setProfileFollowAnFollowerCount(result);
         return result;
     }
     public Profile getProfile(UserInfo userInfo)
     {
-        Profile result = profileRepository.findByUserId(userInfo.getUserId()).orElseThrow(RuntimeException::new);
+        Profile result = getProfileByUserId(userInfo.getUserId());
         return result;
     }
-
+    public Profile getProfileByUserId(Long userId)
+    {
+        Profile result = profileRepository.findByUserId(userId).orElseThrow(NullPointerException::new);
+        setProfileFollowAnFollowerCount(result);
+        return result;
+    }
+    private void setProfileFollowAnFollowerCount(Profile profile)
+    {
+        profile.setFollower(userInfoService.countFollower(FollowRequest.builder().follower(profile.getUserId().toString()).build()));
+        profile.setFollow(userInfoService.countFollowing(FollowRequest.builder().follower(profile.getUserId().toString()).build()));
+    }
     public List<Profile> getFollowerList(Long profileId)
     {
-        List<Long> followerUserIds = null;// TODO: 관계 서버에서 follower 정보 읽어오기
+        Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
+
+        List<Long> followerUserIds = userInfoService.getFollowerList(
+                FollowRequest.builder().follower(profile.getUserId().toString()).build()
+        ).stream().map(Long::parseLong).collect(Collectors.toList());
         List<Profile> result = profileRepository.findByUserIdIn(followerUserIds);
         return result;
     }
 
     public List<Profile> getFollowList(Long profileId)
     {
-        List<Long> followUserIds = null;// TODO: 관계 서버에서 follow 정보 읽어오기
+        Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
+
+        List<Long> followUserIds = userInfoService.getFollowingList(
+                FollowRequest.builder().follower(profile.getUserId().toString()).build()
+        ).stream().map(Long::parseLong).collect(Collectors.toList());
         List<Profile> result = profileRepository.findByUserIdIn(followUserIds);
         return result;
     }

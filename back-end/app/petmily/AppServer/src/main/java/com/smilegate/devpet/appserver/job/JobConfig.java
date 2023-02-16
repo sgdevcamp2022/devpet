@@ -11,6 +11,7 @@ import com.mongodb.lang.Nullable;
 import org.quartz.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -26,23 +27,23 @@ public class JobConfig {
     @Deprecated
     public void run() {
         // job 객체 생성
-//        JobDetail detail = creatPostAveJob();
-//
-//        try {
-//            // 스케줄 시간 설정 후  스케줄 실행
-//            scheduler.scheduleJob(detail, createJobTrigger("0 0/2 * * * * ?"));
-//        } catch (SchedulerException e) {
-//            e.printStackTrace();
-//        }
+        JobDetail detail = creatFavoriteSaveJob();
+
+        try {
+            // 스케줄 시간 설정 후  스케줄 실행
+            scheduler.scheduleJob(detail, createJobTrigger("10/10 * * * * ?"));
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
      * redis에서 post 데이터를 읽어와서 mongodb에 저장하는 job 생성
      * @return PostSaveJob JobDetail 반환
      */
-    public JobDetail creatPostAveJob()
+    public JobDetail creatFavoriteSaveJob()
     {
-        return createJobDetail(PostSaveJob.class);
+        return createJobDetail(FavoriteSaveJob.class);
     }
     public Trigger createJobTrigger(String scheduleExp){
         // 크론 스케줄 사용

@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public abstract class BaseModel {
     @Field
-    private boolean isUsed;
+    private boolean isUsed = true;
 
     @Field
     @CreatedDate

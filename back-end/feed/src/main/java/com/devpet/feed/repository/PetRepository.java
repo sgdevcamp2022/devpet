@@ -21,10 +21,6 @@ public interface PetRepository extends Neo4jRepository<PetInfo, String> {
     @Query("match(p:PetInfo{petId : $petId})" + "DETACH DELETE p")
     void deletePet(@Param("petId") String petId);
 
-    @Query("match(u:UserInfo{userId : $userId})" +
-            "match(p:PetInfo{petId : $petId})" +
-            "create (u)-[:PET]->(p)")
-    void raisePet(@Param("userId") String userId , @Param("petId") String petId);
 
     @Query("match(u:UserInfo{userId : $userId})-[r:PET]->(p:PetInfo{petId : $petId})" + "delete r")
     void raisePetCancel(@Param("userId") String userId, @Param("petId") String petId);
@@ -33,4 +29,6 @@ public interface PetRepository extends Neo4jRepository<PetInfo, String> {
             "match(p:PetInfo{petId : $petId}) " +
             "WHERE EXISTS((u)-[:PET]->(p)) " + "RETURN p")
     PetInfo checkPet(@Param("userId") String userId, @Param("petId") String petId);
+    @Query("MATCH (m:PetInfo {petName: $petName}) " + "RETURN m" )
+    Optional<PetInfo> findByPetName(String petName);
 }
