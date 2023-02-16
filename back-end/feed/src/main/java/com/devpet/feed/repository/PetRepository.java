@@ -15,6 +15,9 @@ public interface PetRepository extends Neo4jRepository<PetInfo, String> {
     @Query("MATCH (m:PetInfo {petId: $petId}) " + "RETURN m" )
     Optional<PetInfo> findByPetId(@Param("petId") String petId);
 
+    @Query("MATCH (m:PetInfo {petName: $petName}) " + "RETURN m" )
+    Optional<PetInfo> findByPetName(@Param("petName") String petName);
+
     @Query("match(p:PetInfo{petId : $petId})" + "DETACH DELETE p")
     void deletePet(@Param("petId") String petId);
 
