@@ -21,7 +21,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     UserInfo deleteFollowById(String followedUser, String followUser);
 
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
-    Optional<UserInfo> findNodeById (String userId);
+    Optional<UserInfo> findNodeById (@Param("userId") String userId);
 
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +
@@ -112,5 +112,52 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 10" +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
+
+    // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
+    @Query("match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[:COMMENT]->(:PostInfo)-[:TAGD]->(t:Tag)<-[:TAGD]-(p:PostInfo) " +
+            "WITH p, datetime() AS now, p.createdAt AS date " +
+            "order by p.createdAt DESC " +
+            "where duration.inSeconds(date, now).hours < 8 " +
+            "return DISTINCT p.postId ")
+    Set<String> getFollowingCommentPostList(@Param("userId") String userId);
+
+    //
+    @Query("match (u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
+            "return p.postId as postId " +
+            "order by p.createdAt DESC " +
+            "union " +
+            "match (u1:UserInfo{userId: $userId})-[:LIKE]->(p1:PostInfo)-[:TAGD]->(t1:Tag)<-[:TAGD]-(n1:PostInfo) " +
+            "return n1.postId as postId " +
+            "order by n1.createdAt DESC " +
+            "union " +
+            "match (u2:UserInfo{userId: $userId})-[:COMMENT]->(p2:PostInfo)-[:TAGD]->(t2:Tag)<-[:TAGD]-(n2:PostInfo) " +
+            "return n2.postId as postId " +
+            "order by n2.createdAt DESC ")
+    Set<String> getPetLikeCommentPostList(@Param("userId") String userId);
+
+    //
+    @Query("Match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[r1:RECOMMENDED]->(p1:PostInfo) " +
+            "with r1, p1 " +
+            "ORDER BY r1.score DESC " +
+            "LIMIT 4 " +
+            "MATCH (p1)-[:TAGD]->(:Tag)<-[:TAGD]-(n1:PostInfo) " +
+            "return n1.postId as postId " +
+            "order by n1.createdAt DESC " +
+            "union " +
+            "match(u2:UserInfo{userId : $userId})-[r2:RECOMMENDED]->(p2:PostInfo) " +
+            "with r2, p2 " +
+            "ORDER BY r2.score DESC " +
+            "LIMIT 4 " +
+            "match (p2)-[:TAGD]->(:Tag)<-[:TAGD]-(n2:PostInfo) " +
+            "return n2.postId as postId " +
+            "order by n2.createdAt DESC " +
+            "union " +
+            "Match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[f:FOLLOW]-()-[:POST]->(p:PostInfo) " +
+            "Match (n:PostInfo)<-[:RECOMMENDED]-(u) " +
+            "with n " +
+            "limit 4 " +
+            "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo) " +
+            "return DISTINCT p.postId as postId ")
+    Set<String> getRecommendedFollowPostList(@Param("userId") String userId);
 
 }
