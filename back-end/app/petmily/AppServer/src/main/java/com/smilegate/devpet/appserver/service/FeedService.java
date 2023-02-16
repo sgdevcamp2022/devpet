@@ -10,9 +10,15 @@ import com.smilegate.devpet.appserver.repository.redis.NewPostRedisRepository;
 import com.smilegate.devpet.appserver.repository.redis.RecommendPostRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
+import org.springframework.data.geo.Shape;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +30,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class FeedService {
+    private final MongoTemplate mongoTemplate;
     private final FeedRepository feedRepository;
     private final LocationService locationService;
     private final SequenceGeneratorService sequenceGeneratorService;
@@ -129,13 +136,14 @@ public class FeedService {
     public List<String> getSimpleFeedList(String word, int category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        List<Feed> result = feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithinAndIsUsedIsTrue(word,category,circle,pageRequest);
+        List<Feed> result = findNearFeedList(word,category,circle,pageRequest);
         return  result.stream().map((feed)->{
             if (feed.getImageUrl().size()<1)
                 return null;
             return feed.getImageUrl().get(0);
         }).collect(Collectors.toList());
     }
+
     /**
      * 마커에 해당하는 게시글 리스트를 조회합니다.
      * @param center 조회할 마커 위치
@@ -145,13 +153,11 @@ public class FeedService {
      * @param size 조회 갯수
      * @return 조회한 게시글 정보 리스트
      */
-    public List<Feed> getMarkerFeedList(Point center, int category, String word, int start, int size)
+    public List<Feed> getMarkerFeedList(Point center, Integer category, String word, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        Location location = new Location();
-        location.setCoord(center);
-        location.setCategory((long)category);
-        return feedRepository.findByLocationAndContentAndIsUsedIsTrue(location,word, pageRequest);
+        Circle circle = new Circle(center,1);
+        return findNearFeedList(word, category,circle, pageRequest);
     }
 
     /**
@@ -166,7 +172,7 @@ public class FeedService {
     public List<Feed> getFeedList(String word, int category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        return feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithinAndIsUsedIsTrue(word,category,circle,pageRequest);
+        return findNearFeedList(word,category,circle,pageRequest);
     }
 
     /**
@@ -230,5 +236,19 @@ public class FeedService {
 
         // 캐시에 사용자 추천 게시글 저장.
         recommendPostRedisRepository.saveAll(userInfo.getUserId(),resultSet);
+    }
+
+    private List<Feed> findNearFeedList(String content, Integer category,Shape shape, Pageable pageable)
+    {
+        Query query = new Query();
+        if (content != null)
+            query.addCriteria(Criteria.where("content").regex(content));
+        if (category != null)
+            query.addCriteria(Criteria.where("location.category").is(category));
+        if (shape != null)
+            query.addCriteria(Criteria.where("location.coord").within(shape));
+        query.with(pageable);
+        List<Feed> result = mongoTemplate.find(query, Feed.class);
+        return result;
     }
 }

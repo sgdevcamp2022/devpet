@@ -1,11 +1,19 @@
 package com.smilegate.devpet.appserver.service;
 
+import com.smilegate.devpet.appserver.model.Feed;
 import com.smilegate.devpet.appserver.model.Location;
 import com.smilegate.devpet.appserver.repository.mongo.LocationRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.var;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
+import org.springframework.data.geo.Shape;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +27,7 @@ import java.util.stream.Stream;
 @Service
 @RequiredArgsConstructor
 public class LocationService {
+    private final MongoTemplate mongoTemplate;
     private final LocationRepository locationRepository;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final MongoOperations locationMongoOperation;
@@ -33,9 +42,23 @@ public class LocationService {
                 });
         return returnLocation;
     }
-    public List<Location> getNearByLocation(Circle circle, long category)
+    public List<Location> getNearByLocation(Circle circle, Integer category,String content,String address)
     {
-        return locationRepository.findByCategoryAndCoordWithin(category, circle);
+        return getMarkers(content, address, category, circle);
+    }
+    public List<Location> getMarkers(String content, String address, Integer category, Circle circle)
+    {
+        Query query = new Query();
+        if (address != null)
+            query.addCriteria(Criteria.where("address").regex(content));
+        if (content != null)
+            query.addCriteria(Criteria.where("name").regex(content));
+        if (category != null)
+            query.addCriteria(Criteria.where("category").is(category));
+        if (circle != null)
+            query.addCriteria(Criteria.where("coord").within(circle));
+        List<Location> result = mongoTemplate.find(query, Location.class);
+        return result;
     }
 
     /**

@@ -15,8 +15,8 @@ import java.util.List;
 @Repository
 public interface FeedRepository extends MongoRepository<Feed, Long> {
 //    @Query("{ \"content\" : { \"$regex\" : :#{#content}}, \"location.category\" : :#{#category} , \"location.coord\" : { \"$geoWithin\" : { \"$center\" : [[:#{#shape.center.x}, :#{#shape.center.y}], :#{#shape.radius.value}]}}}")
-    List<Feed> findByContentRegexAndLocationCategoryAndLocationCoordWithinAndIsUsedIsTrue(@Param("content") String content, @Param("category") int category,@Param("shape") Shape shape,Pageable pageable);
+    List<Feed> findByContentRegexAndLocationCategoryRegexAndLocationCoordWithinAndIsUsedIsTrue(@Param("content") String content, @Param("category") int category,@Param("shape") Shape shape,Pageable pageable);
 
-    List<Feed> findByLocationAndContentAndIsUsedIsTrue(Location location, String word, Pageable pageable);
+    List<Feed> findByLocationAndContentRegexAndIsUsedIsTrue(Location location, String word, Pageable pageable);
     List<Feed> findAllByFeedIdInAndIsUsedIsTrue(Collection<Long> feedId);
 }

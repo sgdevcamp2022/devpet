@@ -27,7 +27,10 @@ public class FavoriteRedisRepository{
 
     public void save(Long postId,Long userId,Boolean isFavorite)
     {
-        favoriteHashOperation.put(keyGenerator(postId),userId,isFavorite);
+        if(favoriteHashOperation.get(keyGenerator(postId),userId)!=null)
+            favoriteHashOperation.delete(keyGenerator(postId),userId);
+        else
+            favoriteHashOperation.put(keyGenerator(postId),userId,isFavorite);
     }
     public void saveAll(Long postId, Map<Long,Boolean> dataMap)
     {

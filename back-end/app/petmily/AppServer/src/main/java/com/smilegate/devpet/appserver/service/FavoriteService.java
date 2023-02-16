@@ -96,6 +96,7 @@ public class FavoriteService {
 //                        .isFavorite(item.isFavorite())
                         .build())
                 .collect(Collectors.toList());
+
         postInfoApi.likePost(likes);
         postInfoApi.dislikePost(dislikes);
 //        kafkaProducerServi8ce.feedFavoriteSend(favoriteList);

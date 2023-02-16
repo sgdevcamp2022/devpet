@@ -48,11 +48,11 @@ public class FeedController {
 
     @GetMapping("/gallery")
     public List<String> getNearBySimpleFeedList(
-                                        @RequestParam("longitude") Double longitude,
+                                        @RequestParam(value = "longitude") Double longitude,
                                         @RequestParam("latitude") Double latitude,
                                         @RequestParam("distance") int distance,
-                                        @RequestParam("word") String word,
-                                        @RequestParam("category") int category,
+                                        @RequestParam(value = "word",required = false) String word,
+                                        @RequestParam(value = "category",required = false) Integer category,
                                         @RequestParam("start") int start,
                                         @RequestParam("size") int size)
     {
@@ -64,8 +64,8 @@ public class FeedController {
                                         @RequestParam("longitude") Double longitude,
                                         @RequestParam("latitude") Double latitude,
                                         @RequestParam("distance") int distance,
-                                        @RequestParam("word") String word,
-                                        @RequestParam("category") int category,
+                                        @RequestParam(value = "word",required = false) String word,
+                                        @RequestParam(value = "category",required = false) Integer category,
                                         @RequestParam("start") int start,
                                         @RequestParam("size") int size)
     {
@@ -76,8 +76,8 @@ public class FeedController {
     public List<Feed> getMarkerFeedList(
                                         @RequestParam("longitude") Double longitude,
                                         @RequestParam("latitude") Double latitude,
-                                        @RequestParam("word") String word,
-                                        @RequestParam("category") int category,
+                                        @RequestParam(value = "word",required = false) String word,
+                                        @RequestParam(value = "category",required = false) Integer category,
                                         @RequestParam("start") int start,
                                         @RequestParam("size") int size)
     {
