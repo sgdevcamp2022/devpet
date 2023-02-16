@@ -47,7 +47,7 @@ public class PetService {
 
     public Pet getUserPet(Long petId)
     {
-       Pet pet = petRepository.findById(petId).orElseThrow(RuntimeException::new);
+       Pet pet = petRepository.findById(petId).orElseThrow(NullPointerException::new);
        return pet;
     }
 }

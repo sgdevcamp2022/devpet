@@ -1,7 +1,6 @@
 package com.smilegate.devpet.appserver.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -32,9 +31,9 @@ public class KafkaConsumerService {
 //        System.out.println(message);
 //        // TODO: user alert new feed and
 //    }
-    @KafkaListener(topics="test", groupId = "test", autoStartup = "true")
-    public void testPingpong(String message)
-    {
-        System.out.println(message);
-    }
+//    @KafkaListener(topics="test", groupId = "test3", autoStartup = "true")
+//    public void testPingpong(String message)
+//    {
+//        System.out.println(message);
+//    }
 }

@@ -1,9 +1,7 @@
 package com.smilegate.devpet.appserver.service;
 
-import com.smilegate.devpet.appserver.model.FavoriteRequest;
-import com.smilegate.devpet.appserver.model.Feed;
-import com.smilegate.devpet.appserver.model.Favorite;
-import com.smilegate.devpet.appserver.model.UserInfo;
+import com.smilegate.devpet.appserver.api.relation.PostInfoService;
+import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.FavoriteRepository;
 import com.smilegate.devpet.appserver.repository.mongo.PetRepository;
 import com.smilegate.devpet.appserver.repository.redis.FavoriteRedisRepository;
@@ -26,7 +24,8 @@ public class FavoriteService {
     private final NewPostRedisRepository newPostRedisRepository;
     private final SequenceGeneratorService favoriteSequenceGeneratorService;
     private final MongoOperations mongoOperations;
-    private final KafkaProducerService kafkaProducerService;
+    private final PostInfoService postInfoService;
+//    private final KafkaProducerService kafkaProducerService;
     public Favorite postFavorite(Favorite favorite)
     {
         favorite.setFavoriteId(favoriteSequenceGeneratorService.longSequenceGenerate(Favorite.SEQUENCE_NAME));
@@ -81,9 +80,26 @@ public class FavoriteService {
 
         // bulk insert를 연산한 결과값을 가져옵니다.
         List<Favorite> result = new ArrayList<>(mongoOperations.insert(favoriteList,"favorite"));
-
-        // kafka 전송
-        kafkaProducerService.feedFavoriteSend(favoriteList);
+        // 관계 연산 서버로 좋아요 리스트 전송
+        List<LikePostDto> likes = result.stream()
+                .filter(Favorite::isFavorite)
+                .map(item->LikePostDto.builder()
+                        .postId(item.getPostId().toString())
+                        .userId(item.getUserId().toString())
+//                        .isFavorite(item.isFavorite())
+                        .build())
+                .collect(Collectors.toList());
+        List<LikePostDto> dislikes = result.stream()
+                .filter(item->!item.isFavorite())
+                .map(item->LikePostDto.builder()
+                        .postId(item.getPostId().toString())
+                        .userId(item.getUserId().toString())
+//                        .isFavorite(item.isFavorite())
+                        .build())
+                .collect(Collectors.toList());
+        postInfoService.likePost(likes);
+        postInfoService.dislikePost(dislikes);
+//        kafkaProducerService.feedFavoriteSend(favoriteList);
         return result;
     }
 }
