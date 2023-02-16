@@ -12,22 +12,22 @@ import java.util.List;
 public interface PostInfoApi {
 
     // 게시글 정보 저장
-    @PostMapping("")
+    @PostMapping("/postinfo")
     public PostInfoDto savePostInfo(PostInfoDto postInfoDto);
 
     // 좋아요
-    @PostMapping("/like")
+    @PostMapping("/postinfo/like")
     public List<PostInfoDto> likePost(List<LikePostDto> likePostDto);
 
     // 좋아요 취소
-    @PatchMapping("/like")
+    @PatchMapping("/postinfo/like")
     public List<PostInfoDto> dislikePost(List<LikePostDto> likePostDto);
 
     // 코멘트가를 달은 내 게시글 가져오기
-    @GetMapping("/comment")
+    @GetMapping("/postinfo/comment")
     public List<String> getCommentPost(UserInfo userInfo);
 
     // 코멘트 저장
-    @PostMapping("/comment")
+    @PostMapping("/postinfo/comment")
     public PostInfo postComment(CommentRelationRequest commentRequest);
 }

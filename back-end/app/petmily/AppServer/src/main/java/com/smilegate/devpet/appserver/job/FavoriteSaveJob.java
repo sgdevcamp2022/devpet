@@ -28,7 +28,7 @@ public class FavoriteSaveJob extends QuartzJobBean {
     private final NewPostRedisRepository newPostRedisRepository;
     @Transactional
     @Override
-    protected void executeInternal(JobExecutionContext context) throws JobExecutionException {
+    protected void executeInternal(JobExecutionContext context){
         log.info("--------- favorite save -------------");
         Set<String> keys = redisTemplate.keys("*_"+ FavoriteRedisRepository.KEY_GENERATOR);
 
@@ -42,6 +42,8 @@ public class FavoriteSaveJob extends QuartzJobBean {
         {
             Long postId = Long.parseLong(postKey.replace("_"+FavoriteRedisRepository.KEY_GENERATOR,""));
             long favoriteCount = 0;
+
+
             for(Map.Entry<Object,Object> favoritePair : redisTemplate.opsForHash().entries(postKey).entrySet())
             {
                 Long userId = (Long)favoritePair.getKey();
@@ -63,6 +65,7 @@ public class FavoriteSaveJob extends QuartzJobBean {
                 });
             }
         }
+        redisTemplate.delete(keys);
         // db에 bulk insert
         favoriteService.postAllFavorite(favoriteArrayList);
     }

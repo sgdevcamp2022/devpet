@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +26,7 @@ public class ProfileService {
         profile.getPetList().forEach(item->item.setProfileId(profile.getProfileId()));
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
-        sendToRelationServer(savePetList,profile.getUserId());
+        sendToRelationServer(profile);
         return result;
     }
 
@@ -35,11 +36,13 @@ public class ProfileService {
         profile.setProfileData(profileRequest);
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
-        sendToRelationServer(savePetList,profile.getUserId());
+        sendToRelationServer(profile);
         return result;
     }
-    public void sendToRelationServer(List<Pet> petList,Long userId)
+    public void sendToRelationServer(Profile profile)
     {
+        List<Pet> petList = profile.getPetList();
+        Long userId = profile.getUserId();
         List<PetInfoDto> petInfoDtos = petList.stream().map(item->
                 PetInfoDto.builder()
                         .petId(item.getPetId().toString())
@@ -47,7 +50,13 @@ public class ProfileService {
                         .petName(item.getName())
                         .userId(userId.toString()).build()
         ).collect(Collectors.toList());
-        petRelationService.savePet(petInfoDtos);
+        userInfoApi.saveUserInfo(UserInfoDto.builder()
+                .nickname(profile.getNickname())
+                .userId(userId.toString())
+                .birth(profile.getBirth().toString())
+                .build()
+        );
+//        petRelationService.savePet(petInfoDtos);
     }
 
     public Profile getProfile(Long profileId)

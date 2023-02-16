@@ -10,15 +10,15 @@ import java.util.List;
 public interface PetApi {
 
     // 펫 정보 저장
-    @PostMapping
+    @PostMapping("/pet")
     public String savePet(List<PetInfoDto> petInfoDto);
 
     // 펫 정보 수정
-    @PutMapping
+    @PutMapping("/pet")
     public String putPet(List<PetInfoDto> petInfoDto);
 
     // 펫 정보 삭제
-    @DeleteMapping
+    @DeleteMapping("/pet")
     public String deletePet(List<PetInfoDto> petInfoDto);
 
 //    @PostMapping("/raise")
@@ -27,6 +27,6 @@ public interface PetApi {
 //    @PostMapping("/raise/cancel")
 //    public String raisePetCancel(PetDto petDto);
 
-    @GetMapping()
+    @GetMapping("/pet")
     public PetInfoDto getPet(List<PetInfoDto> pets);
 }

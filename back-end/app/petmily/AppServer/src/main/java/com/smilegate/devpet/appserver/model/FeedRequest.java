@@ -1,13 +1,11 @@
 package com.smilegate.devpet.appserver.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Set;
-
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter
 public class FeedRequest {
     private String content;
@@ -16,5 +14,5 @@ public class FeedRequest {
     private ArrayList<Long> tagUsers;
     private Long groupId;
     private ArrayList<String> imageUrl;
-    private ArrayList<String> hashTag;
+    private ArrayList<Tag> hashTag;
 }

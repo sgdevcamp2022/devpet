@@ -1,8 +1,6 @@
 package com.smilegate.devpet.appserver.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,12 +9,15 @@ import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 @Getter @Setter
 @RedisHash("feed")
 @Document(collection = "feed")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Feed extends BaseModel implements Serializable {
     private static final long serialVersionUID = -1;
     @Transient
@@ -69,5 +70,6 @@ public class Feed extends BaseModel implements Serializable {
         this.setImageUrl(feedRequest.getImageUrl());
         this.setTagUsers(feedRequest.getTagUsers());
         this.setContent(feedRequest.getContent());
+        this.hashTags = new HashSet<>(feedRequest.getHashTag());
     }
 }

@@ -42,7 +42,7 @@ public class FavoriteService {
      */
     public boolean setFeedFavorite(long feedId, FavoriteRequest favoriteRequest, UserInfo userInfo)
     {
-        favoriteRedisRepository.save(feedId, userInfo.getUserId(),favoriteRequest.isFavorite());
+        favoriteRedisRepository.save(feedId, userInfo.getUserId(),favoriteRequest.getIsFavorite());
         return true;
     }
     /**
@@ -98,7 +98,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
         postInfoApi.likePost(likes);
         postInfoApi.dislikePost(dislikes);
-//        kafkaProducerService.feedFavoriteSend(favoriteList);
+//        kafkaProducerServi8ce.feedFavoriteSend(favoriteList);
         return result;
     }
 }
