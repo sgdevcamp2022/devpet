@@ -41,7 +41,9 @@ import ua.naiksoftware.stomp.Stomp;
 import ua.naiksoftware.stomp.StompClient;
 
 public class ChatViewModel extends AndroidViewModel{
-    final private String URL = "10.0.2.2:4444";
+
+    final private String URL = "https://121.187.37.22:5555/api/chat/";
+    //final private String URL = "10.0.2.2:4444";
 
     boolean isUnexpectedClosed;
     private String TAG = "테스트 :\t";
@@ -77,7 +79,6 @@ public class ChatViewModel extends AndroidViewModel{
         return chatList;
     }
 
-
     private MutableLiveData<String> roomIdLive;
     public MutableLiveData<String> getRoomId() {
         if (roomIdLive == null) {
@@ -85,7 +86,6 @@ public class ChatViewModel extends AndroidViewModel{
         }
         return roomIdLive;
     }
-
 
     public ChatViewModel(@NonNull Application application) {
         super(application);
@@ -104,18 +104,11 @@ public class ChatViewModel extends AndroidViewModel{
         chatCallback = new ChatCallback(context);
         listDB = ChatDatabase.getInstance(context);
         roomDB = RoomDatabase.getInstance(context);
-
-
     }
-
-
-
-
     public void initChatRoom(String roomId)
     {
         roomSQL = roomDB.chatRoomDao().getMessage(roomId);
         messageList.setValue(roomSQL.messages);
-
 
         initStomp();
         topicMessage();
@@ -179,11 +172,6 @@ public class ChatViewModel extends AndroidViewModel{
         chatList.setValue(chatLists);
     }
 
-
-
-
-
-
     public void sendMessage(String text)
     {
 
@@ -193,7 +181,6 @@ public class ChatViewModel extends AndroidViewModel{
         Message message = new Message("TALK", roomSQL.getRoomId(), roomSQL.getReceiverName(), roomSQL.getSenderName(), text, sDate2.toString());
         stompClient.send("/pub/chat/message", parser.toJson(message)).subscribe();
     }
-
 
     @SuppressLint("CheckResult")
     public void topicMessage()
@@ -281,18 +268,11 @@ public class ChatViewModel extends AndroidViewModel{
             Gson gson = new Gson();
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
-
-
         }
-
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
         }
-
-
     }
-
-
 
     public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
@@ -332,7 +312,6 @@ public class ChatViewModel extends AndroidViewModel{
             setValue(null);
         }
     }
-
 
     private static class TIME_MAXIMUM{
         public static final int SEC = 60;

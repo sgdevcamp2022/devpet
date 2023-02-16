@@ -24,12 +24,7 @@ public interface API_Interface {
             @Field("username") String username,
             @Field("name") String name,
             @Field("nickname") String nickname,
-            @Field("password") String password,
-            @Field("age") String age,
-            @Field("gender") String gender,
-            @Field("phone") String phone,
-            @Field("provider") String provider
-
+            @Field("password") String password
     );
 
 

@@ -8,6 +8,8 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,8 +56,10 @@ import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.NaverMapSdk;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.io.IOException;
@@ -75,13 +79,13 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     private FusedLocationSource locationSource;
 
     private FragmentManager fragmentManager;
-    
+
     private RecyclerView halfView;
     private RecyclerView grid;
     private RecyclerView place;
 
     private LinearLayout half;
-    
+
     private PostViewModel postViewModel;
 
     private LinearLayoutManager linearLayoutManager;
@@ -91,6 +95,8 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     private GpsTracker gpsTracker;
     double latitude;
     double longitude;
+
+    private List<LatLng> latLngs;
 
     Context context;
 
@@ -114,8 +120,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
 
-        String address = getCurrentAddress(latitude, longitude);
-        Log.e("위치 가져오기 : ", address);
 
         /*
         NaverMapSdk.getInstance(context).setClient(
@@ -136,6 +140,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.init();
+
 
 
         halfView = binding.postHalfFrame;
@@ -169,14 +174,16 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         test.add(new Place("장소5"));
         Adapter_Place adapterPlace = new Adapter_Place(test);
         place.setAdapter(adapterPlace);
-        
-        
-        
-        
-        
-        
+
+
+
+
+
+
+
 
         SlidingUpPanelLayout sliding = binding.slidingLayout;
+        sliding.setClipToOutline(true);
         sliding.setTouchEnabled(true);
         sliding.setAnchorPoint(0.4F);
         sliding.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
@@ -201,8 +208,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         });
         initObserver();
     }
-
-
 
     public void initObserver()
     {
@@ -231,7 +236,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             public void onChanged(@Nullable final CameraPosition cameraPosition) {
                 CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(cameraPosition).animate(CameraAnimation.Easing);
                 naverMap.moveCamera(cameraUpdate);
-                //naverMap.setCameraPosition(cameraPosition);
                 naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
             }
         };
@@ -240,11 +244,10 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         final Observer<List<Marker>> markerObserver  = new Observer<List<Marker>>() {
             @Override
             public void onChanged(@Nullable final List<Marker> markers) {
-                for(int i = 0; i < markers.size(); i++)
+                for(Marker marker : markers)
                 {
-                    markers.get(i).setMap(naverMap);
+                    marker.setMap(naverMap);
                 }
-
             }
         };
         postViewModel.getMarkerList().observe(getViewLifecycleOwner(), markerObserver);
@@ -256,7 +259,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
                 postViewModel.moveMap(linearLayoutManager.findFirstVisibleItemPosition());
-                Log.e("포지션 탐지 : ", linearLayoutManager.findFirstVisibleItemPosition()+"");
             }
 
             @Override
@@ -266,7 +268,11 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
         postViewModel.postHalf();
         postViewModel.postGrid();
+
         grid.setVisibility(View.INVISIBLE);
+
+
+
     }
 
 
@@ -282,9 +288,21 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         CameraPosition cameraPosition = new CameraPosition(new LatLng(latitude, longitude),18);
         naverMap.setCameraPosition(cameraPosition);
         //naverMap.setLocationSource(locationSource);
-        Log.e("위치 추적 : ", latitude+"");
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+        naverMap.setMapType(NaverMap.MapType.Basic);
+        UiSettings uiSettings = naverMap.getUiSettings();
+        uiSettings.setZoomControlEnabled(false);
+        naverMap.addOnLoadListener(new NaverMap.OnLoadListener() {
+            @Override
+            public void onLoad() {
+                postViewModel.setMarker();
+            }
+        });
+
+
+
     }
+
 
     public String getCurrentAddress( double latitude, double longitude) {
 

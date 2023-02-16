@@ -18,28 +18,28 @@ import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
 import com.example.petmily.model.data.post.remote.API_Interface;
 import com.example.petmily.model.data.post.remote.Post;
-import com.example.petmily.model.data.profile.make.Make;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.gson.Gson;
-import com.kakao.sdk.template.model.Content;
+import com.google.gson.GsonBuilder;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.MarkerIcons;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PostViewModel extends AndroidViewModel {
-    final String URL = "";
+
+    final String URL = "https://121.187.37.22:5555/api/app/";
 
     FirebaseStorage storage;
     StorageReference storageReference;
@@ -122,21 +122,7 @@ public class PostViewModel extends AndroidViewModel {
     }
 
 
-    private MutableLiveData<List<Make>> userTagList;
-    public MutableLiveData<List<Make>> getUserTagList() {
-        if (userTagList == null) {
-            userTagList = new MutableLiveData<List<Make>>();
-        }
-        return userTagList;
-    }
 
-    private MutableLiveData<List<Make>> hashTagList;
-    public MutableLiveData<List<Make>> getHashTagList() {
-        if (hashTagList == null) {
-            hashTagList = new MutableLiveData<List<Make>>();
-        }
-        return hashTagList;
-    }
 
 
 
@@ -144,11 +130,10 @@ public class PostViewModel extends AndroidViewModel {
 
     private List<Comment> comments;
     private List<PostHalf> halfList;
-    private List<Marker> markers;
     private List<PostGrid> gridList;
+    private List<Marker> markers;
     
-    private List<Make> userTag;
-    private List<Make> hashTag;
+
 
 
     public PostViewModel(@NonNull Application application) {
@@ -159,37 +144,40 @@ public class PostViewModel extends AndroidViewModel {
 
     public void init()
     {
-        hashTag = new ArrayList<Make>();
-        userTag = new ArrayList<Make>();
 
+        markers = new ArrayList<Marker>();
 
         //테스트용 코드
         postList = new ArrayList<Post>();
         List<String> imageUrl = new ArrayList<>();
-        imageUrl.add("post/userId/dog1.png");
+        imageUrl.add("dog2.png");
+        GpsTracker gpsTracker = new GpsTracker(context);
+
+
         for(int i = 0; i < 10; i++)
         {
-
-            Coord coord = new Coord(37.8656208+0.001*i, 127.750391+0.001*i);
+            //38.2078015 	127.2129742
+            double latitude = gpsTracker.getLatitude();
+            double longitude = gpsTracker.getLongitude();
+            Coord coord = new Coord(latitude+0.0001*i, longitude+0.0001*i);
             Location location = new Location(2, coord);
             Post post = new Post(null, location, imageUrl, 3, true, "대충 게시글 내용",
                     null, null);
-
             postList.add(post);
         }
 
 
 
-        /*
+
+
         Gson gson = new GsonBuilder().setLenient().create();
         retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         postInterface = retrofit.create(API_Interface.class);
-         */
-
         postCallback = new PostCallback(context);
+
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
         //postImport();
@@ -208,11 +196,25 @@ public class PostViewModel extends AndroidViewModel {
 
 
     }
+    public void setMarker()
+    {
+        markers = new ArrayList<Marker>();
+        for(int i = 0; i < postList.size(); i++)
+        {
+            Coord coord = postList.get(i).getLocation().getCoord();
+            Marker marker = new Marker();
+            marker.setPosition(new LatLng(coord.getLatitude(), coord.getLonngitude()));
+            marker.setZIndex(5000+i);
+            marker.setIcon(MarkerIcons.GREEN);
+            //marker.setHideCollidedMarkers(true);
+            markers.add(marker);
+        }
+        markerList.setValue(markers);
+    }
+
     public void postHalf()
     {
         halfList = new ArrayList<>();
-        markers = new ArrayList<Marker>();
-
 
         for(int i = 0; i < postList.size(); i++)
         {
@@ -220,18 +222,9 @@ public class PostViewModel extends AndroidViewModel {
             String placename = "닉네임";
             //String placename = postList.get(i).getProfile().getNickname();//일단 닉네임으로 진행
             String imageUrl = postList.get(i).getImageUrl().get(0);//첫 이미지만 가지고옴
-
-            Marker marker = new Marker();
-            marker.setPosition(new LatLng(coord.getLatitude(), coord.getLatitude()));
-            marker.setHeight(100);
-            marker.setWidth(100);
-            marker.setIcon(MarkerIcons.BLACK);
-
             storageReference.child(imageUrl).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
-                    markers.add(marker);
-                    markerList.setValue(markers);
                     //halfList.add(new PostHalf(coord,placename, R.drawable.ic_launcher_background));//테스트용 이미지
                     halfList.add(new PostHalf(coord,placename, uri));
                     postHalf.setValue(halfList);
@@ -239,7 +232,7 @@ public class PostViewModel extends AndroidViewModel {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.e("파일 불러오기 실패 : ", e.getMessage());
+                    //Log.e("파일 불러오기 실패 : ", e.getMessage());
                 }
             });
             //테스트 코드
@@ -288,7 +281,7 @@ public class PostViewModel extends AndroidViewModel {
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.e("파일 불러오기 실패 : ", e.getMessage());
+                    //Log.e("파일 불러오기 실패 : ", e.getMessage());
                 }
             });
 
@@ -326,28 +319,11 @@ public class PostViewModel extends AndroidViewModel {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Log.e("파일 불러오기 실패 : ", e.getMessage());
+                        //Log.e("파일 불러오기 실패 : ", e.getMessage());
                     }
                 });
             }
         }
-    }
-
-    public void makePost()
-    {
-
-    }
-
-    public void addHashTag(String tag)
-    {
-        hashTag.add(new Make(tag));
-        hashTagList.setValue(hashTag);
-
-    }
-    public void addUserTag(String tag)
-    {
-        userTag.add(new Make(tag));
-        userTagList.setValue(userTag);
     }
 
     public void moveMap(int position)
@@ -359,12 +335,10 @@ public class PostViewModel extends AndroidViewModel {
                     18                         // 줌 레벨
             );
             this.cameraPosion.setValue(cameraPosition);
-            Log.e("이동 탐지 : ", coord.getLatitude() + "\t"+ coord.getLonngitude());
             markers.get(position).setWidth(150);
             markers.get(position).setHeight(150);
             markerList.setValue(markers);
         }
-
     }
 
 
@@ -401,13 +375,9 @@ public class PostViewModel extends AndroidViewModel {
                     postList = (List<Post>) body;
                     postHalf();
                     postGrid();
-
-
                 }
             }
-
         }
-
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
         }

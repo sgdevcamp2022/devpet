@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petmily.R;
 import com.example.petmily.databinding.MakeListBinding;
-import com.example.petmily.model.data.profile.make.Make;
+import com.example.petmily.model.data.make.Make;
 
 import java.util.List;
 

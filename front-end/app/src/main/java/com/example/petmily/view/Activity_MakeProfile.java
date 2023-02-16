@@ -43,6 +43,7 @@ public class Activity_MakeProfile extends AppCompatActivity {
     private String month;
     private String day;
     private RecyclerView petList;
+    private String nickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +51,8 @@ public class Activity_MakeProfile extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_make_profile);
         binding.setMakeProfile(this);
+
+        nickname = getIntent().getStringExtra("nickname");
 
         init();
     }
@@ -97,7 +100,16 @@ public class Activity_MakeProfile extends AppCompatActivity {
             }
         });
 
+        binding.save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String imageUri = uri.toString();
+                String about = binding.about.getText().toString();
+                String birth = binding.year.getText()+ "-" + binding.month.getText()+ "-" + binding.day.getText();
 
+                profileViewModel.profileSave(imageUri, nickname, about, birth);
+            }
+        });
 
 
 

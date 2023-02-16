@@ -3,6 +3,7 @@ package com.example.petmily.view;
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -13,10 +14,22 @@ import com.bumptech.glide.Glide;
 import com.example.petmily.R;
 import com.example.petmily.databinding.PostListGridBinding;
 import com.example.petmily.model.data.post.PostGrid;
+import com.example.petmily.model.data.post.remote.Post;
 
 import java.util.List;
 
 public class Adapter_PostGrid extends RecyclerView.Adapter<Adapter_PostGrid.Holder>{
+
+    private Adapter_Message.OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position, Post pots) ;
+    }
+
+    public void setOnItemClickListener(Adapter_Message.OnItemClickListener listener){
+        this.itemClickListener = listener;
+    }
+
     List<PostGrid> list;
     Context context;
 
@@ -40,16 +53,9 @@ public class Adapter_PostGrid extends RecyclerView.Adapter<Adapter_PostGrid.Hold
     @Override
     public void onBindViewHolder(@NonNull Adapter_PostGrid.Holder holder, int position) {
         PostGrid post = list.get(position);
-
-
         Glide.with(context)
                 .load(post.getUri())
                 .into(holder.postListBinding.postImage);
-
-        Log.e("이미지 뷰 체크 : ", post.getUri().toString());
-
-
-
         holder.postListBinding.setPostGrid(post);
 
     }
@@ -68,6 +74,21 @@ public class Adapter_PostGrid extends RecyclerView.Adapter<Adapter_PostGrid.Hold
             this.postListBinding=postListBinding;
             //postListBinding.postImage.setImageResource(R.drawable.ic_launcher_background);
 
+            postListBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //존재하는 포지션인지 확인
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        //동작 호출 (onItemClick 함수 호출)
+                        if(itemClickListener != null){
+                            //itemClickListener.onItemClick(v, pos, );
+
+                        }
+                    }
+                }
+            });
 
         }
     }

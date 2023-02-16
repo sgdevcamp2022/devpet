@@ -100,7 +100,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toTopOf="parent"
-                                app:srcCompat="@drawable/search"
+                                app:srcCompat="@drawable/corner_layout"
                                 tools:layout_editor_absoluteX="441dp"
                                 tools:layout_editor_absoluteY="10dp" />
                         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -126,7 +126,9 @@
                         android:id="@+id/post_grid_frame"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center"/>
+                        android:paddingTop="15dp"
+                        android:paddingStart="25dp"
+                        android:gravity="center"/>
 
 
                 </LinearLayout>

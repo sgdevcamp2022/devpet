@@ -1,4 +1,4 @@
-package com.example.petmily.model.data.profile.make;
+package com.example.petmily.model.data.make;
 
 public class Make {
     String make;

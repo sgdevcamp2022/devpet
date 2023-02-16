@@ -1,27 +1,51 @@
 package com.example.petmily.viewModel;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.util.Log;
-import android.view.View;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
-import com.example.petmily.model.data.chat.room.Message;
+
+import com.example.petmily.R;
+import com.example.petmily.model.data.post.remote.Post;
 import com.example.petmily.model.data.profile.Pet;
+import com.example.petmily.model.data.profile.remote.API_Interface;
+import com.example.petmily.model.data.profile.remote.Profile;
+import com.example.petmily.model.data.profile.remote.SuccessFollow;
+import com.example.petmily.model.data.profile.remote.SuccessFollower;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class ProfileViewModel extends AndroidViewModel {
+    final String URL = "/profile";
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageRef;
+
+    //private AuthDatabase db;
+    private ProfileCallback profileCallback;
+
+    private API_Interface profileInterface;
+    private Retrofit retrofit;
+    private Context context;
+
+    private Call<?> restApi;
 
     private MutableLiveData<List<Pet>> petList;
     public MutableLiveData<List<Pet>> getPetList() {
@@ -31,22 +55,43 @@ public class ProfileViewModel extends AndroidViewModel {
         return petList;
     }
 
+    private MutableLiveData<Profile> profile;
+    public MutableLiveData<Profile> getProfile() {
+        if (profile == null) {
+            profile = new MutableLiveData<Profile>();
+        }
+        return profile;
+    }
 
-    private Context context;
+    private MutableLiveData<SuccessFollow> followList;
+    public MutableLiveData<SuccessFollow> getFollow() {
+        if (followList == null) {
+            followList = new MutableLiveData<SuccessFollow>();
+        }
+        return followList;
+    }
+
+    private MutableLiveData<SuccessFollower> followerList;
+    public MutableLiveData<SuccessFollower> getFollower() {
+        if (followerList == null) {
+            followerList = new MutableLiveData<SuccessFollower>();
+        }
+        return followerList;
+    }
+
     private List<Pet> pets;
-
+    private String email;
 
     public ProfileViewModel(@NonNull Application application) {
         super(application);
         context = application.getApplicationContext();
 
-        FirebaseStorage firebaseStorage = FirebaseStorage.getInstance();
-        StorageReference storageRef = firebaseStorage.getReference();
+        firebaseStorage = FirebaseStorage.getInstance();
+        storageRef = firebaseStorage.getReference();
         storageRef.child("profile");
 
 
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
+
         pets = new ArrayList<>();
 
 
@@ -66,6 +111,46 @@ public class ProfileViewModel extends AndroidViewModel {
 
          */
     }
+    public void init()
+    {
+//        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+//        email = sharedPreferences.getString("email", "");
+//
+//        //db = AuthDatabase.getInstance(context);
+//        profileCallback = new ProfileCallback(context);
+//        Gson gson = new GsonBuilder().setLenient().create();
+//        retrofit = new Retrofit.Builder()
+//                .baseUrl(URL)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//        profileInterface = retrofit.create(API_Interface.class);
+
+    }
+
+
+    public void profileImport()
+    {
+        //restApi = profileInterface.getProfile(email);
+        //restApi.enqueue(profileCallback);
+
+
+
+
+
+
+        Profile p = new Profile("", "닉네임", "소개", "생일", pets);
+        profile.setValue(p);
+
+        List<Profile> test =  new ArrayList<Profile>();
+        test.add(p);
+        SuccessFollow successFollow = new SuccessFollow("", true,test);
+        followList.setValue(successFollow);
+
+        SuccessFollower successFollower = new SuccessFollower("", true,test);
+        followerList.setValue(successFollower);
+
+    }
+
     public void petAppend(String imageUri, String name, String division, String birth, String about)
     {
         Pet pet = new Pet(name, division, birth, about, imageUri, "");
@@ -74,21 +159,80 @@ public class ProfileViewModel extends AndroidViewModel {
         Log.e("name : ", name);
 
     }
-    public void profileSave()
+    public void profileSave(String imageUri, String name, String about, String birth)
     {
-
-    }
-
-    public void makeProfile() {
-        String imageUrl;
-        String nickname;
-        String about;
-        String birth;
-        List<Pet> pet;
+        Profile profile = new Profile(imageUri, name, about, birth, pets);
+        restApi = profileInterface.saveProfile(profile);
+        restApi.enqueue(profileCallback);
 
     }
 
 
+    public class ProfileCallback<T> implements retrofit2.Callback<T> {
+        private FirebaseStorage storage;
+        private StorageReference storageReference;
+
+        final int SUCCESS               = 200;
+
+        final int INVALID_PARAMETER     = 400;
+        final int NEED_LOGIN            = 401;
+        final int UNAUTHORIZED          = 403;
+        final int NOT_FOUND             = 404;
+
+        final int INTERNAL_SERVER_ERROR = 500;
+
+        Context context;
+
+        public ProfileCallback(Context context) {
+            this.context = context;
+        }
+
+        @Override
+        public void onResponse(retrofit2.Call<T> call, retrofit2.Response<T> response) {
+
+            Gson gson = new Gson();
+            int responseCode = response.code();//네트워크 탐지할 때 사용 코드
+            T body = response.body();
+
+            if(responseCode == SUCCESS)
+            {
+                if(body instanceof Profile) {
+                    Profile result = (Profile) body;
+
+                    storageReference.child(result.getImageUri()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            result.setImageUri(uri.getPath());
+                            profile.setValue(result);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            //Log.e("파일 불러오기 실패 : ", e.getMessage());
+                        }
+                    });
+                }
+                if(body instanceof SuccessFollow)
+                {
+                    SuccessFollow successFollow = (SuccessFollow) body;
+
+                    followList.setValue(successFollow);
+                }
+                if(body instanceof SuccessFollower)
+                {
+                    SuccessFollower successFollower = (SuccessFollower) body;
+
+                    followerList.setValue(successFollower);
+
+                }
+            }
+
+        }
+
+        @Override
+        public void onFailure(retrofit2.Call<T> call, Throwable t) {
+        }
+    }
 
 
 

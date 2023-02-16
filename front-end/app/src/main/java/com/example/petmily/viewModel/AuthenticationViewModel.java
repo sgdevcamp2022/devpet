@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.ResponseBody;
@@ -32,7 +33,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AuthenticationViewModel extends AndroidViewModel {
 
-    final String URL = "http://10.0.2.2:8080/oauth/";
+    final String URL = " https://121.187.37.22:5555/oauth/";
+    //final String URL = "http://10.0.2.2:8080/oauth/";
 
     private AuthDatabase db;
     private AuthCallback authCallback;
@@ -120,7 +122,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
 
     public void join(String username, String name, String nickname, String password)
     {
-        restApi = authInterface.createUser(username, name, nickname, password, "1", "남자", "010", "");
+        restApi = authInterface.createUser(username, name, nickname, password);
         restApi.enqueue(authCallback);
     }
 

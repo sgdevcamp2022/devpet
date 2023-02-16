@@ -11,29 +11,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
-  >
+        >
+
+
+
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
+            android:elevation="2dp"
             app:layout_constraintBottom_toTopOf="@id/main_frame"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone">
+            app:contentInsetStart="0dp"
+            android:background="#FFFFFF"
+            tools:visibility="visible">
+            <ImageView
+                android:id="@+id/make"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                app:srcCompat="@drawable/make"
+                android:layout_marginStart="5dp"/>
 
             <TextView
                 android:id="@+id/Appname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
+                android:layout_gravity="center | top"
+                android:fontFamily="@font/dancingscript_bold"
+                android:textColor="#000000"
                 android:gravity="center"
                 android:text="Petmily"
                 android:textSize="30dp" />
 
+
         </androidx.appcompat.widget.Toolbar>
+
 
         <FrameLayout
             android:id="@+id/main_frame"
@@ -42,18 +57,63 @@
             app:layout_constraintBottom_toTopOf="@id/bottom_toolbar"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar"></FrameLayout>
+            app:layout_constraintTop_toBottomOf="@+id/toolbar" />
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_toolbar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
+            android:background="#FFFFFF"
+            android:elevation="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/main_frame"
-            app:menu="@menu/main_bottombar_menu"/>
+            app:layout_constraintStart_toStartOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <ImageView
+                    android:id="@+id/search"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:background="@drawable/touch"
+                    app:srcCompat="@drawable/search"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/home"/>
+
+                <ImageView
+                    android:id="@+id/home"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:padding="5dp"
+                    android:background="@drawable/touch"
+                    app:srcCompat="@drawable/home"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/search"
+                    app:layout_constraintEnd_toStartOf="@id/user"/>
+
+                <ImageView
+                    android:id="@+id/user"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_weight="1"
+                    android:padding="3dp"
+                    android:background="@drawable/touch"
+                    app:srcCompat="@drawable/user"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/home"
+                    app:layout_constraintEnd_toEndOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.bottomnavigation.BottomNavigationView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -4,6 +4,6 @@
     <item
         android:id="@+id/dm"
         android:title="도움말"
-        android:icon="@drawable/dm"
+        android:icon="@drawable/dm_1"
         app:showAsAction="always" />
 </menu>

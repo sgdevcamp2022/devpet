@@ -1,11 +1,7 @@
 package com.example.petmily.view;
 
-
-
-
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityChatRoomBinding;
 import com.example.petmily.model.data.chat.room.Message;
-import com.example.petmily.viewModel.ChatRoomViewModel;
 import com.example.petmily.viewModel.ChatViewModel;
 
 import java.util.List;

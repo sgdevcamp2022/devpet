@@ -2,20 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/group"
-        android:title="그룹"
-        android:icon="@drawable/group"
+        android:id="@+id/search"
+        android:icon="@drawable/search"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/home"
-        android:title="메인"
-        android:icon="@drawable/dm"
+        android:icon="@drawable/home"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/profile"
-        android:title="프로필"
         android:icon="@drawable/user"
         app:showAsAction="always" />
 

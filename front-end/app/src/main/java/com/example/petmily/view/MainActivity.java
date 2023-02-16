@@ -1,7 +1,6 @@
 package com.example.petmily.view;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -19,22 +18,13 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.petmily.R;
-import com.example.petmily.databinding.ActivityMainBinding;
 
+import com.example.petmily.databinding.ActivityMainBinding;
 import com.example.petmily.viewModel.AuthenticationViewModel;
-import com.example.petmily.viewModel.ChatRoomViewModel;
-import com.example.petmily.viewModel.ChatService;
-import com.example.petmily.viewModel.ChatViewModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.storage.FirebaseStorage;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -106,21 +96,28 @@ public class MainActivity extends AppCompatActivity {
         authenticationViewModel.accessTokenCheck();
         initView();
     }
-    public void initView()
-    {
+    public void initView() {
         Toolbar toolbar = binding.toolbar;
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeAsUpIndicator(R.drawable.make);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+
+        binding.make.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Activity_Make.class);
+                startActivity(intent);
+            }
+        });
+
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
 
         fragment_home = new Fragment_Home();
-        fragment_group = new Fragment_Group();
+        fragment_group = new Fragment_Search();
         fragment_profile = new Fragment_Profile();
 
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -129,37 +126,75 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.main_frame, fragment_home).commitAllowingStateLoss();
 
 
-
-        BottomNavigationView bottomNavigationView = binding.bottomToolbar;
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+        binding.search.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
+            public void onClick(View view) {
                 fragmentTransaction = fragmentManager.beginTransaction();
-
-                switch(item.getItemId())
-                {
-                    case R.id.group:
-                        fragmentTransaction.hide(fragment_home);
-                        fragmentTransaction.hide(fragment_profile);
-                        fragmentTransaction.show(fragment_group).commit();
-                        break;
-                    case R.id.home:
-                        fragmentTransaction.hide(fragment_group);
-                        fragmentTransaction.hide(fragment_profile);
-                        fragmentTransaction.show(fragment_home).commit();
-                        binding.toolbar.setVisibility(View.VISIBLE);
-                        break;
-                    case R.id.profile:
-                        fragmentTransaction.hide(fragment_home);
-                        fragmentTransaction.hide(fragment_group);
-                        fragmentTransaction.show(fragment_profile).commit();
-                        binding.toolbar.setVisibility(View.GONE);
-                        break;
-                }
-                return false;
+                fragmentTransaction.hide(fragment_home);
+                fragmentTransaction.hide(fragment_profile);
+                fragmentTransaction.show(fragment_group).commit();
+                binding.search.setImageResource(R.drawable.search_touch);
+                binding.home.setImageResource(R.drawable.home);
+                binding.user.setImageResource(R.drawable.user);
             }
         });
+
+        binding.home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.hide(fragment_group);
+                fragmentTransaction.hide(fragment_profile);
+                fragmentTransaction.show(fragment_home).commit();
+                binding.toolbar.setVisibility(View.VISIBLE);
+                binding.search.setImageResource(R.drawable.search);
+                binding.home.setImageResource(R.drawable.home_touch);
+                binding.user.setImageResource(R.drawable.user);
+            }
+        });
+
+        binding.user.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.hide(fragment_home);
+                fragmentTransaction.hide(fragment_group);
+                fragmentTransaction.show(fragment_profile).commit();
+                binding.toolbar.setVisibility(View.GONE);
+                binding.search.setImageResource(R.drawable.search);
+                binding.home.setImageResource(R.drawable.home);
+                binding.user.setImageResource(R.drawable.user_touch);
+            }
+        });
+
+
+//        BottomNavigationView bottomNavigationView = binding.bottomToolbar;
+//        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
+//            @Override
+//            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+//                switch(item.getItemId())
+//                {
+//                    case R.id.search:
+//                        fragmentTransaction.hide(fragment_home);
+//                        fragmentTransaction.hide(fragment_profile);
+//                        fragmentTransaction.show(fragment_group).commit();
+//                        break;
+//                    case R.id.home:
+//                        fragmentTransaction.hide(fragment_group);
+//                        fragmentTransaction.hide(fragment_profile);
+//                        fragmentTransaction.show(fragment_home).commit();
+//                        binding.toolbar.setVisibility(View.VISIBLE);
+//                        break;
+//                    case R.id.profile:
+//                        fragmentTransaction.hide(fragment_home);
+//                        fragmentTransaction.hide(fragment_group);
+//                        fragmentTransaction.show(fragment_profile).commit();
+//                        binding.toolbar.setVisibility(View.GONE);
+//                        break;
+//                }
+//                return false;
+//            }
+//        });
     }
 
     @Override
@@ -168,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         menuInflater.inflate(R.menu.main_toolbar_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -178,11 +214,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case android.R.id.home:
                 //select back button
-                Intent intent = new Intent(this, Activity_Make.class);
-                startActivity(intent);
-
-                //ChatRoomViewModel chatRoomViewModel = new ViewModelProvider(this).get(ChatRoomViewModel.class);
-
 
                 break;
         }
