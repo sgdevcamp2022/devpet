@@ -21,7 +21,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     UserInfo deleteFollowById(String followedUser, String followUser);
 
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
-    Optional<UserInfo> findNodeById (@Param("userId") String userId);
+    Optional<UserInfo> findNodeById (String userId);
 
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +

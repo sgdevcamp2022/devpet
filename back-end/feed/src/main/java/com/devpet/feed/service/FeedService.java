@@ -83,7 +83,7 @@ public class FeedService {
     }
 
 
-
+    @Transactional
     public void recommended(ScoreDto scoreDto) {
         // 추천하려는 대상이 db에 존재하는지 확인
         UserInfo userInfo = userInfoRepository.findNodeById(scoreDto.getUserId()).orElseThrow(RuntimeException::new);

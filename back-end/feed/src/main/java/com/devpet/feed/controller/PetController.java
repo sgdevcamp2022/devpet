@@ -35,13 +35,6 @@ public class PetController {
         return ResponseEntity.ok("삭제 성공");
     }
 
-    @PostMapping("/raise")
-    public ResponseEntity<String> raisePet(@RequestBody PetDto petDto) throws Exception {
-
-        petService.raisePet(petDto);
-
-        return ResponseEntity.ok("관계 성립");
-    }
 
     @PostMapping("/raise/cancel")
     public ResponseEntity<String> raisePetCancel(@RequestBody PetDto petDto) {
