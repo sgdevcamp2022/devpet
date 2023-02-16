@@ -1,6 +1,5 @@
 package com.devpet.feed.service;
 
-import com.devpet.feed.common.Hash;
 import com.devpet.feed.model.dto.FollowDto;
 import com.devpet.feed.model.dto.UserInfoDto;
 import com.devpet.feed.model.entity.UserInfo;
@@ -14,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,13 +43,52 @@ return new UserInfoDto(info);
     /**
      * 사용자 팔로우 기능
      * redis 에 저장하는 기능
+     * 성능 이슈 발생
+     * TODO : 성능이슈 처리 _ procedure 활용?
      * @param followedUser
      * @param followUser
      * @return
      * @throws Exception
      */
+//    @Transactional
+//    public void followUser(String followedUser, String followUser) throws Exception{
+//
+//        UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
+//        UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
+//
+//        // 서로 관계가 있는지 체크
+//        UserInfo check = userRepository.checkFollow(followUser, followedUser);
+//        if (check != null) {
+//            throw new Exception("이미 존재하는 관계입니다.");
+//        }
+//        redisRepository.cacheFollowRelation(followedUser, followUser);
+//    }
+
+    /**
+     * follow relation redis에 일괄 저장
+     * @throws Exception
+     */
+//    @Transactional
+//    public void saveFollowRelation(String followedUser, List<String> followUser){
+//
+//        UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
+//        Set<Follow> userFollower = new HashSet<>();
+//        for (String follower: followUser) {
+//
+//            UserInfo followerInfo = userRepository.findNodeById(follower).orElseThrow(RuntimeException::new);
+//            UserInfo check = userRepository.checkFollow(followerInfo.getUserId(), followedUser);
+//            if (check != null) {
+//                throw new RuntimeException("이미 존재하는 관계입니다.");
+//            }
+//            Follow followerNode = new Follow(followerInfo);
+//            userFollower.add(followerNode);
+//        }
+//
+//        user.setFollowers(userFollower);
+//    }
+
     @Transactional
-    public void followUser(String followedUser, String followUser) throws Exception{
+    public UserInfoDto followUser(String followedUser, String followUser) throws Exception {
 
         UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
         UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
@@ -59,34 +98,16 @@ return new UserInfoDto(info);
         if (check != null) {
             throw new Exception("이미 존재하는 관계입니다.");
         }
-        redisRepository.cacheFollowRelation(followedUser, followUser);
-    }
 
-    /**
-     * follow relation redis에 일괄 저장
-     * @throws Exception
-     */
-    @Transactional
-    public void saveFollowRelation() throws Exception{
-
-//        UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
-//        UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
-////
-//        // 서로 관계가 있는지 체크
-//        UserInfo check = userRepository.checkFollow(followUser, followedUser);
-//        if (check != null) {
-//            throw new Exception("이미 존재하는 관계입니다.");
-//        }
-//
-//        Set<Follow> userFollower = user.getFollowers();
-////        Set<Follow> userFollower = new HashSet<>();
-//        Follow followerNode = new Follow(follower);
-//        userFollower.add(followerNode);
-//        return userInfoToUserInfoDto(userRepository.save(user));
+        Set<Follow> userFollower = user.getFollowers();
+//        Set<Follow> userFollower = new HashSet<>();
+        Follow followerNode = new Follow(follower);
+        userFollower.add(followerNode);
+        return userInfoToUserInfoDto(userRepository.save(user));
     }
 
     @Transactional
-    public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) throws Exception {
+    public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) {
 
         // 유저가 db에 존재하는지 확인
         userRepository.findNodeById(userInfoDto.getUserId()).orElseThrow(RuntimeException::new);

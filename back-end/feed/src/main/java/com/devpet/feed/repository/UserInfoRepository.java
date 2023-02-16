@@ -66,6 +66,12 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "WHERE EXISTS((u1)-[:FOLLOW]->(u2)) " + "RETURN u1")
     UserInfo checkFollow(@Param("follower") String follower, @Param("following") String following);
 
+    @Query("match(u1:UserInfo{userId: $follower}) " +
+            "match(u2:UserInfo{userId: $following}) " +
+            "WHERE EXISTS((u1)-[:FOLLOW]->(u2)) " + "RETURN u1")
+    UserInfo saveFollow(@Param("follower") String follower, @Param("following") String following);
+
+
 
     // 내가 팔로우 한 유저들이 작성한 게시글들 가져오기(시간순으로 정렬 과 개수 조정 필요)
     @Query("Match(u:UserInfo{userId: $userId})-[:FOLLOW]->(:UserInfo)-[:POST]->(p:PostInfo)" + "return p.postId")
@@ -107,7 +113,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return DISTINCT p.postId")
     List<String> getFollowingRecommendPostList(String userId);
 
-    @Query("match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[:POST]->(p:PostInfo)" +
+    @Query("match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[]->(p:PostInfo)" +
             "WITH datetime() AS now, datetime(p.createdAt) AS date , p" +
             "where duration.inSeconds(date, now).hours < 10" +
             "return p.postId")

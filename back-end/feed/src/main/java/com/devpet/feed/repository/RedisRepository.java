@@ -17,14 +17,13 @@ import java.util.Set;
 public class RedisRepository {
 
 
-    private static final String KEY_FOLLOWING = "FOLLOWING";
-    private static final String KEY_FOLLOWER = "FOLLOWER";
+    public static final String KEY_FOLLOWING = "FOLLOWING";
+    public static final String KEY_FOLLOWER = "FOLLOWER";
 
     private static final String KEY_POST = "POST";
 
 
     final RedisTemplate<String, String> redisTemplate;
-    final HashOperations<String,String,Boolean> hashOperations;
     @Resource(name = "redisTemplate")
     private ValueOperations<String, Double> scoreCache;
     @Resource(name = "redisTemplate")
@@ -44,14 +43,12 @@ public class RedisRepository {
 
     /**
      * A - [:follow] -> B
-     * followedUser 팔로잉을 받는 유저(B)
-     * followUser 팔로잉을 하는 유저 (A)
-     * @param followedUser
-     * @param followUser
+     * @param followedUser 팔로잉을 받는 유저(B)
+     * @param followUser 팔로잉을 하는 유저 (A)
      */
     public void cacheFollowRelation(String followedUser, String followUser){
-        hashOperations.put(keyGenerateFollower(followedUser),followUser , true ); // B의 팔로워를 저장하는 해시
-        hashOperations.put(keyGenerateFollowing(followUser),followedUser , true ); // A의 팔로잉을 저장하는 해시
+        redisTemplate.opsForList().rightPush(keyGenerateFollower(followedUser),followUser); // B의 팔로워를 저장하는 해시
+        redisTemplate.opsForList().rightPush(keyGenerateFollowing(followUser),followedUser); // A의 팔로잉을 저장하는 해시
     }
 
     /**
@@ -62,7 +59,7 @@ public class RedisRepository {
     public void cachedDuplicatedId(String userId, Set<String> postList) {
         String key = keyGeneratePost(userId);
         redisTemplate.opsForList().rightPushAll(key, postList);
-        redisTemplate.expire(key, Duration.ofMinutes(30) );
+        redisTemplate.expire(key, Duration.ofMinutes(10) );
     }
 
     /**

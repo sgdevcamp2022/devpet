@@ -84,6 +84,7 @@ public class FeedService {
      * @param userId
      * @return
      */
+    @Transactional
     public Set<String> getPostList(String userId) {
         Set<String> postList = userInfoRepository.getPostList(userId);
         List<String> cachedList = Optional.of(redisRepository.getCachedDuplicatedId(userId)).orElseThrow(RedisCommandTimeoutException::new);
