@@ -32,9 +32,9 @@ public class Profile extends BaseModel{
     @Field
     private ArrayList<Pet> petList;
     @Transient
-    private Long follower;
+    private long follower;
     @Transient
-    private Long follow;
+    private long follow;
     private String imageUrl;
 
     public Profile(ProfileRequest profileRequest,UserInfo userInfo)

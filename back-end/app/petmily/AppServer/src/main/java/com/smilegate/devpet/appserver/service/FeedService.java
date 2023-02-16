@@ -182,7 +182,7 @@ public class FeedService {
      * @param size 조회 갯수
      * @return 조회한 게시글 정보 리스트
      */
-    public List<Feed> getFeedList(String word, int category, Circle circle, int start, int size)
+    public List<Feed> getFeedList(String word, Integer category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
         return findNearFeedList(word,category,circle,pageRequest);
