@@ -1,17 +1,8 @@
 package com.smilegate.devpet.appserver.service;
 
-import com.fasterxml.jackson.core.JsonParseException;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.smilegate.devpet.appserver.model.Favorite;
-import com.smilegate.devpet.appserver.model.Feed;
-import com.smilegate.devpet.appserver.model.FeedCommentKafkaRequest;
-import com.smilegate.devpet.appserver.model.FeedFavoriteKafkaRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
