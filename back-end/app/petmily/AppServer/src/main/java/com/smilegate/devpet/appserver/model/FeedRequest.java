@@ -1,19 +1,18 @@
 package com.smilegate.devpet.appserver.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
-
-@RequiredArgsConstructor
+import java.util.Set;
+@AllArgsConstructor
+@NoArgsConstructor
 @Getter @Setter
 public class FeedRequest {
     private String content;
     private String category;
     private Location location;
-    private ArrayList<Long> tag;
+    private ArrayList<Long> tagUsers;
     private Long groupId;
     private ArrayList<String> imageUrl;
-//    private ArrayList<Long> hashTag;
+    private ArrayList<Tag> hashTag;
 }

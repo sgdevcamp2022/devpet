@@ -2,9 +2,13 @@ package com.smilegate.devpet.appserver.model;
 
 import lombok.*;
 
-@Getter @Setter
+@Setter
+@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class FavoriteRequest {
+@Builder
+public class LikePostDto {
+    private String userId;
+    private String postId;
     private Boolean isFavorite;
 }

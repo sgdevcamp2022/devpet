@@ -26,6 +26,7 @@ public interface PetRepository extends Neo4jRepository<PetInfo, String> {
             "WHERE EXISTS((u)-[:PET]->(p)) " + "RETURN p")
     PetInfo checkPet(@Param("userId") String userId, @Param("petId") String petId);
 
+
 //    @Query("match(u:UserInfo{userId : $userId})-[r:PET]->(p:PetInfo{petId : $petId})" + "delete r")
 //    void raisePetCancel(@Param("userId") String userId, @Param("petId") String petId);
 }

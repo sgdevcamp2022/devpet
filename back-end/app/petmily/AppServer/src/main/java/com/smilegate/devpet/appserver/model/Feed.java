@@ -1,8 +1,6 @@
 package com.smilegate.devpet.appserver.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -11,15 +9,17 @@ import org.springframework.data.redis.core.RedisHash;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter @Setter
 @RedisHash("feed")
 @Document(collection = "feed")
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class Feed extends BaseModel implements Serializable {
     private static final long serialVersionUID = -1;
-    public static enum FEED_SEARCH_MODE {GALLERY,POST,MARKER}
     @Transient
     public static final String SEQUENCE_NAME = "feed_sequence";
     @Id
@@ -29,7 +29,7 @@ public class Feed extends BaseModel implements Serializable {
     @Field
     private Location location;
     @Field
-    private ArrayList<Long> tag;
+    private ArrayList<Long> tagUsers;
     @Field
     private Long groupId;
     @Field
@@ -37,20 +37,20 @@ public class Feed extends BaseModel implements Serializable {
     @Field
     private Long userId;
     @Field
-    private ArrayList<Long> hashTag;
+    private Set<Tag> hashTags;
     @Transient
     private List<Comment> comments;
     @Transient
     private boolean isFavorite;
 
-    public Feed(Long feedId, String content, Location location, ArrayList<Long> tag, Long groupId, ArrayList<String> imageUrl, ArrayList<Long> hashTag) {
+    public Feed(Long feedId, String content, Location location, ArrayList<Long> tagUsers, Long groupId, ArrayList<String> imageUrl, ArrayList<String> hashTag,Set<Tag> hashTags) {
         this.feedId = feedId;
         this.content = content;
         this.location = location;
-        this.tag = tag;
+        this.tagUsers = tagUsers;
         this.groupId = groupId;
         this.imageUrl = imageUrl;
-        this.hashTag = hashTag;
+        this.hashTags = hashTags;
     }
 
     public Feed(FeedRequest feedRequest, UserInfo userInfo)
@@ -68,7 +68,8 @@ public class Feed extends BaseModel implements Serializable {
         this.setLocation(feedRequest.getLocation());
         this.setGroupId(feedRequest.getGroupId());
         this.setImageUrl(feedRequest.getImageUrl());
-        this.setTag(feedRequest.getTag());
+        this.setTagUsers(feedRequest.getTagUsers());
         this.setContent(feedRequest.getContent());
+        this.hashTags = new HashSet<>(feedRequest.getHashTag());
     }
 }

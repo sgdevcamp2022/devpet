@@ -21,8 +21,10 @@ public class LocationController {
     public List<Location> getNearByLocation(@RequestParam("latitude") Double latitude
                                             ,@RequestParam("longitude") Double longitude
                                             ,@RequestParam("distance") Double distance
-                                            ,@RequestParam("category") long category)
+                                            ,@RequestParam(value="category",required = false) Integer category
+                                            ,@RequestParam(value="content",required = false) String content
+                                            ,@RequestParam(value="address",required = false) String address)
     {
-        return locationService.getNearByLocation(new Circle(latitude,longitude,distance),category);
+        return locationService.getNearByLocation(new Circle(latitude,longitude,distance), category, content,address);
     }
 }
