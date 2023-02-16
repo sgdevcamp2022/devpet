@@ -21,7 +21,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     UserInfo deleteFollowById(String followedUser, String followUser);
 
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
-    Optional<UserInfo> findNodeById (String userId);
+    Optional<UserInfo> findNodeById (@Param("userId") String userId);
 
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +
@@ -132,7 +132,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 10" +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
-
 
 //    // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
 //    @Query("match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[:COMMENT]->(:PostInfo)-[:TAGD]->(t:Tag)<-[:TAGD]-(p:PostInfo) " +

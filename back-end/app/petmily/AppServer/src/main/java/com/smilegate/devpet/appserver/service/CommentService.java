@@ -1,23 +1,17 @@
 package com.smilegate.devpet.appserver.service;
 
-import com.smilegate.devpet.appserver.model.Comment;
-import com.smilegate.devpet.appserver.model.CommentRequest;
-import com.smilegate.devpet.appserver.model.Favorite;
-import com.smilegate.devpet.appserver.model.UserInfo;
+import com.smilegate.devpet.appserver.api.relation.PostInfoApi;
+import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.CommentRepository;
-import com.smilegate.devpet.appserver.repository.mongo.FavoriteRepository;
 import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
-import com.smilegate.devpet.appserver.repository.redis.CommentRedisRepository;
 import com.smilegate.devpet.appserver.repository.redis.NewPostRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +22,7 @@ public class CommentService {
     private final SequenceGeneratorService sequenceGeneratorService;
     private final NewPostRedisRepository newPostRedisRepository;
     private final FavoriteService favoriteService;
-    private final KafkaProducerService kafkaProducerService;
+    private final PostInfoApi postInfoApi;
     private final FeedRepository feedRepository;
 
 
@@ -73,8 +67,12 @@ public class CommentService {
         // 해당 게시글을 좋아요를 누르고 있는 사람들에게 피드 캐시에 댓글이 달렸다고 전송합니다.
         favoriteService.favoriteUserAddFeed(feedId);
 
-        // 코멘트 정보를 kafka로 전송합니다.
-        kafkaProducerService.feedCommentSend(feedId, comment.getComment(), userInfo.getUserId());
+        // 코멘트 정보를 관계정보 서버로 전송합니다.
+        CommentRelationRequest commentRelationRequest = CommentRelationRequest.builder()
+                .postId(Long.valueOf(comment.getPostId()).toString())
+                .userId(Long.valueOf(userInfo.getUserId()).toString())
+                .createdAt(comment.getCreatedAt().toString()).build();
+        postInfoApi.postComment(commentRelationRequest);
         return comment;
     }
 
@@ -85,7 +83,7 @@ public class CommentService {
      */
     public Comment putComment(CommentRequest commentRequest)
     {
-        Comment comment = commentRepository.findById(commentRequest.getCommentId()).orElseThrow(RuntimeException::new);
+        Comment comment = commentRepository.findById(commentRequest.getCommentId()).orElseThrow(NullPointerException::new);
         comment.setComment(String.valueOf(commentRequest));
         commentRepository.save(comment);
         return comment;

@@ -225,7 +225,6 @@ return new UserInfoDto(info);
 //        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
 //        return userRepository.getFollowingCommentPostList(userId);
 //    }
-
     // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
     public Set<String> getPetLikeCommentPostList(String userId) {
 
