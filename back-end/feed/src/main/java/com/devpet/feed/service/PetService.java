@@ -23,10 +23,14 @@ public class PetService {
     @Transactional
     public String savePet(PetInfoDto petInfoDto) {
 
+        UserInfo userInfo = userRepository.findNodeById(petInfoDto.getUserId()).orElseThrow(RuntimeException::new);
         // 수정 필요
-        PetInfo petInfo = petRepository.findByPetId(petInfoDto.getPetId()).orElse(petRepository.save(new PetInfo(petInfoDto)));
+        PetInfo petInfo = petRepository.findByPetName(petInfoDto.getPetName()).orElse(petRepository.save(new PetInfo(petInfoDto)));
 
         String uuid = petInfo.getPetId();
+        Pet pet = new Pet(petInfo);
+        userInfo.getPet().add(pet);
+        userRepository.save(userInfo);
         return uuid;
     }
 
@@ -48,23 +52,7 @@ public class PetService {
     }
 
 
-
-    public void raisePet(PetDto petDto) throws Exception{
-
-        UserInfo userInfo = userRepository.findNodeById(petDto.getUserId()).orElseThrow(RuntimeException::new);
-        PetInfo petInfo = petRepository.findByPetId(petDto.getPetId()).orElseThrow(RuntimeException::new);
-
-        PetInfo check = petRepository.checkPet(userInfo.getUserId(), petInfo.getPetId());
-        if (check != null) {
-            throw new Exception("이미 존재하는 관계입니다.");
-        }
-
-        Pet pet = new Pet(petInfo);
-        userInfo.getPet().add(pet);
-
-        userRepository.save(userInfo);
-    }
-
+    @Transactional
     public void raisePetCancel(PetDto petDto) {
 
         UserInfo userInfo = userRepository.findNodeById(petDto.getUserId()).orElseThrow(RuntimeException::new);
@@ -72,7 +60,7 @@ public class PetService {
 
         petRepository.raisePetCancel(petDto.getUserId(), petDto.getPetId());
     }
-
+    @Transactional
     public PetInfoDto getPet(String petId) {
 
         PetInfo petInfo = petRepository.findByPetId(petId).orElseThrow(RuntimeException::new);
