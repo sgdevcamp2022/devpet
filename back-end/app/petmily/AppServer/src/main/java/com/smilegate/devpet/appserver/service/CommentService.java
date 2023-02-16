@@ -1,9 +1,7 @@
 package com.smilegate.devpet.appserver.service;
 
-import com.smilegate.devpet.appserver.model.Comment;
-import com.smilegate.devpet.appserver.model.CommentRequest;
-import com.smilegate.devpet.appserver.model.Favorite;
-import com.smilegate.devpet.appserver.model.UserInfo;
+import com.smilegate.devpet.appserver.api.relation.PostInfoService;
+import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.CommentRepository;
 import com.smilegate.devpet.appserver.repository.mongo.FavoriteRepository;
 import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
@@ -28,7 +26,7 @@ public class CommentService {
     private final SequenceGeneratorService sequenceGeneratorService;
     private final NewPostRedisRepository newPostRedisRepository;
     private final FavoriteService favoriteService;
-    private final KafkaProducerService kafkaProducerService;
+    private final PostInfoService postInfoService;
     private final FeedRepository feedRepository;
 
 
@@ -73,8 +71,12 @@ public class CommentService {
         // 해당 게시글을 좋아요를 누르고 있는 사람들에게 피드 캐시에 댓글이 달렸다고 전송합니다.
         favoriteService.favoriteUserAddFeed(feedId);
 
-        // 코멘트 정보를 kafka로 전송합니다.
-        kafkaProducerService.feedCommentSend(feedId, comment.getComment(), userInfo.getUserId());
+        // 코멘트 정보를 관계정보 서버로 전송합니다.
+        CommentRelationRequest commentRelationRequest = CommentRelationRequest.builder()
+                .postId(Long.valueOf(comment.getPostId()).toString())
+                .userId(Long.valueOf(userInfo.getUserId()).toString())
+                .createdAt(comment.getCreatedAt().toString()).build();
+        postInfoService.postComment(commentRelationRequest);
         return comment;
     }
 
@@ -85,7 +87,7 @@ public class CommentService {
      */
     public Comment putComment(CommentRequest commentRequest)
     {
-        Comment comment = commentRepository.findById(commentRequest.getCommentId()).orElseThrow(RuntimeException::new);
+        Comment comment = commentRepository.findById(commentRequest.getCommentId()).orElseThrow(NullPointerException::new);
         comment.setComment(String.valueOf(commentRequest));
         commentRepository.save(comment);
         return comment;

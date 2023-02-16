@@ -6,21 +6,29 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @FeignClient(contextId = "pet",name="relation")
 public interface PetService {
+
+    // 펫 정보 저장
     @PostMapping
-    public String savePet(PetInfoDto petInfoDto);
+    public String savePet(List<PetInfoDto> petInfoDto);
+
+    // 펫 정보 수정
     @PutMapping
-    public String putPet(PetInfoDto petInfoDto);
+    public String putPet(List<PetInfoDto> petInfoDto);
+
+    // 펫 정보 삭제
     @DeleteMapping
-    public String deletePet(PetInfoDto petInfoDto);
+    public String deletePet(List<PetInfoDto> petInfoDto);
 
-    @PostMapping("/raise")
-    public String raisePet(PetDto petDto);
-
-    @PostMapping("/raise/cancel")
-    public String raisePetCancel(PetDto petDto);
+//    @PostMapping("/raise")
+//    public String raisePet(PetDto petDto);
+//
+//    @PostMapping("/raise/cancel")
+//    public String raisePetCancel(PetDto petDto);
 
     @GetMapping()
-    public PetInfoDto getPet(PetInfoDto pet);
+    public PetInfoDto getPet(List<PetInfoDto> pets);
 }

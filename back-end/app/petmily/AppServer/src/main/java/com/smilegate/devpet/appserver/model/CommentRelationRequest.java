@@ -14,8 +14,9 @@ import java.sql.Timestamp;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentDto {
+@Builder
+public class CommentRelationRequest {
     private String userId;
     private String postId;
-    private Timestamp createdAt;
+    private String createdAt;
 }

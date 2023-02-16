@@ -1,13 +1,14 @@
 package com.smilegate.devpet.appserver.model;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Setter
 @Getter
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class LikePostDto {
     private String userId;
     private String postId;
+    private Boolean isFavorite;
 }

@@ -31,6 +31,10 @@ public class Profile extends BaseModel{
     private LocalDate birth;
     @Field
     private ArrayList<Pet> petList;
+    @Transient
+    private Long follower;
+    @Transient
+    private Long follow;
 
     public Profile(ProfileRequest profileRequest,UserInfo userInfo)
     {

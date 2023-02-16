@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Post {
+public class PostRelationRequest {
     private Long id;
     private PostInfo postInfo;
 }

@@ -1,9 +1,6 @@
 package com.smilegate.devpet.appserver.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
@@ -12,13 +9,13 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class UserInfoDto {
     private String userId;
     private String nickname;
     private String birth;
     private String address;
     private String gender;
-    private Set<Follow> followers;
-
-    private Set<Post> posts;
+    private Set<FollowRequest> followers;
+    private Set<PostRelationRequest> postRelationRequests;
 }

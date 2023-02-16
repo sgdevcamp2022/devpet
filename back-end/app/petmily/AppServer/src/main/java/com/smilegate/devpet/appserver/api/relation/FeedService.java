@@ -12,9 +12,13 @@ import java.util.List;
 
 @FeignClient(contextId = "feed", name = "relation")
 public interface FeedService {
+
+    // 추천 게시글리스트 가져오기
     @GetMapping(path="/feed")
     List<String> getPostList(UserInfo userInfo);
 
+
+    // 사용자 피드 점수 계산 요청
     @PostMapping(path="/feed")
     void feedScore(List<ScoreRequest> scoreDtoList);
 }

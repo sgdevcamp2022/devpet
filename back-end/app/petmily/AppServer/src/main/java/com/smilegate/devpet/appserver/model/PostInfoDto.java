@@ -1,14 +1,14 @@
 package com.smilegate.devpet.appserver.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class PostInfoDto {
     private String postId;
     private String postCategory;

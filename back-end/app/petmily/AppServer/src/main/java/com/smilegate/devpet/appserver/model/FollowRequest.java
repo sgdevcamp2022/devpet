@@ -1,13 +1,13 @@
 package com.smilegate.devpet.appserver.model;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class FollowDto {
+@AllArgsConstructor
+@Builder
+public class FollowRequest {
 
     // 구독자
     private String follower;

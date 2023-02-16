@@ -28,6 +28,6 @@ public class TestController {
 //        {
 //            newPostRedisRepository.save(1L, (long) i);
 //        }
-        kafkaProducerService.pingpongSend(message);
+//        kafkaProducerService.pingpongSend(message);
     }
 }
