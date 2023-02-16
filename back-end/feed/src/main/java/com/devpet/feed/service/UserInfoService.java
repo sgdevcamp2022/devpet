@@ -6,12 +6,14 @@ import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Follow;
 
 import com.devpet.feed.repository.PostInfoRepository;
+import com.devpet.feed.repository.RedisRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -22,12 +24,13 @@ import java.util.Set;
 public class UserInfoService {
     private final UserInfoRepository userRepository;
     private final PostInfoRepository postRepository;
+    private final RedisRepository redisRepository;
     private UserInfo userDtoToUserInfo(UserInfoDto dto) {
         return new UserInfo(dto);
     }
 
     private UserInfoDto userInfoToUserInfoDto(UserInfo info) {
-        return new UserInfoDto(info);
+return new UserInfoDto(info);
     }
 
     @Transactional
@@ -37,8 +40,55 @@ public class UserInfoService {
         return userInfoToUserInfoDto(user);
     }
 
+    /**
+     * 사용자 팔로우 기능
+     * redis 에 저장하는 기능
+     * 성능 이슈 발생
+     * TODO : 성능이슈 처리 _ procedure 활용?
+     * @param followedUser
+     * @param followUser
+     * @return
+     * @throws Exception
+     */
+//    @Transactional
+//    public void followUser(String followedUser, String followUser) throws Exception{
+//
+//        UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
+//        UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
+//
+//        // 서로 관계가 있는지 체크
+//        UserInfo check = userRepository.checkFollow(followUser, followedUser);
+//        if (check != null) {
+//            throw new Exception("이미 존재하는 관계입니다.");
+//        }
+//        redisRepository.cacheFollowRelation(followedUser, followUser);
+//    }
+
+    /**
+     * follow relation redis에 일괄 저장
+     * @throws Exception
+     */
+//    @Transactional
+//    public void saveFollowRelation(String followedUser, List<String> followUser){
+//
+//        UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
+//        Set<Follow> userFollower = new HashSet<>();
+//        for (String follower: followUser) {
+//
+//            UserInfo followerInfo = userRepository.findNodeById(follower).orElseThrow(RuntimeException::new);
+//            UserInfo check = userRepository.checkFollow(followerInfo.getUserId(), followedUser);
+//            if (check != null) {
+//                throw new RuntimeException("이미 존재하는 관계입니다.");
+//            }
+//            Follow followerNode = new Follow(followerInfo);
+//            userFollower.add(followerNode);
+//        }
+//
+//        user.setFollowers(userFollower);
+//    }
+
     @Transactional
-    public UserInfoDto followUser(String followedUser, String followUser) throws Exception{
+    public UserInfoDto followUser(String followedUser, String followUser) throws Exception {
 
         UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
         UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
@@ -57,7 +107,7 @@ public class UserInfoService {
     }
 
     @Transactional
-    public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) throws Exception {
+    public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) {
 
         // 유저가 db에 존재하는지 확인
         userRepository.findNodeById(userInfoDto.getUserId()).orElseThrow(RuntimeException::new);
@@ -175,13 +225,14 @@ public class UserInfoService {
 //        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
 //        return userRepository.getFollowingCommentPostList(userId);
 //    }
-
+    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
     public Set<String> getPetLikeCommentPostList(String userId) {
 
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getPetLikeCommentPostList(userId);
     }
 
+    // 유저가 알 수 있는 사람, 행동 기반 추천 , 팔로우한 유저의 행동 기반 추천(하늘색 부분)
     public Set<String> getRecommendedFollowPostList(String userId) {
 
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);

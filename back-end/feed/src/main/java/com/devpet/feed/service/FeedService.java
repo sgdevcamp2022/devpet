@@ -6,13 +6,13 @@ import com.devpet.feed.model.entity.PostInfo;
 import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Recommend;
 import com.devpet.feed.repository.*;
+import io.lettuce.core.RedisCommandTimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -61,7 +61,7 @@ public class FeedService {
                 Optional<PostInfo> relationCheck = Optional.ofNullable(postInfoRepository.existsRecommended(scoreDto.getPostId(), userId));
 
                 // 새로 생성된 점수라면 추천 리스트에 추가.
-                if(relationCheck.isEmpty()){
+                if (relationCheck.isEmpty()) {
                     PostInfo postInfo = postInfoRepository.findNodeById(scoreDto.getPostId()).orElseThrow(RuntimeException::new);
                     Recommend recommend = new Recommend(postInfo, scoreDto);
                     recommend.setCreatedAt(String.valueOf(new Timestamp(System.currentTimeMillis())));
@@ -78,8 +78,20 @@ public class FeedService {
         redisRepository.setCachedScore(userHash, average);
     }
 
-    public List<String> getPostList(String userId) {
-        return userInfoRepository.getPostList(userId);
+    /**
+     * user에 추천하는 포스트를 불러오고, user에게 중복처리를 위해 추천된 키들을 저장한다.
+     *
+     * @param userId
+     * @return
+     */
+    @Transactional
+    public Set<String> getPostList(String userId) {
+        Set<String> postList = userInfoRepository.getPostList(userId);
+        List<String> cachedList = Optional.of(redisRepository.getCachedDuplicatedId(userId)).orElseThrow(RedisCommandTimeoutException::new);
+
+        postList = postList.stream().filter(s-> !cachedList.contains(s)).collect(Collectors.toSet());
+        redisRepository.cachedDuplicatedId(userId, postList);
+        return postList;
     }
 
 
@@ -87,7 +99,6 @@ public class FeedService {
     public void recommended(ScoreDto scoreDto) {
         // 추천하려는 대상이 db에 존재하는지 확인
         UserInfo userInfo = userInfoRepository.findNodeById(scoreDto.getUserId()).orElseThrow(RuntimeException::new);
-
         // 추천하려는 포스트가 db에 존재하는지 확인
         PostInfo postInfo = postInfoRepository.findNodeById(scoreDto.getPostId()).orElseThrow(RuntimeException::new);
 
@@ -98,7 +109,7 @@ public class FeedService {
             }
         }
 
-        Recommend recommended = new Recommend(postInfo,scoreDto);
+        Recommend recommended = new Recommend(postInfo, scoreDto);
         userInfo.getRecommends().add(recommended);
 
         userInfoRepository.save(userInfo);

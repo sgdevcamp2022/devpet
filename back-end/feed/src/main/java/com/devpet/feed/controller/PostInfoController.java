@@ -16,46 +16,42 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/postinfo")
 public class PostInfoController {
-    private final String POST_TOPIC = "POST";
-    private final String POST_SAVE = "SAVE_POST";
 
 
     private final PostInfoService postInfoService;
 
     @GetMapping("/test")
-    public PostInfo getTest (){
+    public PostInfo getTest() {
         PostInfo postInfo = new PostInfo();
 
         postInfo.setCreatedAt(String.valueOf(new Timestamp(System.currentTimeMillis())));
         return postInfo;
 
     }
-//    @KafkaListener(topics=POST_TOPIC,groupId = POST_SAVE, autoStartup = "true")
-//    public PostInfoDto saveKafkaPostInfo(@RequestBody PostInfoDto postInfoDto) throws Exception {
-//        return postInfoService.savePostInfo(postInfoDto);
-//    }
 
     @PostMapping("")
     public PostInfoDto savePostInfo(@RequestBody PostInfoDto postInfoDto) throws Exception {
         return postInfoService.savePostInfo(postInfoDto);
     }
+
     @PostMapping("/like")
     public PostInfoDto likePost(@RequestBody LikePostDto likePostDto) throws Exception {
         return postInfoService.likePostInfo(likePostDto);
     }
 
     @PatchMapping("/like")
-    public PostInfo dislikePost(@RequestBody LikePostDto likePostDto) throws Exception{
+    public PostInfo dislikePost(@RequestBody LikePostDto likePostDto) throws Exception {
         return postInfoService.dislikePostInfo(likePostDto);
     }
 
     @GetMapping("/comment")
-    public ResponseEntity<?> getCommentPost(@RequestBody Map<String, String> userId){
+    public ResponseEntity<?> getCommentPost(@RequestBody Map<String, String> userId) {
         String user = userId.get("userId");
         return postInfoService.getCommentPost(user);
     }
+
     @PostMapping("/comment")
-    public ResponseEntity<?> postComment(@RequestBody CommentDto commentDto) throws Exception{
+    public ResponseEntity<?> postComment(@RequestBody CommentDto commentDto) throws Exception {
         return postInfoService.postComment(commentDto);
     }
 }

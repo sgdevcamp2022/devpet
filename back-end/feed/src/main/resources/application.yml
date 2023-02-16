@@ -2,6 +2,7 @@ server:
   port: 4000
 
 spring:
+
     neo4j:
 #      : movies # neo4j 데스크톱에서 movies 데이터 베이스를 하나 만들어주자.
 
@@ -15,15 +16,6 @@ spring:
       host: 121.187.22.37
       port: 6379
       password: mypassword
-
-#    kafka:
-#      bootstrap-servers: 121.187.22.37:9092
-#      consumer:
-#        enable-auto-commit: true
-#        auto-offset-reset: latest
-
-
-
     application:
       name: relation
 eureka:

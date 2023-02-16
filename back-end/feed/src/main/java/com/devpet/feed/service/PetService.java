@@ -2,6 +2,7 @@ package com.devpet.feed.service;
 
 import com.devpet.feed.model.dto.PetDto;
 import com.devpet.feed.model.dto.PetInfoDto;
+import com.devpet.feed.model.dto.PetListDto;
 import com.devpet.feed.model.entity.PetInfo;
 import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Pet;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -21,45 +24,49 @@ public class PetService {
     private final PetRepository petRepository;
 
     @Transactional
-    public String savePet(PetInfoDto petInfoDto) {
+    public List<String> savePet(PetListDto petList) {
 
-        UserInfo userInfo = userRepository.findNodeById(petInfoDto.getUserId()).orElseThrow(RuntimeException::new);
-        // 수정 필요
-        PetInfo petInfo = petRepository.findByPetName(petInfoDto.getPetName()).orElse(petRepository.save(new PetInfo(petInfoDto)));
+        List<String> petIdList = new ArrayList<>();
+        for (PetInfoDto petInfoDto : petList.getPetList()) {
 
-        String uuid = petInfo.getPetId();
-        Pet pet = new Pet(petInfo);
-        userInfo.getPet().add(pet);
-        userRepository.save(userInfo);
-        return uuid;
+            UserInfo userInfo = userRepository.findNodeById(petInfoDto.getUserId()).orElseThrow(RuntimeException::new);
+            PetInfo petInfo = petRepository.findByPetName(petInfoDto.getPetName()).orElse(petRepository.save(new PetInfo(petInfoDto)));
+
+            String uuid = petInfo.getPetId();
+            Pet pet = new Pet(petInfo);
+            userInfo.getPet().add(pet);
+            userRepository.save(userInfo);
+            petIdList.add(uuid);
+        }
+
+        return petIdList;
     }
 
     @Transactional
-    public void putPet(PetInfoDto petInfoDto) {
+    public void putPet(PetListDto petList) {
 
-        PetInfo petInfo = petRepository.findById(petInfoDto.getPetId()).orElseThrow(RuntimeException::new);
-        petInfo.setPetBirth(petInfoDto.getPetBirth());
-        petInfo.setPetName(petInfoDto.getPetName());
-        petInfo.setPetSpecies(petInfoDto.getPetSpecies());
-        petRepository.save(petInfo);
+        for (PetInfoDto petInfoDto : petList.getPetList()) {
+
+            PetInfo petInfo = petRepository.findById(petInfoDto.getPetId()).orElseThrow(RuntimeException::new);
+
+            petInfo.setPetBirth(petInfoDto.getPetBirth());
+            petInfo.setPetName(petInfoDto.getPetName());
+            petInfo.setPetSpecies(petInfoDto.getPetSpecies());
+            petRepository.save(petInfo);
+        }
     }
 
     @Transactional
-    public void deletePet(String petId) {
+    public void deletePet(PetListDto petList) {
 
-        PetInfo petInfo = petRepository.findById(petId).orElseThrow(RuntimeException::new);
-        petRepository.deletePet(petId);
+        List<String> petIdList = new ArrayList<>();
+        for (PetInfoDto petInfoDto : petList.getPetList()) {
+
+            PetInfo petInfo = petRepository.findById(petInfoDto.getPetId()).orElseThrow(RuntimeException::new);
+            petRepository.deletePet(petInfo.getPetId());
+        }
     }
 
-
-    @Transactional
-    public void raisePetCancel(PetDto petDto) {
-
-        UserInfo userInfo = userRepository.findNodeById(petDto.getUserId()).orElseThrow(RuntimeException::new);
-        PetInfo petInfo = petRepository.findByPetId(petDto.getPetId()).orElseThrow(RuntimeException::new);
-
-        petRepository.raisePetCancel(petDto.getUserId(), petDto.getPetId());
-    }
     @Transactional
     public PetInfoDto getPet(String petId) {
 
@@ -75,3 +82,13 @@ public class PetService {
         return petInfoDto;
     }
 }
+
+
+//    @Transactional
+//    public void raisePetCancel(PetDto petDto) {
+//
+//        UserInfo userInfo = userRepository.findNodeById(petDto.getUserId()).orElseThrow(RuntimeException::new);
+//        PetInfo petInfo = petRepository.findByPetId(petDto.getPetId()).orElseThrow(RuntimeException::new);
+//
+//        petRepository.raisePetCancel(petDto.getUserId(), petDto.getPetId());
+//    }
