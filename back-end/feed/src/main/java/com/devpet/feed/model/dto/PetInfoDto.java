@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -15,6 +17,7 @@ public class PetInfoDto {
     private String petName;
     private String petBirth;
     private String petSpecies;
+    private List<String> petList;
 
     @Builder
     public PetInfoDto(String petId, String petName, String petBirth, String petSpecies) {

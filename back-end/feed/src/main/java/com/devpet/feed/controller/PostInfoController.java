@@ -7,7 +7,6 @@ import com.devpet.feed.model.entity.PostInfo;
 import com.devpet.feed.service.PostInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -30,10 +29,6 @@ public class PostInfoController {
         postInfo.setCreatedAt(String.valueOf(new Timestamp(System.currentTimeMillis())));
         return postInfo;
 
-    }
-    @KafkaListener(topics=POST_TOPIC,groupId = POST_SAVE, autoStartup = "true")
-    public PostInfoDto saveKafkaPostInfo(@RequestBody PostInfoDto postInfoDto) throws Exception {
-        return postInfoService.savePostInfo(postInfoDto);
     }
 
     @PostMapping("")

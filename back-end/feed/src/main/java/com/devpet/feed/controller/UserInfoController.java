@@ -59,13 +59,6 @@ public class UserInfoController {
         userInfoService.cancelFollow(followDto);
     }
 
-//    @PostMapping("/like/cancel")
-//    public void cancelLike(@RequestBody LikeDto likeDto) {
-//
-//        userInfoService.cancelLike(likeDto);
-//    }
-
-
     @GetMapping("/count/follower")
     public ResponseEntity<Long> countFollower(@RequestBody FollowDto followDto) {
 
@@ -150,4 +143,10 @@ public class UserInfoController {
     public ResponseEntity<Set<String>> getRecommendedFollowPostList(@RequestBody FollowDto followDto){
         return ResponseEntity.ok(userInfoService.getRecommendedFollowPostList(followDto.getFollower()));
     }
+
+//    @DeleteMapping("/comment")
+//    public void deleteComment(@RequestBody FollowDto followDto){
+//
+//        return ResponseEntity.ok(userInfoService.getRecommendedFollowPostList(followDto.getFollower()));
+//    }
 }
