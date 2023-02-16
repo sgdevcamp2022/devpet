@@ -2,16 +2,14 @@ package com.smilegate.devpet.appserver.api.relation;
 
 import com.smilegate.devpet.appserver.model.ScoreRequest;
 import com.smilegate.devpet.appserver.model.UserInfo;
-import org.apache.catalina.Store;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
 
 @FeignClient(contextId = "feed", name = "relation")
-public interface FeedService {
+public interface FeedApi {
 
     // 추천 게시글리스트 가져오기
     @GetMapping(path="/feed")

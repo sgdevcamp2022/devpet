@@ -1,9 +1,10 @@
 package com.smilegate.devpet.appserver.service;
 
 
+import com.smilegate.devpet.appserver.api.relation.FeedApi;
+import com.smilegate.devpet.appserver.api.relation.PostInfoApi;
 import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
-import com.smilegate.devpet.appserver.repository.redis.FavoriteRedisRepository;
 import com.smilegate.devpet.appserver.repository.redis.NewPostRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -28,8 +29,8 @@ public class FeedService {
     private final MongoOperations mongoOperations;
 //    private final KafkaProducerService kafkaProducerService;
     private final NewPostRedisRepository newPostRedisRepository;
-    private final com.smilegate.devpet.appserver.api.relation.FeedService relationFeedService;
-    private final com.smilegate.devpet.appserver.api.relation.PostInfoService relationPostService;
+    private final FeedApi relationFeedService;
+    private final PostInfoApi relationPostService;
     /**
      * 게시글 데이터를 저장합니다.
      * @param feedRequest 저장할 게시글 데이터

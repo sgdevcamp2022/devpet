@@ -1,15 +1,13 @@
 package com.smilegate.devpet.appserver.api.relation;
 
-import com.smilegate.devpet.appserver.model.PetDto;
 import com.smilegate.devpet.appserver.model.PetInfoDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @FeignClient(contextId = "pet",name="relation")
-public interface PetService {
+public interface PetApi {
 
     // 펫 정보 저장
     @PostMapping

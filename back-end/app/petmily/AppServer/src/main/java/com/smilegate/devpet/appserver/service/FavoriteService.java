@@ -1,9 +1,8 @@
 package com.smilegate.devpet.appserver.service;
 
-import com.smilegate.devpet.appserver.api.relation.PostInfoService;
+import com.smilegate.devpet.appserver.api.relation.PostInfoApi;
 import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.FavoriteRepository;
-import com.smilegate.devpet.appserver.repository.mongo.PetRepository;
 import com.smilegate.devpet.appserver.repository.redis.FavoriteRedisRepository;
 import com.smilegate.devpet.appserver.repository.redis.NewPostRedisRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +23,7 @@ public class FavoriteService {
     private final NewPostRedisRepository newPostRedisRepository;
     private final SequenceGeneratorService favoriteSequenceGeneratorService;
     private final MongoOperations mongoOperations;
-    private final PostInfoService postInfoService;
+    private final PostInfoApi postInfoApi;
 //    private final KafkaProducerService kafkaProducerService;
     public Favorite postFavorite(Favorite favorite)
     {
@@ -97,8 +96,8 @@ public class FavoriteService {
 //                        .isFavorite(item.isFavorite())
                         .build())
                 .collect(Collectors.toList());
-        postInfoService.likePost(likes);
-        postInfoService.dislikePost(dislikes);
+        postInfoApi.likePost(likes);
+        postInfoApi.dislikePost(dislikes);
 //        kafkaProducerService.feedFavoriteSend(favoriteList);
         return result;
     }

@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 @FeignClient(contextId = "user-info",name="relation")
-public interface UserInfoService {
+public interface UserInfoApi {
     @PostMapping("")
     public void saveUserInfo(UserInfoDto userInfo);
     @PostMapping("/follow")

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.util.List;
 
 @FeignClient(contextId = "post-info",name="relation")
-public interface PostInfoService {
+public interface PostInfoApi {
 
     // 게시글 정보 저장
     @PostMapping("")
