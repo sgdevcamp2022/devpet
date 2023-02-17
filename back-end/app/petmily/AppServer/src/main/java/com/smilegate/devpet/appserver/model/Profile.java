@@ -32,9 +32,10 @@ public class Profile extends BaseModel{
     @Field
     private ArrayList<Pet> petList;
     @Transient
-    private Long follower;
+    private long follower;
     @Transient
-    private Long follow;
+    private long follow;
+    private String imageUrl;
 
     public Profile(ProfileRequest profileRequest,UserInfo userInfo)
     {
@@ -55,5 +56,6 @@ public class Profile extends BaseModel{
         this.about = profileRequest.getAbout();
         this.birth = profileRequest.getBirth();
         this.petList = profileRequest.getPetList();
+        this.imageUrl = profileRequest.getImageUrl();
     }
 }

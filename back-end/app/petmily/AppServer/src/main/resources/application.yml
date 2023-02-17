@@ -27,18 +27,19 @@ spring:
         max-active: 8
     port: 6379
     host: localhost
+#    password: mypassword
   devtools:
     livereload:
       enabled: true
 
-#eureka:
-#  instance:
-#    prefer-ip-address: true
-#  client:
-#    register-with-eureka: true
-#    fetch-registry: true
-#    serviceUrl:
-#      defaultZone: http://localhost:8761/eureka/
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
 
 logging:
   level:

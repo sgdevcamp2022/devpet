@@ -1,35 +1,46 @@
 package com.smilegate.devpet.appserver.service;
 
 
+import com.smilegate.devpet.appserver.api.relation.FeedApi;
+import com.smilegate.devpet.appserver.api.relation.PostInfoApi;
+import com.smilegate.devpet.appserver.api.relation.UserInfoApi;
 import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
-import com.smilegate.devpet.appserver.repository.redis.FavoriteRedisRepository;
 import com.smilegate.devpet.appserver.repository.redis.NewPostRedisRepository;
+import com.smilegate.devpet.appserver.repository.redis.RecommendPostRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
+import org.springframework.data.geo.Shape;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Streamable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class FeedService {
+    private final MongoTemplate mongoTemplate;
     private final FeedRepository feedRepository;
     private final LocationService locationService;
     private final SequenceGeneratorService sequenceGeneratorService;
     private final MongoOperations mongoOperations;
 //    private final KafkaProducerService kafkaProducerService;
     private final NewPostRedisRepository newPostRedisRepository;
-    private final com.smilegate.devpet.appserver.api.relation.FeedService relationFeedService;
-    private final com.smilegate.devpet.appserver.api.relation.PostInfoService relationPostService;
+    private final RecommendPostRedisRepository recommendPostRedisRepository;
+    private final FeedApi relationFeedService;
+    private final UserInfoApi userInfoService;
+    private final PostInfoApi relationPostService;
     /**
      * 게시글 데이터를 저장합니다.
      * @param feedRequest 저장할 게시글 데이터
@@ -125,13 +136,27 @@ public class FeedService {
     public List<String> getSimpleFeedList(String word, int category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        List<Feed> result = feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithinAndUsedIsTrue(word,category,circle,pageRequest);
+        List<Feed> result = findNearFeedList(word,category,circle,pageRequest);
         return  result.stream().map((feed)->{
             if (feed.getImageUrl().size()<1)
                 return null;
             return feed.getImageUrl().get(0);
         }).collect(Collectors.toList());
     }
+
+    public List<String> getMyFeedList(UserInfo userInfo, int start, int count)
+    {
+
+        PageRequest pageRequest = PageRequest.of(start/count,count);
+        List<Feed> result = feedRepository.findByUserIdOrderByCreatedAtDesc(userInfo.getUserId());
+        return  result.stream().map((feed)->{
+            if (feed.getImageUrl().size()<1)
+                return null;
+            return feed.getImageUrl().get(0);
+        }).collect(Collectors.toList());
+
+    }
+
     /**
      * 마커에 해당하는 게시글 리스트를 조회합니다.
      * @param center 조회할 마커 위치
@@ -141,13 +166,11 @@ public class FeedService {
      * @param size 조회 갯수
      * @return 조회한 게시글 정보 리스트
      */
-    public List<Feed> getMarkerFeedList(Point center, int category, String word, int start, int size)
+    public List<Feed> getMarkerFeedList(Point center, Integer category, String word, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        Location location = new Location();
-        location.setCoord(center);
-        location.setCategory((long)category);
-        return feedRepository.findByLocationAndContentAndUsedIsTrue(location,word, pageRequest);
+        Circle circle = new Circle(center,1);
+        return findNearFeedList(word, category,circle, pageRequest);
     }
 
     /**
@@ -159,10 +182,10 @@ public class FeedService {
      * @param size 조회 갯수
      * @return 조회한 게시글 정보 리스트
      */
-    public List<Feed> getFeedList(String word, int category, Circle circle, int start, int size)
+    public List<Feed> getFeedList(String word, Integer category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
-        return feedRepository.findByContentRegexAndLocationCategoryAndLocationCoordWithinAndUsedIsTrue(word,category,circle,pageRequest);
+        return findNearFeedList(word,category,circle,pageRequest);
     }
 
     /**
@@ -190,18 +213,55 @@ public class FeedService {
      */
     public List<Feed> getFeedList(UserInfo userInfo)
     {
-        //TODO 관계 데이터와 추천 데이터 구분 필요
-
         // 피드 서버에서 사용자가 조회할 피드 리스트를 꺼내 옵니다.
         List<Long> feedIds = relationFeedService.getPostList(userInfo).stream().map(Long::parseLong).collect(Collectors.toList());
 
         // 캐시에 가져온 데이터 저장 합니다.
         newPostRedisRepository.saveAll(userInfo.getUserId(),feedIds);
-
+        saveRecommendUserPostList(userInfo);
         // 캐시에서 게시글을 20개 꺼내 옵니다.
         List<Long> postIds = newPostRedisRepository.findById(userInfo.getUserId(), 20);
 
+        // 만약 사용자 관계 관련 게시글이 20개보다 적다면 추천 게시글 리스트를 받아옵니다.
+        if (postIds.size()<20)
+        {
+            postIds.addAll(recommendPostRedisRepository.findById(userInfo.getUserId(), 20- postIds.size()));
+        }
+        Set<Long> postIdSet = new HashSet<>(postIds);
         // db에서 현재 사용되고 있는 게시글 20개를 꺼내옵니다.
-        return Streamable.of(feedRepository.findAllByFeedIdInAndUsedIsTrueOrderByUpdatedAtDesc(postIds)).stream().collect(Collectors.toList());
+        return Streamable.of(feedRepository.findAllByFeedIdInAndIsUsedIsTrue(postIdSet)).stream().collect(Collectors.toList());
+    }
+
+    /**
+     * 관계 서버에서 받아온 사용자 추천 게시물을 캐시에 저장합니다.
+     * @param userInfo 사용자 정보
+     */
+    @Transactional
+    public void saveRecommendUserPostList(UserInfo userInfo)
+    {
+        FollowRequest followRequest = FollowRequest.builder().follower(Long.valueOf(userInfo.getUserId()).toString()).build();
+        // 사용자 팔로우기반 게시글 추천을 받아와 저장합니다.
+        HashSet<Long> resultSet = userInfoService.getFollowUserPost(userInfo).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new));
+
+        // 사용자 관심 기반 게시글을 추천 받아와 저장합니다.
+        resultSet.addAll(userInfoService.getPetLikeCommentPostList(followRequest).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new)));
+        resultSet.addAll(userInfoService.getRecommendedFollowPostList(followRequest).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new)));
+
+        // 캐시에 사용자 추천 게시글 저장.
+        recommendPostRedisRepository.saveAll(userInfo.getUserId(),resultSet);
+    }
+
+    private List<Feed> findNearFeedList(String content, Integer category,Shape shape, Pageable pageable)
+    {
+        Query query = new Query();
+        if (content != null)
+            query.addCriteria(Criteria.where("content").regex(content));
+        if (category != null)
+            query.addCriteria(Criteria.where("location.category").is(category));
+        if (shape != null)
+            query.addCriteria(Criteria.where("location.coord").within(shape));
+        query.with(pageable);
+        List<Feed> result = mongoTemplate.find(query, Feed.class);
+        return result;
     }
 }

@@ -1,26 +1,24 @@
 package com.smilegate.devpet.appserver.api.relation;
 
-import com.smilegate.devpet.appserver.model.PetDto;
 import com.smilegate.devpet.appserver.model.PetInfoDto;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @FeignClient(contextId = "pet",name="relation")
-public interface PetService {
+public interface PetApi {
 
     // 펫 정보 저장
-    @PostMapping
+    @PostMapping("/pet")
     public String savePet(List<PetInfoDto> petInfoDto);
 
     // 펫 정보 수정
-    @PutMapping
+    @PutMapping("/pet")
     public String putPet(List<PetInfoDto> petInfoDto);
 
     // 펫 정보 삭제
-    @DeleteMapping
+    @DeleteMapping("/pet")
     public String deletePet(List<PetInfoDto> petInfoDto);
 
 //    @PostMapping("/raise")
@@ -29,6 +27,6 @@ public interface PetService {
 //    @PostMapping("/raise/cancel")
 //    public String raisePetCancel(PetDto petDto);
 
-    @GetMapping()
+    @GetMapping("/pet")
     public PetInfoDto getPet(List<PetInfoDto> pets);
 }

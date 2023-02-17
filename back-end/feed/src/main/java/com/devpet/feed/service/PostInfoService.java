@@ -107,7 +107,8 @@ public class PostInfoService {
         Comment comment = new Comment(userInfo);
         comment.setCreatedAt(commentDto.getCreatedAt());
         postInfo.getComments().add(comment);
-        return ResponseEntity.ok(postInfoRepository.save(postInfo));
+        postInfoRepository.save(postInfo);
+        return ResponseEntity.ok(postInfo.getPostId());
     }
 
     @Transactional

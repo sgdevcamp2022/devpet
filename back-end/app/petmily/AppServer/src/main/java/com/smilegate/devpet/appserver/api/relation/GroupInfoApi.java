@@ -2,16 +2,12 @@ package com.smilegate.devpet.appserver.api.relation;
 
 import com.smilegate.devpet.appserver.model.GroupInfo;
 import com.smilegate.devpet.appserver.model.JoinGroupRequest;
-import com.smilegate.devpet.appserver.model.ScoreRequest;
-import com.smilegate.devpet.appserver.model.UserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import java.util.List;
-
 @FeignClient(contextId = "group-info", name="relation")
-public interface GroupInfoService {
+public interface GroupInfoApi {
     @PostMapping("")
     GroupInfo createGroup(GroupInfo userInfo);
 

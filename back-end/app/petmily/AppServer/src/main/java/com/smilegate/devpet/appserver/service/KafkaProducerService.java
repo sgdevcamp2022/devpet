@@ -7,11 +7,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class KafkaProducerService {
-
     private final String FEED_TOPIC = "FEED";
-    private final String PET_TOPIC = "PET";
-    private final String POST_INFO_TOPIC = "POST_INFO";
-    private final String USER_INFO_TOPIC = "USER_INFO";
     private final String FEED_SUBSCRIBER_GROUP = "FEED_SUBSCRIBER";//group-id 동적생성으로 변경
     private final ObjectMapper objectMapper;
 

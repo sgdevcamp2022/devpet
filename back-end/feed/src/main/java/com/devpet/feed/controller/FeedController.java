@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -45,9 +46,8 @@ public class FeedController {
 
 
     @GetMapping("")
-    public ResponseEntity<List<String>> getPostList(@RequestBody Map<String, String> user) {
+    public ResponseEntity<Set<String>> getPostList(@RequestBody Map<String, String> user) {
         String userId = user.get("userId");
-
         return ResponseEntity.ok(feedService.getPostList(userId));
     }
     @PostMapping("")

@@ -1,13 +1,14 @@
 package com.smilegate.devpet.appserver.service;
 
-import com.smilegate.devpet.appserver.api.relation.UserInfoService;
+import com.smilegate.devpet.appserver.api.relation.PetApi;
+import com.smilegate.devpet.appserver.api.relation.UserInfoApi;
 import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -16,8 +17,8 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final SequenceGeneratorService profileSequenceGeneratorService;
     private final PetService petService;
-    private final com.smilegate.devpet.appserver.api.relation.PetService petRelationService;
-    private final UserInfoService userInfoService;
+    private final PetApi petRelationService;
+    private final UserInfoApi userInfoApi;
     public Profile postProfile(ProfileRequest profileRequest,UserInfo userInfo)
     {
         Profile profile = new Profile(profileRequest,userInfo);
@@ -25,7 +26,7 @@ public class ProfileService {
         profile.getPetList().forEach(item->item.setProfileId(profile.getProfileId()));
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
-        sendToRelationServer(savePetList,profile.getUserId());
+        sendToRelationServer(profile);
         return result;
     }
 
@@ -35,11 +36,13 @@ public class ProfileService {
         profile.setProfileData(profileRequest);
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
-        sendToRelationServer(savePetList,profile.getUserId());
+        sendToRelationServer(profile);
         return result;
     }
-    public void sendToRelationServer(List<Pet> petList,Long userId)
+    public void sendToRelationServer(Profile profile)
     {
+        List<Pet> petList = profile.getPetList();
+        Long userId = profile.getUserId();
         List<PetInfoDto> petInfoDtos = petList.stream().map(item->
                 PetInfoDto.builder()
                         .petId(item.getPetId().toString())
@@ -47,7 +50,13 @@ public class ProfileService {
                         .petName(item.getName())
                         .userId(userId.toString()).build()
         ).collect(Collectors.toList());
-        petRelationService.savePet(petInfoDtos);
+        userInfoApi.saveUserInfo(UserInfoDto.builder()
+                .nickname(profile.getNickname())
+                .userId(userId.toString())
+                .birth(profile.getBirth().toString())
+                .build()
+        );
+//        petRelationService.savePet(petInfoDtos);
     }
 
     public Profile getProfile(Long profileId)
@@ -69,14 +78,14 @@ public class ProfileService {
     }
     private void setProfileFollowAnFollowerCount(Profile profile)
     {
-        profile.setFollower(userInfoService.countFollower(FollowRequest.builder().follower(profile.getUserId().toString()).build()));
-        profile.setFollow(userInfoService.countFollowing(FollowRequest.builder().follower(profile.getUserId().toString()).build()));
+        profile.setFollower(userInfoApi.countFollower(FollowRequest.builder().follower(profile.getUserId().toString()).build()));
+//        profile.setFollow(userInfoApi.countFollowing(FollowRequest.builder().follower(profile.getUserId().toString()).build()));
     }
     public List<Profile> getFollowerList(Long profileId)
     {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
-        List<Long> followerUserIds = userInfoService.getFollowerList(
+        List<Long> followerUserIds = userInfoApi.getFollowerList(
                 FollowRequest.builder().follower(profile.getUserId().toString()).build()
         ).stream().map(Long::parseLong).collect(Collectors.toList());
         List<Profile> result = profileRepository.findByUserIdIn(followerUserIds);
@@ -87,7 +96,7 @@ public class ProfileService {
     {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
-        List<Long> followUserIds = userInfoService.getFollowingList(
+        List<Long> followUserIds = userInfoApi.getFollowingList(
                 FollowRequest.builder().follower(profile.getUserId().toString()).build()
         ).stream().map(Long::parseLong).collect(Collectors.toList());
         List<Profile> result = profileRepository.findByUserIdIn(followUserIds);

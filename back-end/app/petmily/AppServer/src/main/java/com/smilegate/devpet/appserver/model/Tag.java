@@ -11,5 +11,4 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Tag {
     private String tagName;
-    private String tagNumber;
 }
