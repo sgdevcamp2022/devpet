@@ -28,8 +28,6 @@ public class ChatServiceThread extends Thread {
                 Thread.sleep( 5000 );
                 //getMessage() 챗 리스트 가져오기
 
-
-
                 Message message = handler.obtainMessage();
                 Bundle bundle = new Bundle();
                 bundle.putString("ㅁㄴㅇ", "ㅁㄴㅇ");
@@ -42,16 +40,4 @@ public class ChatServiceThread extends Thread {
             }
         }
     }
-
-    public boolean equalsCheck()
-    {
-
-
-        return true;
-    }
-
-
-
-
-
 }

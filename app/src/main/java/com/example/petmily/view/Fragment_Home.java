@@ -132,7 +132,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
 
 
-
         SlidingUpPanelLayout sliding = binding.slidingLayout;
         sliding.setClipToOutline(true);
         sliding.setTouchEnabled(true);
@@ -164,7 +163,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
                 Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids);
                 grid.setAdapter(newAdapter);
-                Log.e("로그 발동 : ", "어댑터 변경");
             }
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
@@ -199,6 +197,14 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         };
         postViewModel.getMarkerList().observe(getViewLifecycleOwner(), markerObserver);
 
+        final Observer<String> localNameObserver  = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable final String local) {
+                binding.localname.setText(local);
+            }
+        };
+        postViewModel.getLocalName().observe(getViewLifecycleOwner(), localNameObserver);
+
         halfView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
@@ -209,6 +215,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             public void onChildViewDetachedFromWindow(@NonNull View view) {
             }
         });
+
 
         postViewModel.postHalf();
 

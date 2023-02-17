@@ -86,7 +86,6 @@ public class ChatService extends Service{
 
         chatInterface = retrofit.create(RoomAPI_Interface.class);
 
-
         Notifi_M = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         myServiceHandler handler = new myServiceHandler();
         thread = new ChatServiceThread(handler);
@@ -137,7 +136,7 @@ public class ChatService extends Service{
                         for(int i = 0 ; i <result.size(); i++)
                         {
 
-                            //Log.e("get 통신 테스트", result.get(i).toString());
+                            Log.e("get 통신 테스트", result.get(i).toString());
                         }
                     }
 

@@ -43,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding= DataBindingUtil.setContentView(this, R.layout.activity_main);
         binding.setActivity(this);
-        Log.e("sad", "sad");
         init();
 
         /*
@@ -74,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public void init()
     {
         authenticationViewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
+        authenticationViewModel.init();
         initObserver();
 
 
@@ -215,12 +215,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.dm:
-                Intent i = new Intent(this, Activity_Chat.class);
+                Intent i = new Intent(this, Activity_Login.class);
+                //Intent i = new Intent(this, Activity_Chat.class);
                 startActivity(i);
-                break;
-            case android.R.id.home:
-                //select back button
-
                 break;
         }
         return super.onOptionsItemSelected(item);

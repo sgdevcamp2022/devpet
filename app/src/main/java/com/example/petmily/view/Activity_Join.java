@@ -38,14 +38,14 @@ public class Activity_Join extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String username = binding.username.getText().toString();
-                String nickname = binding.nickname.getText().toString();
+                String phone = binding.phone.getText().toString();
                 String name = binding.name.getText().toString();
                 String password = binding.password.getText().toString();
 
-                authenticationViewModel.join(username, name, nickname, password);
+                authenticationViewModel.join(username, name, phone, password);
 
                 Intent intent = new Intent(view.getContext(), Activity_MakeProfile.class);
-                intent.putExtra("nickname", nickname);
+                //intent.putExtra("nickname", nickname);
                 startActivity(intent);
                 finish();
 

@@ -8,7 +8,7 @@ import retrofit2.http.POST;
 public interface API_Interface {
 
 
-    @POST()
+    @POST("post")
     Call<SuccessMessage> createPost(@Body Post post);
 
 }

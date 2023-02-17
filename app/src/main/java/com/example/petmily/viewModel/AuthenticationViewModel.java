@@ -25,15 +25,18 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import okhttp3.Request;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class AuthenticationViewModel extends AndroidViewModel {
 
-    final String URL = " https://121.187.37.22:5555/oauth/";
+    final String URL = "http://121.187.22.37:7070/oauth/";
     //final String URL = "http://10.0.2.2:8080/oauth/";
 
     private AuthDatabase db;
@@ -111,18 +114,21 @@ public class AuthenticationViewModel extends AndroidViewModel {
     {
         //checkToken을 사용해 엑세스 토큰 유효성 확인
         restApi = authInterface.checkToken(token.getAccessToken());
+        Request request = restApi.request();
+        Log.e("토큰 확인 : ", request.method()+"\t"+request.toString());
         restApi.enqueue(authCallback);
     }
 
     public void refreshTokenCheck()
     {
         restApi = authInterface.refresh_token("refresh_token", token.getRefreshToken());
+
         restApi.enqueue(authCallback);
     }
 
-    public void join(String username, String name, String nickname, String password)
+    public void join(String username, String name, String phone, String password)
     {
-        restApi = authInterface.createUser(username, name, nickname, password);
+        restApi = authInterface.createUser(username, name, phone, password, "");
         restApi.enqueue(authCallback);
     }
 
@@ -130,6 +136,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
     {
         restApi = authInterface.login("password", username, password, "trust");
         restApi.enqueue(authCallback);
+
     }
 
     public void logout()
@@ -148,9 +155,6 @@ public class AuthenticationViewModel extends AndroidViewModel {
         TokenSQL newToken = new TokenSQL(uid, newAccessToken, newRefreshToken);
         db.authDao().insertToken(newToken);
     }
-
-
-
     public class AuthCallback<T> implements retrofit2.Callback<T> {
         /*
         final int SUCCESS               = 200;
@@ -183,7 +187,11 @@ public class AuthenticationViewModel extends AndroidViewModel {
             Gson gson = new Gson();
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
-
+            try {
+                Log.e("통신 연결 완료 : ", response.errorBody().string()+"");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if(responseCode != 200)
             {
                 ResponseBody errorBody = response.errorBody();
@@ -196,6 +204,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
                 }
                 if(body instanceof FailMessage) {
                     int code = Integer.parseInt(((FailMessage) body).getMessage());
+
                     switch (code) {
                         //회원가입 페이지
                         case EMAIL_DUPLICATION:
@@ -218,6 +227,8 @@ public class AuthenticationViewModel extends AndroidViewModel {
                         default:
                             break;
                     }
+
+
                 }
                 else if(body instanceof AccessToken)
                 {
@@ -228,11 +239,16 @@ public class AuthenticationViewModel extends AndroidViewModel {
                     tokenSave((RefreshToken) body);
                     eventLoginExpiration.setValue(true);
                 }
+
             }
             else if(body instanceof RefreshToken)
             {
                 tokenSave((RefreshToken) body);
                 eventRefreshExpiration.setValue(true);
+            }
+            else if(body instanceof  AccessToken)
+            {
+                Log.e("로그인 토큰 존재 : ", "");
             }
             else
             {
@@ -241,11 +257,15 @@ public class AuthenticationViewModel extends AndroidViewModel {
                 editor.putString("token", token.getAccessToken()); // key,value 형식으로 저장
                 editor.putString("email", email);
                 editor.commit();
+                Log.e("로그인 토큰 존재 성공 : ", "");
             }
         }
 
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
+            Log.e("통신 실패 : ", t.getMessage());
+
+            t.printStackTrace();
         }
     }
 

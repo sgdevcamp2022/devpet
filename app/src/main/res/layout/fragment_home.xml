@@ -90,7 +90,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
-
+                            <!--
                             <ImageButton
                                 android:id="@+id/search"
                                 android:layout_width="45dp"
@@ -103,6 +103,7 @@
                                 app:srcCompat="@drawable/corner_layout"
                                 tools:layout_editor_absoluteX="441dp"
                                 tools:layout_editor_absoluteY="10dp" />
+                            -->
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.recyclerview.widget.RecyclerView

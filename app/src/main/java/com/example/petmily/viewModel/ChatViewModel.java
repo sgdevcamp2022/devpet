@@ -89,6 +89,7 @@ public class ChatViewModel extends AndroidViewModel{
 
     public ChatViewModel(@NonNull Application application) {
         super(application);
+        context = application.getApplicationContext();
 
     }
 
@@ -108,7 +109,12 @@ public class ChatViewModel extends AndroidViewModel{
     public void initChatRoom(String roomId)
     {
         roomSQL = roomDB.chatRoomDao().getMessage(roomId);
-        messageList.setValue(roomSQL.messages);
+        if(roomSQL != null)
+        {
+            messageList.setValue(roomSQL.messages);
+        }
+
+
 
         initStomp();
         topicMessage();
@@ -155,6 +161,7 @@ public class ChatViewModel extends AndroidViewModel{
     {
         List<ChatListSQL> list = listDB.chatListDao().getChatList();
         List<ChatList> chatLists = new ArrayList<ChatList>();
+        chatLists.add(new ChatList("roomid", "시간", "보낸사람", "profile", "보낸사람 이메일", 1, "마지막텍스트", "1"));
         for(int i = 0; i < list.size(); i++)
         {
             String roomIdLive = list.get(i).getRoodId();
@@ -268,9 +275,14 @@ public class ChatViewModel extends AndroidViewModel{
             Gson gson = new Gson();
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
+            Log.e("통신 성공 : ", "");
+
+
         }
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
+            Log.e("통신 실패 : ", "");
+            t.printStackTrace();
         }
     }
 

@@ -57,7 +57,6 @@ public class Fragment_Message extends Fragment {
     {
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         chatViewModel.init();
-        chatViewModel.refreshChatList();
         chat = binding.messageList;
         chat.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
 
@@ -76,8 +75,8 @@ public class Fragment_Message extends Fragment {
                     public void onItemClick(View v, int position, String roomId) {
 
                         Intent intent = new Intent(v.getContext(), Activity_Chat_Room.class);
-                        intent.putExtra("roomId", roomId);//실제 작동 방식
-                        //intent.putExtra("roomId", "133a8c93-7952-4e7d-8891-dc4758f554eb");//테스트용 roomId
+                        //intent.putExtra("roomId", roomId);//실제 작동 방식
+                        intent.putExtra("roomId", "133a8c93-7952-4e7d-8891-dc4758f554eb");//테스트용 roomId
                         startActivity(intent);
                     }
                 });
@@ -97,6 +96,7 @@ public class Fragment_Message extends Fragment {
         chatViewModel.getRoomId().observe(getViewLifecycleOwner(), roomIdObserver);
 
          */
+        chatViewModel.refreshChatList();
     }
 
 }

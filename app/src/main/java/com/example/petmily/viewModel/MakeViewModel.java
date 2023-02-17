@@ -42,7 +42,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MakeViewModel extends AndroidViewModel {
 
-    final String URL =  "https://121.187.37.22:5555/api/app/";
+    final String URL =  "http://121.187.22.37:5555/api/app/";
     private MakeCallback makeCallback;
 
     private API_Interface makeInterface;
@@ -230,6 +230,12 @@ public class MakeViewModel extends AndroidViewModel {
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
 
+
+            try {
+                Log.e("메이크 통신 성공 : ", response.errorBody().string()+"");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if(responseCode != 200)
             {
 
@@ -240,6 +246,8 @@ public class MakeViewModel extends AndroidViewModel {
 
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
+            Log.e("메이크 통신 실패 : ", "");
+            t.printStackTrace();
         }
     }
 

@@ -122,6 +122,14 @@ public class PostViewModel extends AndroidViewModel {
         return markerList;
     }
 
+    private MutableLiveData<String> localName;
+    public MutableLiveData<String> getLocalName() {
+        if (localName == null) {
+            localName = new MutableLiveData<String>();
+        }
+        return localName;
+    }
+
     int like;
 
     private List<Comment> comments;
@@ -130,6 +138,8 @@ public class PostViewModel extends AndroidViewModel {
     private List<Marker> markers;
     private List<Uri> uriList;
 
+    private double latitude;
+    private double longitude;
 
 
 
@@ -166,19 +176,20 @@ public class PostViewModel extends AndroidViewModel {
         List<String> imageUrl = new ArrayList<>();
         imageUrl.add("dog2.png");
         GpsTracker gpsTracker = new GpsTracker(context);
-
+        latitude = gpsTracker.getLatitude();
+        longitude = gpsTracker.getLongitude();
 
         for(int i = 0; i < 10; i++)
         {
             //38.2078015 	127.2129742
-            double latitude = gpsTracker.getLatitude();
-            double longitude = gpsTracker.getLongitude();
+
             Coord coord = new Coord(latitude+0.0001*i, longitude+0.0001*i);
             Location location = new Location(2, coord);
             Post post = new Post(null, location, imageUrl, 3, true, "대충 게시글 내용",
                     null, null);
             postList.add(post);
         }
+
 
 
     }
@@ -238,6 +249,7 @@ public class PostViewModel extends AndroidViewModel {
                 }
             });
         }
+        getCurrentAddress(latitude, longitude);
     }
     public void postGrid()
     {
@@ -318,19 +330,19 @@ public class PostViewModel extends AndroidViewModel {
                     7);
         } catch (IOException ioException) {
             //네트워크 문제
-            Toast.makeText(context, "지오코더 서비스 사용불가", Toast.LENGTH_LONG).show();
             return "지오코더 서비스 사용불가";
         } catch (IllegalArgumentException illegalArgumentException) {
-            Toast.makeText(context, "잘못된 GPS 좌표", Toast.LENGTH_LONG).show();
             return "잘못된 GPS 좌표";
 
         }
         if (addresses == null || addresses.size() == 0) {
-            Toast.makeText(context, "주소 미발견", Toast.LENGTH_LONG).show();
             return "주소 미발견";
 
         }
         Address address = addresses.get(0);
+        //Log.e("주소 테스트 : ", address.getLocality());
+        localName.setValue(address.getLocality());
+
         return address.getAddressLine(0).toString()+"\n";
     }
 
