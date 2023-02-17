@@ -57,8 +57,6 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     private ClientDetailsService clientDetailsService;
     @Autowired
     private DevpetAccessTokenConverter devpetAccessTokenConverter;
-//    @Autowired
-//    private CustomAccessTokenConverter customAccessTokenConverter;
 
     /*
     * AuthorizationInitializer 에서 발급하는 oauth 토큰들을 저장하는 저장소이다
@@ -70,7 +68,6 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
         converter.setAccessTokenConverter(devpetAccessTokenConverter);
         converter.setSigningKey(signKey);
-        //converter.setAccessTokenConverter(customAccessTokenConverter);
         return converter;
     }
 
@@ -97,7 +94,6 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
         /* jdbc(DataBase)를 이용하는 방식 */
         client.jdbc(dataSource).passwordEncoder(passwordEncoder);
     }
-
     // OAuth2 서버가 작동하기 위한 Endpoint 에 대한 정보를 설정
     // 인가 방법과 토큰 엔드포인트 설정 및 토큰 서비스를 정의합니다.
     @Override
@@ -110,7 +106,7 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
                 .authenticationManager(authenticationManager) // authenticationManager - password 값으로 사용자를 인증하고 인가
                 .tokenStore(tokenStore()) // tokenStore - token이 저장될 기본 store를 정의
                 .userDetailsService(service) // userDetailsService - 사용자를 인증하고 인가하는 서비스를 설정
-                .accessTokenConverter(jwtAccessTokenConverter()) // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
+//                .accessTokenConverter(jwtAccessTokenConverter()) // accessTokenConverter - access token을 jwt 토큰으로 변환하기 위해 사용하며 jwtSecret 키를 통해 jwt 토큰을 설정
                 .exceptionTranslator(authorizationWebResponseExceptionTranslator())
                 .tokenEnhancer(tokenEnhancerChain);
                 // .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.DELETE) allowedTokenEndpointRequestMethods - token endpoint를 사용할 때 허용할 method들을 설정

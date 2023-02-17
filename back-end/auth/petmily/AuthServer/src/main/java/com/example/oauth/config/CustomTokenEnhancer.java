@@ -1,6 +1,7 @@
 package com.example.oauth.config;
 
 import com.example.oauth.data.entity.UserDetailsImpl;
+import org.springframework.security.jwt.crypto.sign.MacSigner;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
