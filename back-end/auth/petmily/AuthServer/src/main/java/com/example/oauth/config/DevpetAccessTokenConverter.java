@@ -24,7 +24,8 @@ public class DevpetAccessTokenConverter extends DefaultAccessTokenConverter {
     public Map<String, ?> convertAccessToken(OAuth2AccessToken token, OAuth2Authentication authentication)
     {
         super.setUserTokenConverter(userTokenConverter);
-        return super.convertAccessToken(token,authentication);
+        Map<String,?> result = super.convertAccessToken(token,authentication);
+        return result;
     }
     @Override
     public OAuth2Authentication extractAuthentication(Map<String, ?> claims) {

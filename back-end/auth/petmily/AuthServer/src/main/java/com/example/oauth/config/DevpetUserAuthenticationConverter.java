@@ -39,7 +39,7 @@ public class DevpetUserAuthenticationConverter extends DefaultUserAuthentication
             Object principal = map.get("username");
             Collection<? extends GrantedAuthority> authorities = getAuthorities(map);
             if (userDetailsService != null) {
-                UserDetails user = userDetailsService.loadUserByUsername((String) map.get(USERNAME));
+                UserDetails user = userDetailsService.loadUserByUsername((String) map.get("username"));
                 authorities = user.getAuthorities();
                 principal = user;
             }
