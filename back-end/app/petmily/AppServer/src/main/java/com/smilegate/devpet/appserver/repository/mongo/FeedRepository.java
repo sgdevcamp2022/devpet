@@ -19,4 +19,6 @@ public interface FeedRepository extends MongoRepository<Feed, Long> {
 
     List<Feed> findByLocationAndContentRegexAndIsUsedIsTrue(Location location, String word, Pageable pageable);
     List<Feed> findAllByFeedIdInAndIsUsedIsTrue(Collection<Long> feedId);
+
+    List<Feed> findByUserIdOrderByCreatedAtDesc(Long userId);
 }

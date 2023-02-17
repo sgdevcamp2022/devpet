@@ -27,6 +27,7 @@ spring:
         max-active: 8
     port: 6379
     host: localhost
+#    password: mypassword
   devtools:
     livereload:
       enabled: true

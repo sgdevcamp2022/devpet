@@ -17,4 +17,5 @@ public class ProfileRequest {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birth;
     private ArrayList<Pet> petList;
+    private String imageUrl;
 }

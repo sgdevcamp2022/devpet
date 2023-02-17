@@ -55,6 +55,8 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     private PasswordEncoder passwordEncoder;
     @Autowired
     private ClientDetailsService clientDetailsService;
+    @Autowired
+    private DevpetAccessTokenConverter devpetAccessTokenConverter;
 //    @Autowired
 //    private CustomAccessTokenConverter customAccessTokenConverter;
 
@@ -66,6 +68,7 @@ public class AuthorizationInitializer extends AuthorizationServerConfigurerAdapt
     public JwtAccessTokenConverter jwtAccessTokenConverter() {
 
         JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setAccessTokenConverter(devpetAccessTokenConverter);
         converter.setSigningKey(signKey);
         //converter.setAccessTokenConverter(customAccessTokenConverter);
         return converter;

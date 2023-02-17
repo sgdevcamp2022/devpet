@@ -5,10 +5,7 @@ import com.smilegate.devpet.appserver.model.UserInfo;
 import com.smilegate.devpet.appserver.model.UserInfoDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,10 +22,10 @@ public interface UserInfoApi {
 
     @PostMapping("/userinfo/follow/cancel")
     public void cancelFollow(FollowRequest followRequest);
-    @GetMapping("/userinfo/count/follower")//
-    public Long countFollower(FollowRequest followRequest);
-    @GetMapping("/userinfo/count/following")//
-    public Long countFollowing(FollowRequest followRequest);
+    @RequestMapping(method = RequestMethod.GET, path = "/userinfo/count/follower")//
+    public Long countFollower(@RequestBody FollowRequest followRequest);
+    @RequestMapping(method = RequestMethod.GET,path= "/userinfo/count/following")//
+    public Long countFollowing(@RequestBody FollowRequest followRequest);
     @GetMapping("/userinfo/list/follower")//
     public Set<String> getFollowerList(FollowRequest followRequest);
     @GetMapping("/userinfo/list/following")//

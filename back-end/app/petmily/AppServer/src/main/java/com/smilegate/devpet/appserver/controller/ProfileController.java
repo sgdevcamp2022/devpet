@@ -36,6 +36,12 @@ public class ProfileController {
         Profile findProfile = profileService.getProfile(profileId);
         return findProfile;
     }
+    @GetMapping("/my-profile")
+    public Profile getMyProfile(UserInfo userInfo)
+    {
+        Profile findProfile = profileService.getProfile(userInfo);
+        return findProfile;
+    }
     @GetMapping("/{profileId}/folower")
     public List<Profile> getFollowerList(@PathVariable("profileId") Long profileId)
     {

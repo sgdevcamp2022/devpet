@@ -86,7 +86,7 @@ public class FeedService {
      */
     @Transactional
     public Set<String> getPostList(String userId) {
-        Set<String> postList = userInfoRepository.getPostList(userId);
+        Set<String> postList = new HashSet<>(userInfoRepository.getPostList(userId));
         List<String> cachedList = Optional.of(redisRepository.getCachedDuplicatedId(userId)).orElseThrow(RedisCommandTimeoutException::new);
 
         postList = postList.stream().filter(s-> !cachedList.contains(s)).collect(Collectors.toSet());

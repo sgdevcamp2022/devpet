@@ -10,6 +10,7 @@ import org.springframework.data.geo.Point;
 import org.springframework.web.bind.annotation.*;
 import java.security.Principal;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/feeds")
@@ -59,17 +60,27 @@ public class FeedController {
         Circle center = new Circle(longitude,latitude,distance);
         return feedService.getSimpleFeedList(word,category,center,start,size);
     }
+    @GetMapping("/my-feed")
+    public List<String> getMySimpleFeedList(
+            @RequestParam("start") int start,
+            @RequestParam("size") int size,
+            UserInfo userInfo)
+    {
+        return feedService.getMyFeedList(userInfo,start,size);
+    }
     @GetMapping
     public List<Feed> getNearByFeedList(
-                                        @RequestParam("longitude") Double longitude,
-                                        @RequestParam("latitude") Double latitude,
-                                        @RequestParam("distance") int distance,
+                                        @RequestParam(value = "longitude",required = false) Double longitude,
+                                        @RequestParam(value = "latitude",required = false) Double latitude,
+                                        @RequestParam(value = "distance",required = false) Double distance,
                                         @RequestParam(value = "word",required = false) String word,
                                         @RequestParam(value = "category",required = false) Integer category,
                                         @RequestParam("start") int start,
                                         @RequestParam("size") int size)
     {
-        Circle center = new Circle(longitude,latitude,distance);
+        Circle center = null;
+        if (longitude!=null&&latitude!=null&&distance!=null)
+            center = new Circle(longitude,latitude,distance);
         return feedService.getFeedList(word,category,center,start,size);
     }
     @GetMapping("/marker")

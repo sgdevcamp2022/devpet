@@ -144,6 +144,19 @@ public class FeedService {
         }).collect(Collectors.toList());
     }
 
+    public List<String> getMyFeedList(UserInfo userInfo, int start, int count)
+    {
+
+        PageRequest pageRequest = PageRequest.of(start/count,count);
+        List<Feed> result = feedRepository.findByUserIdOrderByCreatedAtDesc(userInfo.getUserId());
+        return  result.stream().map((feed)->{
+            if (feed.getImageUrl().size()<1)
+                return null;
+            return feed.getImageUrl().get(0);
+        }).collect(Collectors.toList());
+
+    }
+
     /**
      * 마커에 해당하는 게시글 리스트를 조회합니다.
      * @param center 조회할 마커 위치
@@ -169,7 +182,7 @@ public class FeedService {
      * @param size 조회 갯수
      * @return 조회한 게시글 정보 리스트
      */
-    public List<Feed> getFeedList(String word, int category, Circle circle, int start, int size)
+    public List<Feed> getFeedList(String word, Integer category, Circle circle, int start, int size)
     {
         PageRequest pageRequest = PageRequest.of(start/size,size);
         return findNearFeedList(word,category,circle,pageRequest);
