@@ -26,19 +26,11 @@ public class User  {
     @Column(unique = true, nullable = false)
     private String username;
 
-    //nullable = false,
-    @Column(length = 20, unique = true)
-    private String nickname;
-
     private String password;
 
     private String name;
 
     private String phone;
-
-    private String gender;
-
-    private String age;
 
     private String provider;
 
@@ -49,13 +41,10 @@ public class User  {
 
 
     @Builder
-    public User(String username, String password, String nickname, String name , String gender, String age, String provider, String phone) {
+    public User(String username, String password, String name, String provider, String phone) {
         this.username = username;
         this.name = name;
         this.password = password;
-        this.nickname = nickname;
-        this.gender = gender;
-        this.age = age;
         this.provider = provider;
         this.phone = phone;
         this.authorities.add(AuthorityType.ROLE_USER);

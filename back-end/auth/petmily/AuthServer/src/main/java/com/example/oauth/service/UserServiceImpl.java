@@ -24,17 +24,14 @@ public class UserServiceImpl implements UserService {
     public void saveUser(SignUpRequest signUpRequest) {
 
         checkDuplicateEmail(signUpRequest.getUsername());
-        checkDuplicateNickname(signUpRequest.getNickname());
+//        checkDuplicateNickname(signUpRequest.getNickname());
 
         User user = User.builder()
                 .username(signUpRequest.getUsername())
                 .name(signUpRequest.getName())
-                .nickname(signUpRequest.getNickname())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
-                .age(signUpRequest.getAge())
-                .gender(signUpRequest.getGender())
                 .phone(signUpRequest.getPhone())
-                .provider(null)
+                .provider(signUpRequest.getProvider())
                 .build();
 
         userRepository.save(user);
@@ -76,11 +73,8 @@ public class UserServiceImpl implements UserService {
 
     public void updateKaKaoUser (SignUpRequest signUpRequest) {
             User user = userRepository.findByUsername(signUpRequest.getUsername()).orElseThrow(() -> new DataNotFoundException("4005"));
-            user.setAge(signUpRequest.getAge());
-            user.setNickname(signUpRequest.getNickname());
             user.setProvider(signUpRequest.getProvider());
             user.setPhone(signUpRequest.getPhone());
-            user.setGender(signUpRequest.getGender());
             userRepository.save(user);
     }
 
