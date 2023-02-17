@@ -187,11 +187,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
             Gson gson = new Gson();
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
-            try {
-                Log.e("통신 연결 완료 : ", response.errorBody().string()+"");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+
             if(responseCode != 200)
             {
                 ResponseBody errorBody = response.errorBody();
@@ -263,6 +259,8 @@ public class AuthenticationViewModel extends AndroidViewModel {
 
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
+            Log.e("통신 연결 실패 : ", call.request().body().toString());
+
             Log.e("통신 실패 : ", t.getMessage());
 
             t.printStackTrace();

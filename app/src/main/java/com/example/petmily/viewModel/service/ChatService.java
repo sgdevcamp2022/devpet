@@ -1,17 +1,12 @@
 package com.example.petmily.viewModel.service;
 
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlarmManager;
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -25,10 +20,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.petmily.R;
-import com.example.petmily.model.data.chat.list.local.ChatDatabase;
 import com.example.petmily.model.data.chat.room.Message;
+import com.example.petmily.model.data.chat.room.local.RoomDatabase;
+import com.example.petmily.model.data.chat.room.local.RoomSQL;
 import com.example.petmily.model.data.chat.room.remote.RoomAPI_Interface;
-import com.example.petmily.view.Activity_Chat_Room;
 import com.example.petmily.view.MainActivity;
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -43,16 +38,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChatService extends Service{
-    String URL = "https://121.187.37.22:5555/api/chat";
+    String URL = "https://121.187.22.37:5555/api/chat";
 
     NotificationManager Notifi_M;
     ChatServiceThread thread;
     NotificationCompat.Builder Notifi;
-    //List<ChatRoom_SQL> list;
+    private List<RoomSQL> roomSQLList;
     private Retrofit retrofit;
     private RoomAPI_Interface chatInterface;
     private String token;
-    private ChatDatabase db;
+    private RoomDatabase db;
 
 
     private SingleLiveEvent<Boolean> eventLoginExpiration;
@@ -87,6 +82,8 @@ public class ChatService extends Service{
                 .build();
 
         chatInterface = retrofit.create(RoomAPI_Interface.class);
+
+        db = RoomDatabase.getInstance(ChatService.this);
 
         Notifi_M = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         myServiceHandler handler = new myServiceHandler();
@@ -134,8 +131,8 @@ public class ChatService extends Service{
                     @Override
                     public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
                         List<Message> result = null;
-
-
+                        roomSQLList = new ArrayList<>();
+                        //db.chatRoomDao().updateMessage();
                         Gson gson = new Gson();
                         Type listType = new TypeToken<ArrayList<Message>>(){}.getType();
                         result = new Gson().fromJson(response.body().toString(), listType);
