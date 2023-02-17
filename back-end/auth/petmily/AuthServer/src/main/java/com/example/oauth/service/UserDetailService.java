@@ -31,7 +31,6 @@ public class UserDetailService implements UserDetailsService {
         UserDetailsImpl userDetails = UserDetailsImpl.builder()
                 .id(findUser.getId())
                 .username(findUser.getUsername())
-                .nickname(findUser.getNickname())
                 .password(findUser.getPassword())
                 .authorities(findUser.getAuthorities())
                 .build();

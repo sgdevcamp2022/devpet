@@ -48,10 +48,10 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
     }
 
-    public void checkDuplicateNickname(String nickname) {
-        if (userRepository.existsByNickname(nickname))
-            throw new DuplicateUserException("4001");
-    }
+//    public void checkDuplicateNickname(String nickname) {
+//        if (userRepository.existsByNickname(nickname))
+//            throw new DuplicateUserException("4001");
+//    }
 
     public void checkDuplicateEmail(String username) {
         if (userRepository.existsByUsername(username))
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
     // 카카오 로그인 진행 후 추가 정보 기입해서 기존에 자동 회원가입 되어 있는 카카오 유저 정보 업데이트
     public void saveKaKaoUserLast (SignUpRequest signUpRequest) {
 
-        checkDuplicateNickname(signUpRequest.getNickname());
+//        checkDuplicateNickname(signUpRequest.getNickname());
         updateKaKaoUser(signUpRequest);
     }
 
