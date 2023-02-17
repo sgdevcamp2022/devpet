@@ -3,6 +3,7 @@ package com.example.petmily.viewModel.service;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -27,6 +28,7 @@ import com.example.petmily.R;
 import com.example.petmily.model.data.chat.list.local.ChatDatabase;
 import com.example.petmily.model.data.chat.room.Message;
 import com.example.petmily.model.data.chat.room.remote.RoomAPI_Interface;
+import com.example.petmily.view.Activity_Chat_Room;
 import com.example.petmily.view.MainActivity;
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -109,17 +111,21 @@ public class ChatService extends Service{
         @Override
         public void handleMessage(android.os.Message msg) {
             Intent intent = new Intent(ChatService.this, MainActivity.class);
-            //PendingIntent pendingIntent = PendingIntent.getActivity(ChatService.this, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(ChatService.this, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+
+
 
 
             Notifi = new NotificationCompat.Builder(getApplicationContext(), "채널 아이디")//채널
                     .setSmallIcon(R.drawable.corner)
-                    .setContentTitle("asdsad")
-                    .setContentText("asdsadsad")
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+                    .setContentTitle("제목")
+                    .setContentText("메시지 테스트")
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setContentIntent(pendingIntent);
 
 
-            //Notifi_M.notify(0, Notifi.build());
+
+            Notifi_M.notify(0, Notifi.build());
 
             if(!token.equals(""))
             {
