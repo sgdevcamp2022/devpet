@@ -15,5 +15,5 @@ public class UserInfo{
     private Long exp;
     private List<String> authorities;
     private String jti;
-    private String clientId;
+    private String client_id;
 }
