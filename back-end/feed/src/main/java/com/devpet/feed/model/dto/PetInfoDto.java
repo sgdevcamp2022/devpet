@@ -13,14 +13,13 @@ import java.util.List;
 public class PetInfoDto {
 
     private String userId;
-    private String petId;
+    private Long petId;
     private String petName;
     private String petBirth;
     private String petSpecies;
-    private List<String> petList;
 
     @Builder
-    public PetInfoDto(String petId, String petName, String petBirth, String petSpecies) {
+    public PetInfoDto(Long petId, String petName, String petBirth, String petSpecies) {
         this.petId = petId;
         this.petName = petName;
         this.petBirth = petBirth;

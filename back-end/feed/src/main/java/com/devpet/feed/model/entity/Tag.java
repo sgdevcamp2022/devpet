@@ -15,6 +15,4 @@ import org.springframework.data.neo4j.core.schema.Property;
 public class Tag {
     @Id()
     private String tagName;
-    @Property
-    private String tagNumber;
 }

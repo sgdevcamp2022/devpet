@@ -5,12 +5,16 @@ import com.devpet.feed.model.dto.UserInfoDto;
 import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Follow;
 
+import com.devpet.feed.model.relationship.Like;
 import com.devpet.feed.repository.PostInfoRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 import java.util.Set;
@@ -30,17 +34,27 @@ public class UserInfoService {
         return new UserInfoDto(info);
     }
 
+    // 유저 노드 DB에 저장
     @Transactional
     public UserInfoDto saveUserInfo(UserInfoDto userInfo) {
         UserInfo save = new UserInfo(userInfo);
+        // DB에 유저가 있는지 체크
         UserInfo user = userRepository.findNodeById(save.getUserId()).orElse(userRepository.save(userDtoToUserInfo(userInfo)));
         return userInfoToUserInfoDto(user);
     }
 
+    /*
+    * 팔로우 기능
+    * followUser -[:FOLLOW]-> followedUser
+    * followUser 팔로우를 하는 사람
+    * followedUser 팔로우 당하는 사람
+    * */
     @Transactional
     public UserInfoDto followUser(String followedUser, String followUser) throws Exception{
 
+        // 팔로우 당하는 사람
         UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
+        // 팔로우를 하는 사람
         UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
 
         // 서로 관계가 있는지 체크
@@ -50,12 +64,12 @@ public class UserInfoService {
         }
 
         Set<Follow> userFollower = user.getFollowers();
-//        Set<Follow> userFollower = new HashSet<>();
         Follow followerNode = new Follow(follower);
         userFollower.add(followerNode);
         return userInfoToUserInfoDto(userRepository.save(user));
     }
 
+    // 유저 노드 수정
     @Transactional
     public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) throws Exception {
 
@@ -67,24 +81,12 @@ public class UserInfoService {
     }
 
     /**
-     * 좋아요를 취소합니다.
-     * @param likeDto
-     */
-//    public void cancelLike(LikeDto likeDto) {
-//        //
-//        userRepository.findNodeById(likeDto.getUserId()).orElseThrow(RuntimeException::new);
-//        postRepository.findNodeById(likeDto.getPostId()).orElseThrow(RuntimeException::new);
-//        userRepository.cancelLike(likeDto.getUserId(), likeDto.getPostId());
-//
-//    }
-
-    /**
      * 팔로우를 취소 합니다.
      * @param followDto
      */
     public void cancelFollow(FollowDto followDto) {
 
-        // 팔로워가 db에 존재하는지 확인
+        // 팔로워가 db에 존재하는지 확인(사용자 본인)
         userRepository.findNodeById(followDto.getFollower()).orElseThrow(RuntimeException::new);
         // 팔로잉 대상이 db에 존재하는지 확인
         userRepository.findNodeById(followDto.getFollowing()).orElseThrow(RuntimeException::new);
@@ -111,10 +113,12 @@ public class UserInfoService {
         return followingCount;
     }
 
+    // 사용자 본인의 팔로워들의 postId Set으로 가져오기
     public Set<String> getFollowerList(String userId) {
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getFollowerList(userId);
     }
+    // 사용자 본인이 팔로우를 하고 있는 다른 사용자들의 postId Set으로 가져오기
     public Set<String> getFollowingList(String userId) {
         // userId가 db에 존재하는지 확인
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
@@ -164,17 +168,10 @@ public class UserInfoService {
         return userRepository.getFollowingRecommendPostList(userId);
     }
 
-
     public List<String> getFollowUserPost(String userId) {
         return userRepository.getFollowingNewPostList(userId);
     }
 
-    // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
-//    public Set<String> getFollowingCommentPostList(String userId) {
-//
-//        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
-//        return userRepository.getFollowingCommentPostList(userId);
-//    }
 
     // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
     public Set<String> getPetLikeCommentPostList(String userId) {
@@ -189,4 +186,5 @@ public class UserInfoService {
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getRecommendedFollowPostList(userId);
     }
+
 }
