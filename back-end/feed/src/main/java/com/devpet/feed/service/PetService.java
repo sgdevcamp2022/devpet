@@ -1,8 +1,6 @@
 package com.devpet.feed.service;
 
-import com.devpet.feed.model.dto.PetDto;
 import com.devpet.feed.model.dto.PetInfoDto;
-import com.devpet.feed.model.dto.PetListDto;
 import com.devpet.feed.model.entity.PetInfo;
 import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Pet;
@@ -14,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -23,31 +20,33 @@ public class PetService {
     private final UserInfoRepository userRepository;
     private final PetRepository petRepository;
 
+    // 펫 노드 생성 동시에 유저와 관계 생성
     @Transactional
-    public List<String> savePet(PetListDto petList) {
+    public List<Long> savePet(List<PetInfoDto> petList) {
 
-        List<String> petIdList = new ArrayList<>();
-        for (PetInfoDto petInfoDto : petList.getPetList()) {
+        List<Long> petIdList = new ArrayList<>();
+        for (PetInfoDto petInfoDto : petList) {
 
             UserInfo userInfo = userRepository.findNodeById(petInfoDto.getUserId()).orElseThrow(RuntimeException::new);
-            PetInfo petInfo = petRepository.findByPetName(petInfoDto.getPetName()).orElse(petRepository.save(new PetInfo(petInfoDto)));
+            PetInfo petInfo = petRepository.findByPetId(petInfoDto.getPetId()).orElse(petRepository.save(new PetInfo(petInfoDto)));
 
-            String uuid = petInfo.getPetId();
+            Long uid = petInfo.getPetId();
             Pet pet = new Pet(petInfo);
             userInfo.getPet().add(pet);
             userRepository.save(userInfo);
-            petIdList.add(uuid);
+            petIdList.add(uid);
         }
 
         return petIdList;
     }
 
+    // 펫 수정
     @Transactional
-    public void putPet(PetListDto petList) {
+    public void putPet(List<PetInfoDto> petList) {
 
-        for (PetInfoDto petInfoDto : petList.getPetList()) {
+        for (PetInfoDto petInfoDto : petList) {
 
-            PetInfo petInfo = petRepository.findById(petInfoDto.getPetId()).orElseThrow(RuntimeException::new);
+            PetInfo petInfo = petRepository.findByPetId(petInfoDto.getPetId()).orElseThrow(RuntimeException::new);
 
             petInfo.setPetBirth(petInfoDto.getPetBirth());
             petInfo.setPetName(petInfoDto.getPetName());
@@ -56,19 +55,19 @@ public class PetService {
         }
     }
 
+    // 펫 삭제
     @Transactional
-    public void deletePet(PetListDto petList) {
+    public void deletePet(List<PetInfoDto> petList) {
 
-        List<String> petIdList = new ArrayList<>();
-        for (PetInfoDto petInfoDto : petList.getPetList()) {
+        for (PetInfoDto petInfoDto : petList) {
 
-            PetInfo petInfo = petRepository.findById(petInfoDto.getPetId()).orElseThrow(RuntimeException::new);
+            PetInfo petInfo = petRepository.findByPetId(petInfoDto.getPetId()).orElseThrow(RuntimeException::new);
             petRepository.deletePet(petInfo.getPetId());
         }
     }
 
     @Transactional
-    public PetInfoDto getPet(String petId) {
+    public PetInfoDto getPet(Long petId) {
 
         PetInfo petInfo = petRepository.findByPetId(petId).orElseThrow(RuntimeException::new);
 
@@ -82,13 +81,3 @@ public class PetService {
         return petInfoDto;
     }
 }
-
-
-//    @Transactional
-//    public void raisePetCancel(PetDto petDto) {
-//
-//        UserInfo userInfo = userRepository.findNodeById(petDto.getUserId()).orElseThrow(RuntimeException::new);
-//        PetInfo petInfo = petRepository.findByPetId(petDto.getPetId()).orElseThrow(RuntimeException::new);
-//
-//        petRepository.raisePetCancel(petDto.getUserId(), petDto.getPetId());
-//    }

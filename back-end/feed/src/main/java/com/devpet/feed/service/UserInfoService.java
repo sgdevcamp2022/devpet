@@ -33,14 +33,20 @@ public class UserInfoService {
 return new UserInfoDto(info);
     }
 
+    // 유저 노드 DB에 저장
     @Transactional
     public UserInfoDto saveUserInfo(UserInfoDto userInfo) {
         UserInfo save = new UserInfo(userInfo);
+        // DB에 유저가 있는지 체크
         UserInfo user = userRepository.findNodeById(save.getUserId()).orElse(userRepository.save(userDtoToUserInfo(userInfo)));
         return userInfoToUserInfoDto(user);
     }
 
-    /**
+    /*
+    * followUser -[:FOLLOW]-> followedUser
+    * followUser 팔로우를 하는 사람
+    * followedUser 팔로우 당하는 사람
+    * 
      * 사용자 팔로우 기능
      * redis 에 저장하는 기능
      * 성능 이슈 발생
@@ -90,7 +96,9 @@ return new UserInfoDto(info);
     @Transactional
     public UserInfoDto followUser(String followedUser, String followUser) throws Exception {
 
+        // 팔로우 당하는 사람
         UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
+        // 팔로우를 하는 사람
         UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
 
         // 서로 관계가 있는지 체크
@@ -100,12 +108,12 @@ return new UserInfoDto(info);
         }
 
         Set<Follow> userFollower = user.getFollowers();
-//        Set<Follow> userFollower = new HashSet<>();
         Follow followerNode = new Follow(follower);
         userFollower.add(followerNode);
         return userInfoToUserInfoDto(userRepository.save(user));
     }
 
+    // 유저 노드 수정
     @Transactional
     public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) {
 
@@ -117,24 +125,12 @@ return new UserInfoDto(info);
     }
 
     /**
-     * 좋아요를 취소합니다.
-     * @param likeDto
-     */
-//    public void cancelLike(LikeDto likeDto) {
-//        //
-//        userRepository.findNodeById(likeDto.getUserId()).orElseThrow(RuntimeException::new);
-//        postRepository.findNodeById(likeDto.getPostId()).orElseThrow(RuntimeException::new);
-//        userRepository.cancelLike(likeDto.getUserId(), likeDto.getPostId());
-//
-//    }
-
-    /**
      * 팔로우를 취소 합니다.
      * @param followDto
      */
     public void cancelFollow(FollowDto followDto) {
 
-        // 팔로워가 db에 존재하는지 확인
+        // 팔로워가 db에 존재하는지 확인(사용자 본인)
         userRepository.findNodeById(followDto.getFollower()).orElseThrow(RuntimeException::new);
         // 팔로잉 대상이 db에 존재하는지 확인
         userRepository.findNodeById(followDto.getFollowing()).orElseThrow(RuntimeException::new);
@@ -161,10 +157,12 @@ return new UserInfoDto(info);
         return followingCount;
     }
 
+    // 사용자 본인의 팔로워들의 postId Set으로 가져오기
     public Set<String> getFollowerList(String userId) {
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getFollowerList(userId);
     }
+    // 사용자 본인이 팔로우를 하고 있는 다른 사용자들의 postId Set으로 가져오기
     public Set<String> getFollowingList(String userId) {
         // userId가 db에 존재하는지 확인
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
@@ -172,21 +170,21 @@ return new UserInfoDto(info);
     }
 
 
-    // 내가 팔로우 한 유저들이 작성한 게시글들 가져오기(시간순으로 정렬 과 개수 조정 필요)
+    // 내가 팔로우 한 유저들이 작성한 게시글들 가져오기
     public Set<String> getFollowPostList(String userId) {
 
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getFollowPostList(userId);
     }
 
-    // 내가 좋아요를 누른 게시글의 tag 에 관련된 다른 게시글들 불러오기(시간순으로 정렬 과 개수 조정 필요)
+    // 내가 좋아요를 누른 게시글의 tag 에 관련된 다른 게시글들 불러오기
     public Set<String> getLikePostList(String userId) {
 
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getLikePostList(userId);
     }
 
-    // 내가 댓글을 쓴 게시글의 tag에 관련된 다른 게시글들 불러오기(시간순으로 정렬 과 개수 조정 필요)
+    // 내가 댓글을 쓴 게시글의 tag에 관련된 다른 게시글들 불러오기
     public Set<String> getCommentPostList(String userId) {
 
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
@@ -195,7 +193,6 @@ return new UserInfoDto(info);
 
     /*
      * 내가 팔로우 한 유저들의 recommend 관계가 있는 게시글의 tag에 관련된 게시글들 불러오기
-     * (시간순으로 정렬 과 개수 조정 필요)
      * */
     public Set<String> getFollowRecommendPostList(String userId) {
 
@@ -214,17 +211,11 @@ return new UserInfoDto(info);
         return userRepository.getFollowingRecommendPostList(userId);
     }
 
-
     public List<String> getFollowUserPost(String userId) {
         return userRepository.getFollowingNewPostList(userId);
     }
 
-    // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
-//    public Set<String> getFollowingCommentPostList(String userId) {
-//
-//        userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
-//        return userRepository.getFollowingCommentPostList(userId);
-//    }
+
     // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
     public Set<String> getPetLikeCommentPostList(String userId) {
 
@@ -238,4 +229,5 @@ return new UserInfoDto(info);
         userRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
         return userRepository.getRecommendedFollowPostList(userId);
     }
+
 }
