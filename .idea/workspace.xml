@@ -16,9 +16,24 @@
       <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/fileHashes.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/resourceHashesCache.bin" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/7.3.3/fileHashes/resourceHashesCache.bin" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" beforeDir="false" afterPath="$PROJECT_DIR$/.gradle/buildOutputCleanup/buildOutputCleanup.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/auth/RefreshToken.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/auth/RefreshToken.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/auth/local/AuthDatabase.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/auth/local/AuthDatabase.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/auth/local/TokenSQL.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/auth/local/TokenSQL.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/list/remote/ListAPI_Interface.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/list/remote/ListAPI_Interface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/room/Message.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/room/Message.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/room/remote/ChatRoomMake.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/profile/remote/ChatRoomMake.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/room/remote/Room.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/room/remote/Room.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/room/remote/RoomAPI_Interface.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/model/data/chat/room/remote/RoomAPI_Interface.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/view/Activity_Login.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/view/Activity_Login.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/view/Fragment_Profile.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/view/Fragment_Profile.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/view/MainActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/view/MainActivity.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/viewModel/AuthenticationViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/viewModel/AuthenticationViewModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/viewModel/ChatViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/viewModel/ChatViewModel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/viewModel/ProfileViewModel.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/viewModel/ProfileViewModel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/viewModel/service/ChatService.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/petmily/viewModel/service/ChatService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/fragment_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/fragment_profile.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,7 +201,14 @@
       <option name="project" value="LOCAL" />
       <updated>1676653707783</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="FIX: Gradle 버그 수정 후 재설치">
+      <created>1676654498061</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1676654498061</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

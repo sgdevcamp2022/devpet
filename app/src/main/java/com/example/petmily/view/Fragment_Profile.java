@@ -69,8 +69,20 @@ public class Fragment_Profile extends Fragment {
         post = binding.searchPost;
         post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
+        binding.message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileViewModel.
+            }
+        });
+
 
         initObserver();
+    }
+
+    public void initView()
+    {
+
     }
 
     public void initObserver()

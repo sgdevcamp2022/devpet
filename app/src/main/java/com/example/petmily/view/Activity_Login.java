@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -67,9 +68,9 @@ public class Activity_Login extends AppCompatActivity {
     }
     public void initObserver()
     {
-        authenticationViewModel.getEventLoginExpiration().observe(this, new Observer<Boolean>() {
+        final Observer<Boolean> eventLoginExiration = new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
+            public void onChanged(@Nullable final Boolean aBoolean) {
                 if(!aBoolean) {
                     Toast.makeText(getApplicationContext(), "사용자 정보가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -79,7 +80,9 @@ public class Activity_Login extends AppCompatActivity {
                     startActivity(intent);
                     //startService(service);
                 }
+
             }
-        });
+        };
+        authenticationViewModel.getEventRefreshExpiration().observe(this, eventLoginExiration);
     }
 }

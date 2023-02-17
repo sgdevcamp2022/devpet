@@ -99,8 +99,9 @@ public class AuthenticationViewModel extends AndroidViewModel {
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         authInterface = retrofit.create(API_Interface.class);
+        TokenSQL tokenSQL = db.authDao().getToken();
 
-        if(db.authDao().getToken() != null)
+        if(tokenSQL != null)
         {
             token =  db.authDao().getToken();
         }
@@ -108,6 +109,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
         {
             token = new TokenSQL("dummy", "dummy", "dummy");
         }
+        //token = new TokenSQL("dummy", "dummy", "dummy");
     }
 
     public void accessTokenCheck()
@@ -244,7 +246,11 @@ public class AuthenticationViewModel extends AndroidViewModel {
             }
             else if(body instanceof  AccessToken)
             {
-                Log.e("로그인 토큰 존재 : ", "");
+                SharedPreferences sharedPreferences= context.getSharedPreferences("token", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor= sharedPreferences.edit();
+                editor.putString("token", token.getAccessToken()); // key,value 형식으로 저장
+                editor.putString("email", email);
+                editor.commit();
             }
             else
             {
@@ -253,7 +259,6 @@ public class AuthenticationViewModel extends AndroidViewModel {
                 editor.putString("token", token.getAccessToken()); // key,value 형식으로 저장
                 editor.putString("email", email);
                 editor.commit();
-                Log.e("로그인 토큰 존재 성공 : ", "");
             }
         }
 

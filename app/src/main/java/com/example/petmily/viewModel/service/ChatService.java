@@ -20,15 +20,14 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
 import com.example.petmily.R;
+import com.example.petmily.model.data.auth.local.AuthDatabase;
 import com.example.petmily.model.data.chat.room.Message;
 import com.example.petmily.model.data.chat.room.local.RoomDatabase;
 import com.example.petmily.model.data.chat.room.local.RoomSQL;
+import com.example.petmily.model.data.chat.room.remote.Room;
 import com.example.petmily.model.data.chat.room.remote.RoomAPI_Interface;
 import com.example.petmily.view.MainActivity;
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
-import com.google.gson.Gson;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,6 +42,7 @@ public class ChatService extends Service{
     NotificationManager Notifi_M;
     ChatServiceThread thread;
     NotificationCompat.Builder Notifi;
+    private AuthDatabase auth;
     private List<RoomSQL> roomSQLList;
     private Retrofit retrofit;
     private RoomAPI_Interface chatInterface;
@@ -75,6 +75,7 @@ public class ChatService extends Service{
 
         SharedPreferences sharedPreferences= getApplicationContext().getSharedPreferences("token", Context.MODE_PRIVATE);
         token= sharedPreferences.getString("token", "");
+        token = auth.authDao().getToken().getAccessToken();
 
         retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
@@ -111,8 +112,6 @@ public class ChatService extends Service{
             PendingIntent pendingIntent = PendingIntent.getActivity(ChatService.this, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
 
-
-
             Notifi = new NotificationCompat.Builder(getApplicationContext(), "채널 아이디")//채널
                     .setSmallIcon(R.drawable.corner)
                     .setContentTitle("제목")
@@ -121,56 +120,52 @@ public class ChatService extends Service{
                     .setContentIntent(pendingIntent);
 
 
-
             Notifi_M.notify(0, Notifi.build());
 
             if(!token.equals(""))
             {
-                Call<List<String>> chatList = chatInterface.getMessage(token);
-                chatList.enqueue(new retrofit2.Callback<List<String>>() {
+                Call<List<Room>> chatList = chatInterface.getMessage(token);
+                chatList.enqueue(new retrofit2.Callback<List<Room>>() {
                     @Override
-                    public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
-                        List<Message> result = null;
-                        roomSQLList = new ArrayList<>();
-                        //db.chatRoomDao().updateMessage();
-                        Gson gson = new Gson();
-                        Type listType = new TypeToken<ArrayList<Message>>(){}.getType();
-                        result = new Gson().fromJson(response.body().toString(), listType);
-                        for(int i = 0 ; i <result.size(); i++)
+                    public void onResponse(Call<List<Room>> call, retrofit2.Response<List<Room>> response) {
+                        if(response.code() == 200)
+                        {
+                            List<Room> result = response.body();
+                            roomSQLList = new ArrayList<>();
+
+                            for(int i = 0; i < result.size(); i++)
+                            {
+                                String type = "TALK";
+                                String roomId = result.get(i).getRoomId();
+                                String sender = result.get(i).getSenderName();
+                                String receiver = result.get(i).getReceiverName();
+                                String message = result.get(i).getMessage();
+                                String timeLog = result.get(i).getTimelog();
+                                Message addMessage = new Message("TALK", roomId, sender, receiver, message, timeLog);
+
+                                RoomSQL roomSQL = db.chatRoomDao().getMessage(roomId);
+                                List<Message> messageList = roomSQL.getMessages();
+                                messageList.add(addMessage);
+                                roomSQL.setMessages(messageList);
+
+                                db.chatRoomDao().updateMessage(roomSQL);
+                            }
+
+//                            Gson gson = new Gson();
+//                            Type listType = new TypeToken<ArrayList<Message>>(){}.getType();
+//                            result = new Gson().fromJson(response.body().toString(), listType);
+                        }
+                        else if(response.code() == 401)//토큰 만료
                         {
 
-                            Log.e("get 통신 테스트", result.get(i).toString());
                         }
                     }
-
                     @Override
-                    public void onFailure(Call<List<String>> call, Throwable t) {
+                    public void onFailure(Call<List<Room>> call, Throwable t) {
 
                     }
                 });
             }
-
-            Call<List<String>> testCallback = chatInterface.getMessage(token);
-            testCallback.enqueue(new retrofit2.Callback<List<String>>(){
-                @Override
-                public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
-
-                    if(response.body()!=null) {
-
-                    }
-                    else
-                    {
-                        //Log.e("null", "");
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<List<String>> call, Throwable t) {
-                    Log.e("통신 테스트 실패", t.getMessage());
-                    t.printStackTrace();
-                }
-            });
         }
     }
 

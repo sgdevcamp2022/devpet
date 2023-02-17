@@ -1,6 +1,6 @@
 package com.example.petmily.model.data.chat.list.remote;
 
-import com.example.petmily.model.data.chat.room.remote.ChatRoomMake;
+import com.example.petmily.model.data.profile.remote.ChatRoomMake;
 
 import java.util.List;
 

@@ -7,7 +7,7 @@ import androidx.room.Room;
 
 
 
-@Database(entities = {TokenSQL.class},version = 1)
+@Database(entities = {TokenSQL.class},version = 2)
 public abstract class AuthDatabase extends androidx.room.RoomDatabase
 {
     private static AuthDatabase database;

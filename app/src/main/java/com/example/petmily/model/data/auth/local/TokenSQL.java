@@ -9,25 +9,25 @@ public class TokenSQL {
 
     @NonNull
     @PrimaryKey
-    String uid;
+    String userId;
 
     String accessToken;
 
     String refreshToken;
 
-    public TokenSQL(@NonNull String uid, String accessToken, String refreshToken) {
-        this.uid = uid;
+    public TokenSQL(@NonNull String userId, String accessToken, String refreshToken) {
+        this.userId = userId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
     }
 
     @NonNull
     public String getUid() {
-        return uid;
+        return userId;
     }
 
-    public void setUid(@NonNull String uid) {
-        this.uid = uid;
+    public void setUid(@NonNull String userId) {
+        this.userId = userId;
     }
 
     public String getAccessToken() {

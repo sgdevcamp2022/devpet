@@ -17,16 +17,16 @@ public class Room {
     public String receiverName;
 
     @SerializedName("messages")
-    public List<Message> messages;
+    public String message;
 
     @SerializedName("timelog")
     public String timelog;
 
-    public Room(String roomId, String senderName, String receiverName, List<Message> messages, String timelog) {
+    public Room(String roomId, String senderName, String receiverName, String message, String timelog) {
         this.roomId = roomId;
         this.senderName = senderName;
         this.receiverName = receiverName;
-        this.messages = messages;
+        this.message = message;
         this.timelog = timelog;
     }
 
@@ -54,12 +54,12 @@ public class Room {
         this.receiverName = receiverName;
     }
 
-    public List<Message> getMessages() {
-        return messages;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMessages(List<Message> messages) {
-        this.messages = messages;
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public String getTimelog() {
@@ -68,16 +68,5 @@ public class Room {
 
     public void setTimelog(String timelog) {
         this.timelog = timelog;
-    }
-
-    @Override
-    public String toString() {
-        return "ChatRoom{" +
-                "roomId='" + roomId + '\'' +
-                ", senderName='" + senderName + '\'' +
-                ", receiverName='" + receiverName + '\'' +
-                ", messages=" + messages +
-                ", timelog='" + timelog + '\'' +
-                '}';
     }
 }

@@ -3,7 +3,6 @@ package com.example.petmily.viewModel;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.MainThread;
@@ -14,8 +13,6 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
-import com.example.petmily.model.data.auth.local.AuthDatabase;
-import com.example.petmily.model.data.auth.remote.API_Interface;
 import com.example.petmily.model.data.chat.list.ChatList;
 import com.example.petmily.model.data.chat.list.local.ChatDatabase;
 import com.example.petmily.model.data.chat.list.local.ChatListSQL;
@@ -23,9 +20,7 @@ import com.example.petmily.model.data.chat.list.remote.ListAPI_Interface;
 import com.example.petmily.model.data.chat.room.Message;
 import com.example.petmily.model.data.chat.room.local.RoomDatabase;
 import com.example.petmily.model.data.chat.room.local.RoomSQL;
-import com.example.petmily.model.data.chat.room.remote.ChatRoomMake;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 
 import java.text.SimpleDateFormat;
@@ -34,7 +29,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import retrofit2.Call;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import ua.naiksoftware.stomp.Stomp;
@@ -120,42 +114,7 @@ public class ChatViewModel extends AndroidViewModel{
         topicMessage();
     }
 
-    //프로필로 넘어갈 예졍
-    public void createRoom(String userId)
-    {
-        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
-        String email = sharedPreferences.getString("email", "");
-        List<String> list = new ArrayList<String>();
-        if(!email.equals(""))
-        {
-            list.add(email);
-            list.add(userId);
-        }
 
-        restApi =  chatInterface.createRoom(list);
-        restApi.enqueue(chatCallback);
-
-        //list.add("1");//내 이메일
-        //list.add("2");//상대 이메일
-
-
-        Call<ChatRoomMake> testCallback = chatInterface.createRoom(list);
-        testCallback.enqueue(new retrofit2.Callback<ChatRoomMake>(){
-
-            @Override
-            public void onResponse(Call<ChatRoomMake> call, Response<ChatRoomMake> response) {
-
-                ChatRoomMake result = response.body();
-                roomIdLive.setValue(result.getRoomId());
-
-            }
-            @Override
-            public void onFailure(Call<ChatRoomMake> call, Throwable t) {
-                Log.e("방 생성 실패 : ",t.getMessage());
-            }
-        });
-
-    }
 
     public void refreshChatList()
     {

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.NotificationCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -11,7 +12,10 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,10 +26,26 @@ import android.view.View;
 import com.example.petmily.R;
 
 import com.example.petmily.databinding.ActivityMainBinding;
+import com.example.petmily.model.data.chat.room.Message;
+import com.example.petmily.model.data.chat.room.local.RoomDatabase;
+import com.example.petmily.model.data.chat.room.local.RoomSQL;
+import com.example.petmily.model.data.chat.room.remote.RoomAPI_Interface;
 import com.example.petmily.viewModel.AuthenticationViewModel;
 import com.example.petmily.viewModel.service.ChatService;
+import com.example.petmily.viewModel.service.ChatServiceThread;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
+import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
@@ -66,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
 
 
          */
+
+
 
 
     }
@@ -218,8 +240,61 @@ public class MainActivity extends AppCompatActivity {
                 Intent i = new Intent(this, Activity_Login.class);
                 //Intent i = new Intent(this, Activity_Chat.class);
                 startActivity(i);
+                test();
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    String URL = "http://121.187.22.37:5555/api/chat/";
+
+    private List<RoomSQL> roomSQLList;
+    private Retrofit retrofit;
+    private RoomAPI_Interface chatInterface;
+    private String token;
+    private RoomDatabase db;
+
+    public void test()
+    {
+        SharedPreferences sharedPreferences= getApplicationContext().getSharedPreferences("token", Context.MODE_PRIVATE);
+        token= sharedPreferences.getString("token", "없음");
+        Log.e("토큰 확인 테스트 : ", token);
+        retrofit = new Retrofit.Builder()
+                .baseUrl(URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        chatInterface = retrofit.create(RoomAPI_Interface.class);
+
+
+        Call<List<String>> chatList = chatInterface.getMessage(token);
+        chatList.enqueue(new retrofit2.Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, retrofit2.Response<List<String>> response) {
+                List<Message> result = null;
+                try {
+                    Log.e("채팅 테스트 : ", response.errorBody().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                roomSQLList = new ArrayList<>();
+                //db.chatRoomDao().updateMessage();
+                Gson gson = new Gson();
+                Type listType = new TypeToken<ArrayList<Message>>(){}.getType();
+//                result = new Gson().fromJson(response.body().toString(), listType);
+//                for(int i = 0 ; i <result.size(); i++)
+//                {
+//
+//                    Log.e("get 통신 테스트", result.get(i).toString());
+//                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+                Log.e("채팅 테스트 : ", "");
+                t.printStackTrace();
+            }
+        });
     }
 }

@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.petmily.model.data.profile.remote.ChatRoomMake;
 import com.example.petmily.model.data.profile.Pet;
 import com.example.petmily.model.data.profile.remote.API_Interface;
 import com.example.petmily.model.data.profile.remote.Profile;
@@ -26,12 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileViewModel extends AndroidViewModel {
 
-    final String URL = "https://121.187.37.22:5555/api/app/";
+    final String URL = "http://121.187.22.37:5555/api/app/";
+    final String CHATURL = "http://121.187.22.37:5555/api/chat/";
+
     private FirebaseStorage firebaseStorage;
     private StorageReference storageRef;
 
@@ -129,7 +133,6 @@ public class ProfileViewModel extends AndroidViewModel {
         followerList.setValue(successFollower);
 
     }
-
     public void petAppend(String imageUri, String name, String division, String birth, String about)
     {
         Pet pet = new Pet(name, division, birth, about, imageUri, "");
@@ -142,6 +145,43 @@ public class ProfileViewModel extends AndroidViewModel {
         Profile profile = new Profile(imageUri, name, about, birth, pets);
         restApi = profileInterface.saveProfile(profile);
         restApi.enqueue(profileCallback);
+
+    }
+
+    //프로필로 넘어갈 예졍
+    public void createChatRoom(String userId)
+    {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        String email = sharedPreferences.getString("email", "");
+        List<String> list = new ArrayList<String>();
+        if(!email.equals(""))
+        {
+            list.add(email);
+            list.add(userId);
+        }
+
+        restApi =  chatInterface.createRoom(list);
+        restApi.enqueue(chatCallback);
+
+        //list.add("1");//내 이메일
+        //list.add("2");//상대 이메일
+
+
+        Call<ChatRoomMake> testCallback = chatInterface.createRoom(list);
+        testCallback.enqueue(new retrofit2.Callback<ChatRoomMake>(){
+
+            @Override
+            public void onResponse(Call<ChatRoomMake> call, Response<ChatRoomMake> response) {
+
+                ChatRoomMake result = response.body();
+                roomIdLive.setValue(result.getRoomId());
+
+            }
+            @Override
+            public void onFailure(Call<ChatRoomMake> call, Throwable t) {
+                Log.e("방 생성 실패 : ",t.getMessage());
+            }
+        });
 
     }
 
