@@ -59,7 +59,6 @@ public class PetService {
     @Transactional
     public void deletePet(List<PetInfoDto> petList) {
 
-        List<String> petIdList = new ArrayList<>();
         for (PetInfoDto petInfoDto : petList) {
 
             PetInfo petInfo = petRepository.findByPetId(petInfoDto.getPetId()).orElseThrow(RuntimeException::new);
@@ -82,13 +81,3 @@ public class PetService {
         return petInfoDto;
     }
 }
-
-
-//    @Transactional
-//    public void raisePetCancel(PetDto petDto) {
-//
-//        UserInfo userInfo = userRepository.findNodeById(petDto.getUserId()).orElseThrow(RuntimeException::new);
-//        PetInfo petInfo = petRepository.findByPetId(petDto.getPetId()).orElseThrow(RuntimeException::new);
-//
-//        petRepository.raisePetCancel(petDto.getUserId(), petDto.getPetId());
-//    }

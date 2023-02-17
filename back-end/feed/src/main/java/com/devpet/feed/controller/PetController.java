@@ -50,15 +50,4 @@ public class PetController {
         return ResponseEntity.ok(petInfoDto);
     }
 
-
 }
-
-
-
-//    @PostMapping("/raise/cancel")
-//    public ResponseEntity<String> raisePetCancel(@RequestBody PetDto petDto) {
-//
-//        petService.raisePetCancel(petDto);
-//
-//        return ResponseEntity.ok("관계 취소");
-//    }
