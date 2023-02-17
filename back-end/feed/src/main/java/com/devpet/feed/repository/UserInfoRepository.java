@@ -41,18 +41,23 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     @Query("match(u:UserInfo{userId : $userId})-[r:LIKE]->(p:PostInfo{postId : $postId}) " + "delete r")
     void cancelLike(@Param("userId") String userId, @Param("postId") String postId);
 
+    // 팔로우 취소
     @Query("match(f1:UserInfo {userId : $follower})-[r:FOLLOW]->(f2:UserInfo{userId: $following}) " + "delete r")
     void cancelFollow(@Param("follower") String follower, @Param("following") String following);
 
+    // 팔로워 수 세기
     @Query("match(f:UserInfo{userId : $userId})<-[:FOLLOW]-()" + "RETURN COUNT(f)")
     Long countFollower(@Param("userId") String userId);
 
+    // 팔로잉 수 세기
     @Query("match(f:UserInfo{userId : $userId})-[:FOLLOW]->()" + "RETURN COUNT(f)")
     Long countFollowing(@Param("userId") String userId);
 
+    // 팔로워 목록 가져오기
     @Query("match(f1:UserInfo{userId : $userId})<-[:FOLLOW]-(f2:UserInfo) " + "return DISTINCT f2.userId")
     Set<String> getFollowerList(@Param("userId") String userId);
 
+    // 팔로잉 목록 가져오기
     @Query("match(f1:UserInfo{userId : $userId})-[:FOLLOW]->(f2:UserInfo)" + "return DISTINCT f2.userId")
     Set<String> getFollowingList(@Param("userId") String userId);
 
@@ -85,7 +90,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
 
     /*
      * 내가 팔로우 한 유저들의 recommend 관계가 있는 게시글의 tag에 관련된 게시글들 불러오기
-     * (시간순으로 정렬 과 개수 조정 필요)
      * */
     @Query("Match(u:UserInfo{userId: $userId})-[:FOLLOW]->()-[r:RECOMMENDED]->(p:PostInfo) " +
             "with r, p " +
@@ -172,9 +176,3 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return DISTINCT p.postId as postId ")
     Set<String> getRecommendedFollowPostList(@Param("userId") String userId);
 }
-
-//    @Query("MATCH (m:UserInfo {id: $followedUser}) " +
-//            "MATCH (n:UserInfo {id: $followUser}) "+
-//            "MATCH (m)<-[F:FOLLOW]-(n)"+
-//            "DELETE F;" )
-//    UserInfo deleteFollowById(String followedUser, String followUser);
