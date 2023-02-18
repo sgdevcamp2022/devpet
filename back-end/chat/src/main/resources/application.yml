@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: chat-service #스프링 컨피그의 디렉토리명 과 일치해야 함
+    name: chat #스프링 컨피그의 디렉토리명 과 일치해야 함
   devtools:
     livereload:
       enabled: true
