@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Base.TextAppearance.AppCompat.Widget.ActionBar.Menu" parent="android:TextAppearance.Material.Widget.ActionBar.Menu"/>
+    <style name="Base.TextAppearance.AppCompat.Widget.Button.Inverse" parent="android:TextAppearance.Material.Widget.Button.Inverse"/>
+    <style name="Base.Theme.AppCompat" parent="Base.V23.Theme.AppCompat"/>
+    <style name="Base.Theme.AppCompat.Light" parent="Base.V23.Theme.AppCompat.Light"/>
+    <style name="Base.V23.Theme.AppCompat" parent="Base.V22.Theme.AppCompat">
+        
+        <item name="ratingBarStyleIndicator">?android:attr/ratingBarStyleIndicator</item>
+        <item name="ratingBarStyleSmall">?android:attr/ratingBarStyleSmall</item>
+
+        
+        <item name="actionBarItemBackground">?android:attr/actionBarItemBackground</item>
+        
+        <item name="actionMenuTextColor">?android:attr/actionMenuTextColor</item>
+        <item name="actionMenuTextAppearance">?android:attr/actionMenuTextAppearance</item>
+        <item name="actionOverflowButtonStyle">?android:attr/actionOverflowButtonStyle</item>
+
+        <item name="controlBackground">@drawable/abc_control_background_material</item>
+    </style>
+    <style name="Base.V23.Theme.AppCompat.Light" parent="Base.V22.Theme.AppCompat.Light">
+        
+        <item name="ratingBarStyleIndicator">?android:attr/ratingBarStyleIndicator</item>
+        <item name="ratingBarStyleSmall">?android:attr/ratingBarStyleSmall</item>
+
+        
+        <item name="actionBarItemBackground">?android:attr/actionBarItemBackground</item>
+        
+        <item name="actionMenuTextColor">?android:attr/actionMenuTextColor</item>
+        <item name="actionMenuTextAppearance">?android:attr/actionMenuTextAppearance</item>
+        <item name="actionOverflowButtonStyle">?android:attr/actionOverflowButtonStyle</item>
+
+        <item name="controlBackground">@drawable/abc_control_background_material</item>
+    </style>
+    <style name="Base.Widget.AppCompat.ActionButton.Overflow" parent="android:Widget.Material.ActionButton.Overflow"/>
+    <style name="Base.Widget.AppCompat.Button.Borderless.Colored" parent="android:Widget.Material.Button.Borderless.Colored"/>
+    <style name="Base.Widget.AppCompat.Button.Colored" parent="android:Widget.Material.Button.Colored">
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Widget.Button.Colored</item>
+    </style>
+    <style name="Base.Widget.AppCompat.EditText" parent="android:Widget.Material.EditText">
+        <item name="android:hyphenationFrequency">none</item>
+        <item name="android:breakStrategy">simple</item>
+    </style>
+    <style name="Base.Widget.AppCompat.RatingBar.Indicator" parent="android:Widget.Material.RatingBar.Indicator"/>
+    <style name="Base.Widget.AppCompat.RatingBar.Small" parent="android:Widget.Material.RatingBar.Small"/>
+    <style name="Base.Widget.AppCompat.Spinner.Underlined" parent="android:Widget.Material.Spinner.Underlined"/>
+    <style name="Base.Widget.AppCompat.TextView" parent="android:Widget.Material.TextView">
+        <item name="android:hyphenationFrequency">none</item>
+        <item name="android:breakStrategy">high_quality</item>
+    </style>
+    <style name="CardView" parent="Base.CardView">
+        <item name="cardBackgroundColor">?android:attr/colorBackgroundFloating</item>
+    </style>
+    <style name="DayOnlyFull" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimaryDark">@color/dayonly_white000s</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="gray900s">@color/dayonly_gray900s</item>
+        <item name="gray600s">@color/dayonly_gray600s</item>
+        <item name="gray500s">@color/dayonly_gray500s</item>
+        <item name="gray400s">@color/dayonly_gray400s</item>
+        <item name="gray300s">@color/dayonly_gray300s</item>
+        <item name="gray200a">@color/dayonly_gray200a</item>
+        <item name="gray150a">@color/dayonly_gray150a</item>
+        <item name="gray100a">@color/dayonly_gray100a</item>
+        <item name="gray050a">@color/dayonly_gray050a</item>
+        <item name="gray050s">@color/dayonly_gray050s</item>
+        <item name="white000s">@color/dayonly_white000s</item>
+        <item name="white001s">@color/dayonly_white001s</item>
+        <item name="yellow550s">@color/dayonly_yellow550s</item>
+        <item name="default_profile_image1">@drawable/kakao_sdk_img_picker_01_light</item>
+        <item name="default_profile_image2">@drawable/kakao_sdk_img_picker_02_light</item>
+        <item name="default_profile_image3">@drawable/kakao_sdk_img_picker_03_light</item>
+
+        
+        
+        <item name="title_bar_text_size">@dimen/title_bar_text_size</item>
+        <item name="title_bar_text_margin_start">@dimen/title_bar_text_margin_start</item>
+        <item name="title_bar_text_margin_end">@dimen/title_bar_text_margin_end</item>
+        <item name="title_bar_text_margin_top">@dimen/title_bar_text_margin_top</item>
+        <item name="title_bar_text_margin_bottom">@dimen/title_bar_text_margin_bottom</item>
+        <item name="title_bar_back_button_margin_start">@dimen/title_bar_back_button_margin</item>
+        <item name="title_bar_back_button_margin_vertical">@dimen/title_bar_back_button_margin</item>
+        <item name="title_bar_back_button_drawable">@drawable/kakao_sdk_btn_back</item>
+        <item name="title_bar_done_button_margin_top">@dimen/title_bar_done_button_margin_top</item>
+        <item name="title_bar_done_button_margin_bottom">@dimen/title_bar_done_button_margin_bottom</item>
+
+        
+        <item name="search_bar_height">@dimen/search_bar_height</item>
+        <item name="search_bar_margin_top">0dp</item>
+        <item name="search_bar_edit_text_margin_top">@dimen/search_bar_edit_text_margin_top</item>
+        <item name="search_bar_edit_text_margin_bottom">@dimen/search_bar_edit_text_margin_bottom</item>
+        <item name="search_bar_edit_text_margin_start">@dimen/search_bar_edit_text_margin_start</item>
+        <item name="search_bar_text_size">@dimen/search_bar_text_size</item>
+        <item name="search_bar_delete_button_padding">@dimen/search_bar_delete_button_padding</item>
+
+        
+        <item name="sideindex_margin_vertical">@dimen/sideindex_margin_vertical</item>
+
+        
+        <item name="picked_view_padding_bottom">@dimen/picked_view_padding_bottom</item>
+
+        
+        <item name="list_item_squirecle_size">@dimen/list_item_squirecle_size</item>
+        <item name="list_item_squirecle_margin_vertical">@dimen/list_item_squirecle_margin_vertical</item>
+        <item name="list_item_nickname_margin_start">@dimen/list_item_nickname_margin_start</item>
+        <item name="list_item_nickname_margin_top">@dimen/list_item_nickname_margin_top</item>
+        <item name="list_item_nickname_margin_bottom">@dimen/list_item_nickname_margin_bottom</item>
+        <item name="list_item_nickname_text_size">@dimen/list_item_nickname_text_size</item>
+        <item name="list_item_reject_text_margin_start">@dimen/list_item_reject_text_margin_start</item>
+        <item name="list_item_reject_text_margin_top">@dimen/list_item_reject_text_margin_top</item>
+        <item name="list_item_reject_text_margin_bottom">@dimen/list_item_reject_text_margin_bottom</item>
+        <item name="list_item_checkbox_size">@dimen/list_item_checkbox_size</item>
+        <item name="list_item_checkbox_margin_vertical">@dimen/list_item_checkbox_margin_vertical</item>
+        <item name="list_item_checkbox_drawable">@drawable/kakao_sdk_btn_select_on_check</item>
+        <item name="list_item_radio_drawable">@drawable/kakao_sdk_btn_select_on_radio</item>
+
+        
+        <item name="empty_search_result_text_size">@dimen/empty_search_result_text_size</item>
+        <item name="header_margin_top">@dimen/header_margin_top</item>
+        <item name="header_margin_bottom">@dimen/header_margin_bottom</item>
+        <item name="category_divider_margin_top">@dimen/category_divider_margin_top</item>
+        <item name="select_all_button_height">@dimen/select_all_button_height</item>
+        <item name="select_all_button_check_image_height">@dimen/select_all_button_check_image_margin_start</item>
+        <item name="select_all_button_text_size">@dimen/select_all_button_text_size</item>
+
+        
+        <item name="picked_view_margin_horizontal">@dimen/picked_view_margin_horizontal</item>
+        <item name="picked_view_squirecle_size">@dimen/picked_view_squirecle_size</item>
+        <item name="picked_view_squirecle_margin_top">@dimen/picked_view_squirecle_margin_top</item>
+        <item name="picked_view_nickname_margin_top">@dimen/picked_view_nickname_margin_top</item>
+
+        
+        <item name="tab_layout_height">@dimen/tab_layout_height</item>
+        <item name="tab_layout_margin_bottom">@dimen/tab_layout_margin_bottom</item>
+    </style>
+    <style name="NightOnlyFull" parent="Theme.AppCompat.DayNight.NoActionBar">
+        <item name="colorPrimaryDark">@color/nightonly_white000s</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="colorControlHighlight">@color/white_a10</item>
+        <item name="gray900s">@color/nightonly_gray900s</item>
+        <item name="gray600s">@color/nightonly_gray600s</item>
+        <item name="gray500s">@color/nightonly_gray500s</item>
+        <item name="gray400s">@color/nightonly_gray400s</item>
+        <item name="gray300s">@color/nightonly_gray300s</item>
+        <item name="gray200a">@color/nightonly_gray200a</item>
+        <item name="gray150a">@color/nightonly_gray150a</item>
+        <item name="gray100a">@color/nightonly_gray100a</item>
+        <item name="gray050a">@color/nightonly_gray050a</item>
+        <item name="gray050s">@color/nightonly_gray050s</item>
+        <item name="white000s">@color/nightonly_white000s</item>
+        <item name="white001s">@color/nightonly_white001s</item>
+        <item name="yellow550s">@color/nightonly_yellow550s</item>
+        <item name="default_profile_image1">@drawable/kakao_sdk_img_picker_01_dark</item>
+        <item name="default_profile_image2">@drawable/kakao_sdk_img_picker_02_dark</item>
+        <item name="default_profile_image3">@drawable/kakao_sdk_img_picker_03_dark</item>
+
+        
+        
+        <item name="title_bar_text_size">@dimen/title_bar_text_size</item>
+        <item name="title_bar_text_margin_start">@dimen/title_bar_text_margin_start</item>
+        <item name="title_bar_text_margin_end">@dimen/title_bar_text_margin_end</item>
+        <item name="title_bar_text_margin_top">@dimen/title_bar_text_margin_top</item>
+        <item name="title_bar_text_margin_bottom">@dimen/title_bar_text_margin_bottom</item>
+        <item name="title_bar_back_button_margin_start">@dimen/title_bar_back_button_margin</item>
+        <item name="title_bar_back_button_margin_vertical">@dimen/title_bar_back_button_margin</item>
+        <item name="title_bar_back_button_drawable">@drawable/kakao_sdk_btn_back</item>
+        <item name="title_bar_done_button_margin_top">@dimen/title_bar_done_button_margin_top</item>
+        <item name="title_bar_done_button_margin_bottom">@dimen/title_bar_done_button_margin_bottom</item>
+
+        
+        <item name="search_bar_height">@dimen/search_bar_height</item>
+        <item name="search_bar_margin_top">0dp</item>
+        <item name="search_bar_edit_text_margin_top">@dimen/search_bar_edit_text_margin_top</item>
+        <item name="search_bar_edit_text_margin_bottom">@dimen/search_bar_edit_text_margin_bottom</item>
+        <item name="search_bar_edit_text_margin_start">@dimen/search_bar_edit_text_margin_start</item>
+        <item name="search_bar_text_size">@dimen/search_bar_text_size</item>
+        <item name="search_bar_delete_button_padding">@dimen/search_bar_delete_button_padding</item>
+
+        
+        <item name="sideindex_margin_vertical">@dimen/sideindex_margin_vertical</item>
+
+        
+        <item name="picked_view_padding_bottom">@dimen/picked_view_padding_bottom</item>
+
+        
+        <item name="list_item_squirecle_size">@dimen/list_item_squirecle_size</item>
+        <item name="list_item_squirecle_margin_vertical">@dimen/list_item_squirecle_margin_vertical</item>
+        <item name="list_item_nickname_margin_start">@dimen/list_item_nickname_margin_start</item>
+        <item name="list_item_nickname_margin_top">@dimen/list_item_nickname_margin_top</item>
+        <item name="list_item_nickname_margin_bottom">@dimen/list_item_nickname_margin_bottom</item>
+        <item name="list_item_nickname_text_size">@dimen/list_item_nickname_text_size</item>
+        <item name="list_item_reject_text_margin_start">@dimen/list_item_reject_text_margin_start</item>
+        <item name="list_item_reject_text_margin_top">@dimen/list_item_reject_text_margin_top</item>
+        <item name="list_item_reject_text_margin_bottom">@dimen/list_item_reject_text_margin_bottom</item>
+        <item name="list_item_checkbox_size">@dimen/list_item_checkbox_size</item>
+        <item name="list_item_checkbox_margin_vertical">@dimen/list_item_checkbox_margin_vertical</item>
+        <item name="list_item_checkbox_drawable">@drawable/kakao_sdk_btn_select_on_check</item>
+        <item name="list_item_radio_drawable">@drawable/kakao_sdk_btn_select_on_radio</item>
+
+        
+        <item name="empty_search_result_text_size">@dimen/empty_search_result_text_size</item>
+        <item name="header_margin_top">@dimen/header_margin_top</item>
+        <item name="header_margin_bottom">@dimen/header_margin_bottom</item>
+        <item name="category_divider_margin_top">@dimen/category_divider_margin_top</item>
+        <item name="select_all_button_height">@dimen/select_all_button_height</item>
+        <item name="select_all_button_check_image_height">@dimen/select_all_button_check_image_margin_start</item>
+        <item name="select_all_button_text_size">@dimen/select_all_button_text_size</item>
+
+        
+        <item name="picked_view_margin_horizontal">@dimen/picked_view_margin_horizontal</item>
+        <item name="picked_view_squirecle_size">@dimen/picked_view_squirecle_size</item>
+        <item name="picked_view_squirecle_margin_top">@dimen/picked_view_squirecle_margin_top</item>
+        <item name="picked_view_nickname_margin_top">@dimen/picked_view_nickname_margin_top</item>
+
+        
+        <item name="tab_layout_height">@dimen/tab_layout_height</item>
+        <item name="tab_layout_margin_bottom">@dimen/tab_layout_margin_bottom</item>
+    </style>
+    <style name="ThemeOverlay.Material3.AutoCompleteTextView" parent="Base.ThemeOverlay.Material3.AutoCompleteTextView">
+    <item name="colorControlNormal">@color/m3_textfield_indicator_text_color</item>
+  </style>
+    <style name="ThemeOverlay.Material3.TextInputEditText" parent="Base.ThemeOverlay.Material3.TextInputEditText">
+    <item name="colorControlNormal">@color/m3_textfield_indicator_text_color</item>
+  </style>
+    <style name="Widget.Material3.ActionBar.Solid" parent="Base.Widget.Material3.ActionBar.Solid">
+    <item name="background">@drawable/m3_appbar_background</item>
+    <item name="backgroundStacked">@drawable/m3_appbar_background</item>
+    <item name="backgroundSplit">@drawable/m3_appbar_background</item>
+  </style>
+    <style name="Widget.Material3.ActionMode" parent="Base.Widget.Material3.ActionMode">
+    <item name="background">@drawable/m3_appbar_background</item>
+    <item name="backgroundSplit">@drawable/m3_appbar_background</item>
+  </style>
+    <style name="Widget.Material3.CompoundButton.CheckBox" parent="Base.Widget.Material3.CompoundButton.CheckBox">
+    <item name="android:background">@drawable/m3_selection_control_ripple</item>
+  </style>
+    <style name="Widget.Material3.CompoundButton.RadioButton" parent="Base.Widget.Material3.CompoundButton.RadioButton">
+    <item name="android:background">@drawable/m3_radiobutton_ripple</item>
+  </style>
+    <style name="Widget.Material3.CompoundButton.Switch" parent="Base.Widget.Material3.CompoundButton.Switch">
+    <item name="android:background">@drawable/m3_selection_control_ripple</item>
+  </style>
+    <style name="Widget.Material3.Light.ActionBar.Solid" parent="Base.Widget.Material3.Light.ActionBar.Solid">
+    <item name="background">@drawable/m3_appbar_background</item>
+    <item name="backgroundStacked">@drawable/m3_appbar_background</item>
+    <item name="backgroundSplit">@drawable/m3_appbar_background</item>
+  </style>
+    <style name="Widget.Material3.TabLayout.OnSurface" parent="Base.Widget.Material3.TabLayout.OnSurface">
+    <item name="android:background">@drawable/m3_tabs_transparent_background</item>
+  </style>
+    <style name="Widget.MaterialComponents.PopupMenu.ContextMenu" parent="Base.Widget.MaterialComponents.PopupMenu.ContextMenu">
+    <item name="android:popupBackground">?attr/popupMenuBackground</item>
+    <item name="android:popupElevation">8dp</item>
+  </style>
+    <style name="Widget.MaterialComponents.PopupMenu.ListPopupWindow" parent="Base.Widget.MaterialComponents.PopupMenu.ListPopupWindow">
+    <item name="android:popupBackground">?attr/popupMenuBackground</item>
+    <item name="android:popupElevation">8dp</item>
+  </style>
+</resources>

@@ -1,5 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/devpet/front-end/app/src/main/res/drawable/bottom_line.xml" value="0.1625" />
+        <entry key="..\:/devpet/front-end/app/src/main/res/drawable/corner.xml" value="0.1635" />
+        <entry key="..\:/devpet/front-end/app/src/main/res/layout/fragment_profile.xml" value="0.5" />
+        <entry key="..\:/devpet/front-end/app/src/main/res/layout/fragment_search.xml" value="0.15416666666666667" />
+      </map>
+    </option>
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>
