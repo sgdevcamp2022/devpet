@@ -1,55 +1,50 @@
-package com.example.petmily.model.data.post.remote;
+
+package com.example.petmily.model.data.post;
+
+import android.net.Uri;
 
 import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.Location;
 import com.example.petmily.model.data.post.Entity.Profile;
 import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.List;
 
-public class Post implements Serializable {
+import retrofit2.http.Url;
 
-    @SerializedName("postId")
+public class PostFull {
+
     String postId;
 
-    @SerializedName("profile")
     Profile profile;
     //String profileImage;
     //int userId;
     //String nickname;
 
-    @SerializedName("location")
     Location location;
     //int category;
     //Coord coord
-        //double latitude;
-        //double lonngitude;
+    //double latitude;
+    //double lonngitude;
 
-    @SerializedName("imageUrl")
-    List<String> imageUrl;
+    List<Uri> imageUrl;
 
-    @SerializedName("like")
     int like;//좋아요 수
 
-    @SerializedName("likeCheck")
     boolean likeCheck;
 
-    @SerializedName("content")
     String content;
 
     //카테고리 0번 -> 시설 1-> 개인 2-> 그룹
 
-    @SerializedName("hashTag")
     List<String> hashTag;
 
-    @SerializedName("comments")
     List<Comment> comments;
     //Profile profile;
     //S
 
 
-    public Post(String postId, Profile profile, Location location, List<String> imageUrl, int like, boolean likeCheck, String content, List<String> hashTag, List<Comment> comments) {
+    public PostFull(String postId, Profile profile, Location location, List<Uri> imageUrl, int like, boolean likeCheck, String content, List<String> hashTag, List<Comment> comments) {
         this.postId = postId;
         this.profile = profile;
         this.location = location;
@@ -85,11 +80,11 @@ public class Post implements Serializable {
         this.location = location;
     }
 
-    public List<String> getImageUrl() {
+    public List<Uri> getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(List<String> imageUrl) {
+    public void setImageUrl(List<Uri> imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -132,4 +127,5 @@ public class Post implements Serializable {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
+
 }

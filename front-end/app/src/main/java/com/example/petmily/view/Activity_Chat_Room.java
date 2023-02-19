@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -27,7 +28,8 @@ public class Activity_Chat_Room extends AppCompatActivity {
     private Context context;
     private ChatViewModel chatViewModel;
     private RecyclerView messageList;
-    private String roomId;
+
+    @NonNull private String roomId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,6 @@ public class Activity_Chat_Room extends AppCompatActivity {
     }
     public void init()
     {
-        roomId = "";
         roomId = getIntent().getStringExtra("roomId");
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
@@ -65,27 +66,6 @@ public class Activity_Chat_Room extends AppCompatActivity {
     }
 
     public void initObserver() {
-        /*
-        final Observer<List<Message>> chatMessageObserver = new Observer<List<Message>>() {
-            @Override
-            public void onChanged(@Nullable final List<Message> chatMessage) {
-                Adapter_Chat_Room newAdapter = new Adapter_Chat_Room(chatMessage);
-                chatlist.setAdapter(newAdapter);
-            }
-        };
-        chatRoomViewModel.getChatMessage().observe(this, chatMessageObserver);
-
-        final Observer<String> messagesObserver = new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable final String messages) {
-
-
-            }
-        };
-        chatRoomViewModel.getMessages().observe(this, messagesObserver);
-
-         */
-
         final Observer<List<Message>> messageListObserver = new Observer<List<Message>>() {
             @Override
             public void onChanged(@Nullable final List<Message> chatMessage) {

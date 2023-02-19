@@ -1,9 +1,13 @@
 package com.example.petmily.model.data.post.Entity;
 
+import androidx.room.Embedded;
+
 public class Location {
 
 
     int category;
+
+    @Embedded
     Coord coord;
 
     public Location(int category, Coord coord) {

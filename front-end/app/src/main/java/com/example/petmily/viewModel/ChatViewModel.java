@@ -73,14 +73,6 @@ public class ChatViewModel extends AndroidViewModel{
         return chatList;
     }
 
-    private MutableLiveData<String> roomIdLive;
-    public MutableLiveData<String> getRoomId() {
-        if (roomIdLive == null) {
-            roomIdLive = new MutableLiveData<String>();
-        }
-        return roomIdLive;
-    }
-
     public ChatViewModel(@NonNull Application application) {
         super(application);
         context = application.getApplicationContext();
@@ -105,10 +97,8 @@ public class ChatViewModel extends AndroidViewModel{
         roomSQL = roomDB.chatRoomDao().getMessage(roomId);
         if(roomSQL != null)
         {
-            messageList.setValue(roomSQL.messages);
+            messageList.setValue(roomSQL.getMessages());
         }
-
-
 
         initStomp();
         topicMessage();
@@ -172,7 +162,6 @@ public class ChatViewModel extends AndroidViewModel{
 
             roomDB.chatRoomDao().updateMessage(roomSQL);
             messageList.setValue(messages);
-
         });
     }
 

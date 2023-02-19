@@ -7,7 +7,7 @@
     <data>
         <variable
             name="profile"
-            type="com.example.petmily.view.Fragment_Profile" />
+            type="com.example.petmily.view.Activity_Profile" />
     </data>
 
 
@@ -16,27 +16,41 @@
         android:layout_height="match_parent"
         android:background="#FFFFFF">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+        <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:elevation="2dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/info">
 
             <ImageView
-                android:id="@+id/setting"
+                android:id="@+id/follow_button"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="end"
+                android:padding="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/dm"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/follow" />
+
+
+            <!--android:text="@={profile.nickname}"이 작동 안됨-->
+            <ImageView
+                android:id="@+id/dm"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="end"
-                android:layout_marginRight="5dp"
+                android:layout_margin="5dp"
                 android:padding="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/setting" />
+                app:srcCompat="@drawable/dm" />
 
-            <!--android:text="@={profile.nickname}"이 작동 안됨-->
             <TextView
                 android:id="@+id/nickname"
                 android:layout_width="wrap_content"
@@ -48,7 +62,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.appcompat.widget.Toolbar>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/info"
@@ -268,3 +282,4 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
+

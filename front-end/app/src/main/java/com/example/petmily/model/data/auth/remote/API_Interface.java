@@ -40,8 +40,8 @@ public interface API_Interface {
     );
 
 
-    @GET("users/user")//서비스 이용시
-    Call<String> tokenCheck(@Header("Authorization") String token);
+//    @GET("users/user")//서비스 이용시
+//    Call<String> tokenCheck(@Header("Authorization") String token);
 
     @FormUrlEncoded
     @Headers("Authorization: Basic ZGV2OnBldA==")
