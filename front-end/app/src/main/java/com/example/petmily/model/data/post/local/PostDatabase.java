@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.example.petmily.model.data.post.local;
 
 import android.content.Context;
@@ -28,4 +29,7 @@ public abstract class PostDatabase extends androidx.room.RoomDatabase
     }
     public abstract PostDao_Interface postDao();
 
+=======
+package com.example.petmily.model.data.post.local;public class PostDatabase {
+>>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.example.petmily.model.data.post.local;
 
 import androidx.room.Dao;
@@ -17,4 +18,7 @@ public interface PostDao_Interface {
     void insertPost(List<PostSQL> postSQLList);
 
 
+=======
+package com.example.petmily.model.data.post.local;public interface PostDao_Interface {
+>>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
 }

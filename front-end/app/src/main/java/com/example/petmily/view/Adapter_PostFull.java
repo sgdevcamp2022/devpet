@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.example.petmily.view;
 
 import android.content.Context;
@@ -74,3 +75,7 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
         notifyDataSetChanged();
     }
 }
+=======
+package com.example.petmily.view;public class Adapter_PostFull {
+}
+>>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6

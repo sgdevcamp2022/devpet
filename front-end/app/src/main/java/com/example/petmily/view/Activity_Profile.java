@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package com.example.petmily.view;
 
 import android.content.Context;
@@ -176,4 +177,7 @@ public class Activity_Profile extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+=======
+package com.example.petmily.view;public class Activity_Profile {
+>>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
 }
