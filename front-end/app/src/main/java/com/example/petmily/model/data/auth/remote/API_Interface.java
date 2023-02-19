@@ -13,6 +13,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface API_Interface {
 
@@ -23,34 +24,36 @@ public interface API_Interface {
     Call<Join> createUser(
             @Field("username") String username,
             @Field("name") String name,
-            @Field("nickname") String nickname,
-            @Field("password") String password
+            @Field("phone") String phone,
+            @Field("password") String password,
+            @Field("provider") String provider
     );
-
-
 
     @FormUrlEncoded
     @Headers("Authorization: Basic ZGV2OnBldA==")
-    @POST("token")//2차 카카오 로그인은 여기서 진행
+    @POST("token")
     Call<RefreshToken> login(
             @Field("grant_type") String grant_type,
             @Field("username") String username,
             @Field("password") String password,
             @Field("scope") String scope
-    ); //Login 클래스를 kakao와 email로 구분
+    );
 
 
-    @GET("users/user")//서비스 이용시
-    Call<String> tokenCheck(@Header("Authorization") String token);
+//    @GET("users/user")//서비스 이용시
+//    Call<String> tokenCheck(@Header("Authorization") String token);
 
     @FormUrlEncoded
     @Headers("Authorization: Basic ZGV2OnBldA==")
-    @POST("check_token")//앱 시작시 토큰체크 실패시 FailClass 호출
+    @POST("check_token")//앱 시작시 토큰체크 실패시 FailMessage 호출
     Call<AccessToken> checkToken(@Field("token")  String token);
 
+
+
+
     @FormUrlEncoded
     @Headers("Authorization: Basic ZGV2OnBldA==")
-    @POST("token")//2차 카카오 로그인은 여기서 진행
+    @POST("token")
     Call<RefreshToken> refresh_token(
             @Field("grant_type") String grant_type,//"refresh_token" 고정
             @Field("refresh_token") String refresh_token//앞에 추가문자 없음
@@ -59,24 +62,20 @@ public interface API_Interface {
 
 
 
-    //@Headers("Authorization: Basic ZGV2OnBldA==")
-
     /*
-    이메일, 소셜로그인, 엑세스토큰 체크, 엑세스토큰 재발급 할 때 헤더 추가가
+    이메일, 소셜로그인, 엑세스토큰 체크, 엑세스토큰 재발급 할 때 헤더 추가
     */
 
 
-    //없앨예정
+    //비밀번호 변경
     @FormUrlEncoded
-    @Headers({"Content-Type: application/x-www-form-urlencoded", "Authorization:Basic ZGV2OnBldA=="})
-    @POST("kakao")//1차 카카오 회원가입
-    Call<Join> createKakao(@Body Join authJoin);
-
+    @Headers("token")
+    @PUT("{userId}/password")
+    Call<?> passwordReplace(
+            @Field("password") String password
+    );
     /*
-
-
-
-    //프로필 관련
+    프로필 관련
     @Headers({"Content-Type: application/x-www-form-urlencoded", "Authorization:Basic ZGV2OnBldA=="})
     @GET("{username}")//이메일주소(프로필 읽어오기)
     Call<Refresh_Token> refresh_token(@Body Refresh_Token token);
@@ -91,7 +90,7 @@ public interface API_Interface {
 
 
 
-    //채팅 관련
+    채팅 관련
     @GET("{username}")//내아이디, 상대 아이디 String 값 2개 결과값은 uuid(채팅방 id)
     Call<Refresh_Token> refresh_token(@Body Refresh_Token token);
 

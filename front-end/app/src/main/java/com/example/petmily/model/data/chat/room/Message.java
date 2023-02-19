@@ -10,6 +10,7 @@ public class Message {
     public String message;
     public String timeLog;
     public int profileImage;
+    //public String profileImage;
 
 
 

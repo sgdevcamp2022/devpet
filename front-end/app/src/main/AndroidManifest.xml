@@ -19,12 +19,14 @@
             android:value="ztkfe47y3q" />
         <activity
             android:name=".view.MainActivity"
-            android:exported="true">
+            android:exported="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
 
         </activity>
 
@@ -32,14 +34,13 @@
         <activity android:name=".view.Activity_Make"/>
         <activity android:name=".view.Activity_Login"/>
         <activity android:name=".view.Activity_Join"/>
-        <activity android:name=".view.Activity_Join_Profile"/>
         <activity android:name=".view.Activity_Chat_Room"/>
-        <service android:name=".viewModel.ChatService" />
+        <service android:name=".viewModel.service.ChatService" />
         <activity android:name=".view.Activity_MakeProfile" />
         <activity android:name=".view.Activity_PetAppend"/>
 
         <service
-            android:name=".MyFirebaseMessaging"
+            android:name=".MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -47,12 +48,18 @@
         </service>
 
 
+        <service android:name=".viewModel.service.UndeadService"/>
+        <receiver android:name=".viewModel.service.AlarmReceiver"/>
+
 
     </application>
 
 
 
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_SERVICE" />
 </manifest>

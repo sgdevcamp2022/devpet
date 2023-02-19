@@ -1,4 +1,9 @@
-package com.example.petmily.model.data.post.remote;
+package com.example.petmily.model.data.post.local;
+
+import androidx.annotation.NonNull;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
 import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.Location;
@@ -8,48 +13,48 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-public class Post implements Serializable {
+@Entity(tableName = "PostSQL")
+public class PostSQL {
 
-    @SerializedName("postId")
+    @NonNull
+    @PrimaryKey
     String postId;
 
-    @SerializedName("profile")
+
     Profile profile;
     //String profileImage;
     //int userId;
     //String nickname;
 
-    @SerializedName("location")
+
     Location location;
     //int category;
     //Coord coord
-        //double latitude;
-        //double lonngitude;
+    //double latitude;
+    //double lonngitude;
 
-    @SerializedName("imageUrl")
+
     List<String> imageUrl;
 
-    @SerializedName("like")
+
     int like;//좋아요 수
 
-    @SerializedName("likeCheck")
+
     boolean likeCheck;
 
-    @SerializedName("content")
     String content;
 
     //카테고리 0번 -> 시설 1-> 개인 2-> 그룹
 
-    @SerializedName("hashTag")
+
     List<String> hashTag;
 
-    @SerializedName("comments")
+
     List<Comment> comments;
     //Profile profile;
     //S
 
-
-    public Post(String postId, Profile profile, Location location, List<String> imageUrl, int like, boolean likeCheck, String content, List<String> hashTag, List<Comment> comments) {
+    public PostSQL(@NonNull String postId, Profile profile, Location location, List<String> imageUrl, int like, boolean likeCheck, String content, List<String> hashTag, List<Comment> comments) {
         this.postId = postId;
         this.profile = profile;
         this.location = location;
@@ -61,11 +66,16 @@ public class Post implements Serializable {
         this.comments = comments;
     }
 
+    public PostSQL() {
+
+    }
+
+    @NonNull
     public String getPostId() {
         return postId;
     }
 
-    public void setPostId(String postId) {
+    public void setPostId(@NonNull String postId) {
         this.postId = postId;
     }
 

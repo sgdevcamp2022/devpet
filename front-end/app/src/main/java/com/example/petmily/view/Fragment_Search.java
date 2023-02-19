@@ -1,7 +1,11 @@
 package com.example.petmily.view;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +24,9 @@ import com.example.petmily.databinding.FragmentSearchBinding;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.viewModel.PostViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
+
 
 public class Fragment_Search extends Fragment {
 
@@ -29,6 +35,7 @@ public class Fragment_Search extends Fragment {
 
     private RecyclerView post;
     private PostViewModel postViewModel;
+    List<PostGrid> gridList;
 
     @Nullable
     @Override
@@ -38,10 +45,7 @@ public class Fragment_Search extends Fragment {
         View view = binding.getRoot();
         context = container.getContext();
 
-
-
-
-
+        init();
         return view;
     }
     public void init()
@@ -52,23 +56,24 @@ public class Fragment_Search extends Fragment {
         post = binding.searchPost;
         post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
+        gridList = new ArrayList<PostGrid>();
 
         initObserver();
     }
-
 
     public void initObserver()
     {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids);
+                Adapter_PostGrid newAdapter = new Adapter_PostGrid(gridList);
                 post.setAdapter(newAdapter);
+
             }
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
 
-        postViewModel.postGrid();
+        //postViewModel.postGrid();
     }
 
 }

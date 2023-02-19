@@ -43,7 +43,6 @@ public class Activity_MakeProfile extends AppCompatActivity {
     private String month;
     private String day;
     private RecyclerView petList;
-    private String nickname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +50,6 @@ public class Activity_MakeProfile extends AppCompatActivity {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_make_profile);
         binding.setMakeProfile(this);
-
-        nickname = getIntent().getStringExtra("nickname");
 
         init();
     }
@@ -81,20 +78,9 @@ public class Activity_MakeProfile extends AppCompatActivity {
         };
         binding.birth.setOnClickListener(birthClickListener);
 
-
-
         binding.petAppend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                /*
-                Dialog dialog01;
-                dialog01 = new Dialog(Activity_MakeProfile.this);
-                dialog01.setContentView(R.layout.activity_pet_append);
-                dialog01.show();
-
-                 */
-
                 Intent intent = new Intent(getApplicationContext(), Activity_PetAppend.class);
                 petAppendResult.launch(intent);
             }
@@ -106,24 +92,24 @@ public class Activity_MakeProfile extends AppCompatActivity {
                 String imageUri = uri.toString();
                 String about = binding.about.getText().toString();
                 String birth = binding.year.getText()+ "-" + binding.month.getText()+ "-" + binding.day.getText();
-
+                String nickname = binding.nickname.getText().toString();
                 profileViewModel.profileSave(imageUri, nickname, about, birth);
             }
         });
-
-
-
-        /*
-        File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profile_img");
-
-        if(!file.isDirectory())
-            file.mkdir();
-
-         */
         initObserver();
-
     }
 
+    public void initObserver()
+    {
+        final Observer<List<Pet>> petListObserver = new Observer<List<Pet>>() {
+            @Override
+            public void onChanged(@Nullable final List<Pet> pet) {
+                Adapter_Pet newAdapter = new Adapter_Pet(pet);
+                petList.setAdapter(newAdapter);
+            }
+        };
+        profileViewModel.getPetList().observe(this, petListObserver);
+    }
 
 
     @NonNull
@@ -186,16 +172,6 @@ public class Activity_MakeProfile extends AppCompatActivity {
             }
     );
 
-    public void initObserver()
-    {
-        final Observer<List<Pet>> petListObserver = new Observer<List<Pet>>() {
-            @Override
-            public void onChanged(@Nullable final List<Pet> pet) {
-                Adapter_Pet newAdapter = new Adapter_Pet(pet);
-                petList.setAdapter(newAdapter);
-            }
-        };
-        profileViewModel.getPetList().observe(this, petListObserver);
-    }
+
 
 }

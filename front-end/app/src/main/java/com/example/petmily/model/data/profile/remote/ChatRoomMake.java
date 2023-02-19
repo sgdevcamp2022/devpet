@@ -1,4 +1,4 @@
-package com.example.petmily.model.data.chat.room.remote;
+package com.example.petmily.model.data.profile.remote;
 
 import androidx.room.Embedded;
 

@@ -7,8 +7,8 @@ import java.util.List;
 
 public class Profile {
 
-    @SerializedName("imageUri")
-    String imageUri;
+//    @SerializedName("imageUri")
+//    String imageUri;
 
     @SerializedName("nickname")
     String nickname;
@@ -22,20 +22,11 @@ public class Profile {
     @SerializedName("petList")
     List<Pet> petList;
 
-    public Profile(String imageUri, String nickname, String about, String birth, List<Pet> petList) {
-        this.imageUri = imageUri;
+    public Profile(String nickname, String about, String birth, List<Pet> petList) {
         this.nickname = nickname;
         this.about = about;
         this.birth = birth;
         this.petList = petList;
-    }
-
-    public String getImageUri() {
-        return imageUri;
-    }
-
-    public void setImageUri(String imageUri) {
-        this.imageUri = imageUri;
     }
 
     public String getNickname() {

@@ -3,25 +3,22 @@ package com.example.petmily.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
-import com.bumptech.glide.Glide;
 import com.example.petmily.R;
-import com.example.petmily.databinding.FragmentProfileBinding;
+import com.example.petmily.databinding.ActivityProfileBinding;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.profile.remote.Profile;
 import com.example.petmily.model.data.profile.remote.SuccessFollow;
@@ -29,16 +26,16 @@ import com.example.petmily.model.data.profile.remote.SuccessFollower;
 import com.example.petmily.viewModel.PostViewModel;
 import com.example.petmily.viewModel.ProfileViewModel;
 
+
 import java.util.List;
 
-public class Fragment_Profile extends Fragment {
-
-    private FragmentProfileBinding binding;
-    private Context context;
+public class Activity_Profile extends AppCompatActivity {
+    private ActivityProfileBinding binding;
 
     private RecyclerView post;
     private PostViewModel postViewModel;
     private ProfileViewModel profileViewModel;
+    private String userId;
 
 
     public String nickname;
@@ -47,20 +44,23 @@ public class Fragment_Profile extends Fragment {
     public String follow;
     public String follower;
 
-    @Nullable
+
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(
-                inflater, R.layout.fragment_profile, container, false);
-        View view = binding.getRoot();
-        context = container.getContext();
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
+        binding.setProfile(this);
 
         init();
-
-        return view;
     }
+
+
+
+
     public void init()
     {
+        userId = getIntent().getStringExtra("userId");
+
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel.init();
 
@@ -74,9 +74,22 @@ public class Fragment_Profile extends Fragment {
 
     public void initView()
     {
+        Toolbar toolbar = binding.toolbar;
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+
+
         post = binding.searchPost;
         post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        initObserver();
+        binding.dm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                profileViewModel.createChatRoom(userId);
+            }
+        });
     }
 
     public void initObserver()
@@ -88,7 +101,7 @@ public class Fragment_Profile extends Fragment {
                 post.setAdapter(newAdapter);
             }
         };
-        postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
+        postViewModel.getPostGrid().observe(this, postGridObserver);
 
         final Observer<Profile> profileObserver  = new Observer<Profile>() {
             @Override
@@ -104,7 +117,7 @@ public class Fragment_Profile extends Fragment {
 
             }
         };
-        profileViewModel.getProfile().observe(getViewLifecycleOwner(), profileObserver);
+        profileViewModel.getProfile().observe(this, profileObserver);
 
         final Observer<SuccessFollow> followObserver  = new Observer<SuccessFollow>() {
             @Override
@@ -113,7 +126,7 @@ public class Fragment_Profile extends Fragment {
                 follow = result.getResult().size()+"";
             }
         };
-        profileViewModel.getFollow().observe(getViewLifecycleOwner(), followObserver);
+        profileViewModel.getFollow().observe(this, followObserver);
 
         final Observer<SuccessFollower> followerObserver  = new Observer<SuccessFollower>() {
             @Override
@@ -123,15 +136,44 @@ public class Fragment_Profile extends Fragment {
 
             }
         };
-        profileViewModel.getFollower().observe(getViewLifecycleOwner(), followerObserver);
+        profileViewModel.getFollower().observe(this, followerObserver);
 
-        profileViewModel.profileMyImport();
+        final Observer<String> roomIdObserver  = new Observer<String>() {
+            @Override
+            public void onChanged(@Nullable final String result) {
+                Intent i = new Intent(getApplicationContext(), Activity_Chat.class);
+                i.putExtra("roomId", result);
+                startActivity(i);
+            }
+        };
+        profileViewModel.getRoomId().observe(this, roomIdObserver);
 
+        final Observer<Boolean> followEventObserver = new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                if(aBoolean)
+                {
+                    binding.followButton.setImageResource(R.drawable.follow_check);
+                }
+                else
+                {
+                    binding.followButton.setImageResource(R.drawable.follow);
+                }
 
+            }
+        };
+        profileViewModel.getFollowEvent().observe(this, followEventObserver);
 
-
-
-
+        profileViewModel.profileImport(userId);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

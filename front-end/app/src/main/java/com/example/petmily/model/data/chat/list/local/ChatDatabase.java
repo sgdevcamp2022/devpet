@@ -5,13 +5,13 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 
-@Database(entities = {ChatListSQL.class},version = 2)
+@Database(entities = {ChatListSQL.class},version = 3)
 public abstract class ChatDatabase extends androidx.room.RoomDatabase
 {
     private static ChatDatabase database;
 
 
-    private static String DATABASE_NAME = "RoomDB";
+    private static String DATABASE_NAME = "ChatDB";
     public synchronized static ChatDatabase getInstance(Context context)
     {
         if (database == null)

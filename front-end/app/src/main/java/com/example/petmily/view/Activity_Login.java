@@ -2,10 +2,10 @@ package com.example.petmily.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
@@ -14,24 +14,15 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityLoginBinding;
 import com.example.petmily.viewModel.AuthenticationViewModel;
-import com.example.petmily.viewModel.ChatService;
-import com.kakao.sdk.auth.model.OAuthToken;
-import com.kakao.sdk.user.UserApiClient;
-import com.kakao.sdk.user.model.User;
-
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
-import kotlin.jvm.functions.Function2;
+import com.example.petmily.viewModel.service.ChatService;
 
 
 public class Activity_Login extends AppCompatActivity {
-
 
     private AuthenticationViewModel authenticationViewModel;
     private ActivityLoginBinding binding;
     private Intent intent;
     private Intent service;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,9 +68,9 @@ public class Activity_Login extends AppCompatActivity {
     }
     public void initObserver()
     {
-        authenticationViewModel.getEventLoginExpiration().observe(this, new Observer<Boolean>() {
+        final Observer<Boolean> eventLoginExiration = new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
+            public void onChanged(@Nullable final Boolean aBoolean) {
                 if(!aBoolean) {
                     Toast.makeText(getApplicationContext(), "사용자 정보가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
                 }
@@ -87,9 +78,11 @@ public class Activity_Login extends AppCompatActivity {
                 {
                     intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
+                    //startService(service);
                 }
-            }
-        });
-    }
 
+            }
+        };
+        authenticationViewModel.getEventRefreshExpiration().observe(this, eventLoginExiration);
+    }
 }

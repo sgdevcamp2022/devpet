@@ -90,7 +90,7 @@
                                 app:layout_constraintBottom_toBottomOf="parent"
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toTopOf="parent" />
-
+                            <!--
                             <ImageButton
                                 android:id="@+id/search"
                                 android:layout_width="45dp"
@@ -103,6 +103,7 @@
                                 app:srcCompat="@drawable/corner_layout"
                                 tools:layout_editor_absoluteX="441dp"
                                 tools:layout_editor_absoluteY="10dp" />
+                            -->
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
                         <androidx.recyclerview.widget.RecyclerView
@@ -114,7 +115,7 @@
                         </androidx.recyclerview.widget.RecyclerView>
 
                         <androidx.recyclerview.widget.RecyclerView
-                            android:id="@+id/post_half_frame"
+                            android:id="@+id/post_half_list"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center" />
@@ -123,11 +124,10 @@
 
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/post_grid_frame"
+                        android:id="@+id/post_grid_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:paddingTop="15dp"
-                        android:paddingStart="25dp"
+                        android:padding="25dp"
                         android:gravity="center"/>
 
 

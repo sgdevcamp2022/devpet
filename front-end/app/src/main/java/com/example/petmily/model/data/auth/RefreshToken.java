@@ -7,17 +7,17 @@ public class RefreshToken {
     String refresh_token;
     int expires_in;
     String scope;
-    String uid;
+    String userId;
     String jti;
 
 
-    public RefreshToken(String access_token, String token_type, String refresh_token, int expires_in, String scope, String uid, String jti) {
+    public RefreshToken(String access_token, String token_type, String refresh_token, int expires_in, String scope, String userId, String jti) {
         this.access_token = access_token;
         this.token_type = "bearer";
         this.refresh_token = refresh_token;
         this.expires_in = expires_in;
         this.scope = "trust";
-        this.uid = uid;
+        this.userId = userId;
         this.jti = jti;
     }
 
@@ -62,11 +62,11 @@ public class RefreshToken {
     }
 
     public String getUid() {
-        return uid;
+        return userId;
     }
 
-    public void setUid(String uid) {
-        this.uid = uid;
+    public void setUid(String userId) {
+        this.userId = userId;
     }
 
     public String getJti() {
@@ -85,7 +85,7 @@ public class RefreshToken {
                 ", refresh_token='" + refresh_token + '\'' +
                 ", expires_in=" + expires_in +
                 ", scope='" + scope + '\'' +
-                ", uid='" + uid + '\'' +
+                ", userId='" + userId + '\'' +
                 ", jti='" + jti + '\'' +
                 '}';
     }
