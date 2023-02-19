@@ -42,13 +42,12 @@ public class PetController {
         return ResponseEntity.ok("삭제 성공");
     }
 
-
-    @GetMapping()
-    public ResponseEntity<PetInfoDto> getPet(@RequestBody PetInfoDto pet) {
-
-        PetInfoDto petInfoDto = petService.getPet(pet.getPetId());
-
-        return ResponseEntity.ok(petInfoDto);
-    }
+//    @GetMapping()
+//    public ResponseEntity<PetInfoDto> getPet(@RequestBody PetInfoDto pet) {
+//
+//        PetInfoDto petInfoDto = petService.getPet(pet.getPetId());
+//
+//        return ResponseEntity.ok(petInfoDto);
+//    }
 
 }
