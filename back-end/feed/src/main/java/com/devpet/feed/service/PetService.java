@@ -8,6 +8,7 @@ import com.devpet.feed.repository.PetRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.neo4j.core.Neo4jTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -66,28 +67,34 @@ public class PetService {
     @Transactional
     public void putPet(List<PetInfoDto> petList) {
 
-        List<Long> petIds = new ArrayList<>();
-        for (PetInfoDto petInfoDto : petList) {
-//            PetInfo petInfoId = new PetInfo(petInfoDto);
-            petIds.add(petInfoDto.getPetId());
-        }
-
-        // DB에 저장되어 있는 수정해야할 값을 가져옴
-        List<PetInfo> petInfos =  petRepository.findAllByPetIdIn(petIds);
-        // 사용자가 입력한 값(이 값으로 수정 할려함)
-        Map<Long, PetInfoDto> petInfoDtos = petList.stream().collect(Collectors.toMap(PetInfoDto::getPetId, Function.identity()));
-
-        List<PetInfo> pets = new ArrayList<>();
-        PetInfoDto pet;
-        for (PetInfo petInfo : petInfos) {
-            pet = petInfoDtos.get(petInfo.getPetId());
-            petInfo.setPetBirth(pet.getPetBirth());
-            petInfo.setPetName(pet.getPetName());
-            petInfo.setPetSpecies(pet.getPetSpecies());
-            pets.add(petInfo);
-        }
-
-        petRepository.saveAll(pets);
+//        List<Long> petIds = new ArrayList<>();
+//        for (PetInfoDto petInfoDto : petList) {
+////            PetInfo petInfoId = new PetInfo(petInfoDto);
+//            petIds.add(petInfoDto.getPetId());
+//        }
+//
+//        // DB에 저장되어 있는 수정해야할 값을 가져옴
+//        List<PetInfo> petInfos =  petRepository.findAllByPetIdIn(petIds);
+//        // 사용자가 입력한 값(이 값으로 수정 할려함)
+//        Map<Long, PetInfoDto> petInfoDtos = petList.stream().collect(Collectors.toMap(PetInfoDto::getPetId, Function.identity()));
+//
+//        List<PetInfo> pets = new ArrayList<>();
+//        PetInfoDto pet;
+//        // tag 수정이 안됨
+//        for (PetInfo petInfo : petInfos) {
+//
+//            pet = petInfoDtos.get(petInfo.getPetId());
+//            petInfo.setPetBirth(pet.getPetBirth());
+//            petInfo.setPetName(pet.getPetName());
+//            petInfo.setPetSpecies(pet.getPetSpecies());
+//
+//            petInfo.setTags(pet.getTags());
+//            pets.add(petInfo);
+//        }
+//
+//        petRepository.saveAll(pets);
+        deletePet(petList);
+        savePet(petList);
     }
 
     // 펫 삭제
@@ -104,18 +111,18 @@ public class PetService {
         petRepository.deleteAll(petInfos);
     }
 
-    @Transactional
-    public PetInfoDto getPet(Long petId) {
-
-        PetInfo petInfo = petRepository.findByPetId(petId).orElseThrow(RuntimeException::new);
-
-        PetInfoDto petInfoDto = PetInfoDto.builder()
-                .petId(petInfo.getPetId())
-                .petName(petInfo.getPetName())
-                .petBirth(petInfo.getPetBirth())
-                .petSpecies(petInfo.getPetSpecies())
-                .build();
-
-        return petInfoDto;
-    }
+//    @Transactional
+//    public PetInfoDto getPet(Long petId) {
+//
+//        PetInfo petInfo = petRepository.findByPetId(petId).orElseThrow(RuntimeException::new);
+//
+//        PetInfoDto petInfoDto = PetInfoDto.builder()
+//                .petId(petInfo.getPetId())
+//                .petName(petInfo.getPetName())
+//                .petBirth(petInfo.getPetBirth())
+//                .petSpecies(petInfo.getPetSpecies())
+//                .build();
+//
+//        return petInfoDto;
+//    }
 }

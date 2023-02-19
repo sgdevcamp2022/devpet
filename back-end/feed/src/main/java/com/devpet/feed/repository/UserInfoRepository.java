@@ -133,25 +133,21 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 10" +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
-
     // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
     @Query("match (u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
             "WITH p, datetime() AS now, p.createdAt AS date " +
             "where duration.inSeconds(date, now).hours < 24 " +
             "return p.postId as postId " +
-            "order by p.createdAt DESC " +
             "union " +
             "match (u1:UserInfo{userId: $userId})-[:LIKE]->(p1:PostInfo)-[:TAGD]->(t1:Tag)<-[:TAGD]-(n1:PostInfo) " +
             "WITH n1, datetime() AS now, n1.createdAt AS date " +
             "where duration.inSeconds(date, now).hours  < 24 " +
             "return n1.postId as postId " +
-            "order by n1.createdAt DESC " +
             "union " +
             "match (u2:UserInfo{userId: $userId})-[:COMMENT]->(p2:PostInfo)-[:TAGD]->(t2:Tag)<-[:TAGD]-(n2:PostInfo) " +
             "WITH n2, datetime() AS now, n2.createdAt AS date " +
             "where duration.inSeconds(date, now).hours  < 24 " +
-            "return n2.postId as postId " +
-            "order by n2.createdAt DESC ")
+            "return n2.postId as postId ")
     Set<String> getPetLikeCommentPostList(@Param("userId") String userId);
 
     // 유저가 알 수 있는 사람, 행동 기반 추천 , 팔로우한 유저의 행동 기반 추천(하늘색 부분)
@@ -163,7 +159,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "WITH n1, datetime() AS now, n1.createdAt AS date " +
             "where duration.inSeconds(date, now).hours < 24 " +
             "return n1.postId as postId " +
-            "order by n1.createdAt DESC " +
             "union " +
             "match(u2:UserInfo{userId : $userId})-[r2:RECOMMENDED]->(p2:PostInfo) " +
             "with r2, p2 " +
@@ -173,7 +168,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "WITH n2, datetime() AS now, n2.createdAt AS date " +
             "where duration.inSeconds(date, now).hours < 24 " +
             "return n2.postId as postId " +
-            "order by n2.createdAt DESC " +
             "union " +
             "Match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[f:FOLLOW]-()-[:POST]->(p:PostInfo) " +
             "Match (n:PostInfo)<-[:RECOMMENDED]-(u) " +
