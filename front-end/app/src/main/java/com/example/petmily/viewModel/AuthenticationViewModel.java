@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Request;
 import okhttp3.ResponseBody;
+import okhttp3.internal.http.HttpHeaders;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -36,7 +37,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AuthenticationViewModel extends AndroidViewModel {
 
-    final String URL = "http://121.187.22.37:7070/oauth/";
+    final String URL = "http://10.0.2.2:7070/oauth/";
     //final String URL = "http://10.0.2.2:8080/oauth/";
 
     private AuthDatabase db;
@@ -116,6 +117,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
         //checkToken을 사용해 엑세스 토큰 유효성 확인
         restApi = authInterface.checkToken(token.getAccessToken());
         Request request = restApi.request();
+        request = request.newBuilder().header("Connection","close").build();
         //Log.e("토큰 확인 : ", request.method()+"\t"+request.toString());
         restApi.enqueue(authCallback);
     }

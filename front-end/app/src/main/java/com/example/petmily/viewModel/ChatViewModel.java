@@ -36,7 +36,7 @@ import ua.naiksoftware.stomp.StompClient;
 
 public class ChatViewModel extends AndroidViewModel{
 
-    final private String URL = "https://121.187.37.22:5555/api/chat/";
+    final private String URL = "https://121.187.37.22:1367/api/chat/";
     //final private String URL = "10.0.2.2:4444";
 
     boolean isUnexpectedClosed;
@@ -167,7 +167,7 @@ public class ChatViewModel extends AndroidViewModel{
 
     @SuppressLint("CheckResult")
     public void initStomp(){
-        //stompClient= Stomp.over(Stomp.ConnectionProvider.JWS, "ws://121.187.22.37:8080/ws-stomp/websocket"); // /websocket 꼭 붙이기
+        //stompClient= Stomp.over(Stomp.ConnectionProvider.JWS, "ws://10.0.2.2:8080/ws-stomp/websocket"); // /websocket 꼭 붙이기
         stompClient= Stomp.over(Stomp.ConnectionProvider.JWS, "ws://"+URL+"/ws-stomp/websocket");
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {

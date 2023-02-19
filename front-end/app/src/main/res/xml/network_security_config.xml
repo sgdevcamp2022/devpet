@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">https://121.187.22.37:5555/api/oauth/</domain>
+        <domain includeSubdomains="true">https://10.0.2.2:1367/api/oauth/</domain>
     </domain-config>
 </network-security-config>

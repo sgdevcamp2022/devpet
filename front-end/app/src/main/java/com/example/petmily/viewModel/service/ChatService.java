@@ -37,7 +37,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChatService extends Service{
-    String URL = "https://121.187.22.37:5555/api/chat/chat";
+    String URL = "https://10.0.2.2:1367/api/chat/chat";
 
     NotificationManager Notifi_M;
     ChatServiceThread thread;

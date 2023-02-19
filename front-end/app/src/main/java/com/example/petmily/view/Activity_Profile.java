@@ -93,6 +93,7 @@ public class Activity_Profile extends AppCompatActivity {
                 profileViewModel.createChatRoom(userId);
             }
         });
+        initObserver();
     }
 
     public void initObserver()

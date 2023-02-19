@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GlobalApplication extends Application {
     public Retrofit retrofit;
-    public String API_URL = "https://121.187.37.22:5555/api/";
+    public String API_URL = "https://121.187.37.22:1367/api/";
     public Gson gson;
     public OkHttpClient client;
 
@@ -27,8 +27,6 @@ public class GlobalApplication extends Application {
         gson = new Gson();
 
         client = new OkHttpClient.Builder()
-                .readTimeout(10, TimeUnit.SECONDS)
-                .connectTimeout(5, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                 .build();
 

@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-//    String URL = "http://121.187.22.37:5555/api/chat/";
+//    String URL = "http://10.0.2.2:1367/api/chat/";
 //
 //    private List<RoomSQL> roomSQLList;
 //    private Retrofit retrofit;

@@ -54,7 +54,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PostViewModel extends AndroidViewModel {
 
-    final String URL = "https://121.187.37.22:5555/api/app/";
+    final String URL = "https://121.187.37.22:1367/api/app/";
 
     FirebaseStorage storage;
     StorageReference storageReference;
@@ -241,6 +241,7 @@ public class PostViewModel extends AndroidViewModel {
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
 
+        //
         for(int i = 0; i < 10; i++)
         {
             //38.2078015 	127.2129742
@@ -284,7 +285,7 @@ public class PostViewModel extends AndroidViewModel {
         }
 
 
-
+        // room에 저장될 객체 생성
         List<PostSQL> postSQLList = new ArrayList<PostSQL>();
         for(int i = 0; i < postList.size(); i++)
         {

@@ -45,8 +45,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileViewModel extends AndroidViewModel {
 
-    final String URL = "http://121.187.22.37:5555/api/app/";
-    final String CHATURL = "http://121.187.22.37:5555/api/chat/";
+    final String URL = "http://10.0.2.2:1367/api/app/";
+    final String CHATURL = "http://10.0.2.2:1367/api/chat/";
 
     private FirebaseStorage firebaseStorage;
     private StorageReference storageRef;
@@ -152,8 +152,6 @@ public class ProfileViewModel extends AndroidViewModel {
 
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         client
-                .readTimeout(10, TimeUnit.SECONDS)
-                .connectTimeout(5, TimeUnit.SECONDS)
                 .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
 
         client.addInterceptor(new CustomInterceptor());
@@ -192,6 +190,7 @@ public class ProfileViewModel extends AndroidViewModel {
         public okhttp3.Response intercept(Chain chain) throws IOException {
             Request original = chain.request();
             Request request = original.newBuilder()
+                    .header("Connection","close")
                     .header("Authorization", token)
                     .build();
 
@@ -362,8 +361,7 @@ public class ProfileViewModel extends AndroidViewModel {
 
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
-            Log.e("프로필 통신 에러 : ", "");
-            t.printStackTrace();
+            Log.e("프로필 통신 에러 : ","",t);
         }
     }
 

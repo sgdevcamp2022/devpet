@@ -1,5 +1,6 @@
 package com.smilegate.devpet.appserver.controller;
 
+import com.smilegate.devpet.appserver.model.Pet;
 import com.smilegate.devpet.appserver.model.Profile;
 import com.smilegate.devpet.appserver.model.ProfileRequest;
 import com.smilegate.devpet.appserver.model.UserInfo;
@@ -35,6 +36,12 @@ public class ProfileController {
     {
         Profile findProfile = profileService.getProfile(profileId);
         return findProfile;
+    }
+    @GetMapping("/{profileId}/pet")
+    public List<Pet> getUserPet(@PathVariable("profileId") Long profileId)
+    {
+        List<Pet> findPets = profileService.getUserPet(profileId);
+        return findPets;
     }
     @GetMapping("/my-profile")
     public Profile getMyProfile(UserInfo userInfo)
