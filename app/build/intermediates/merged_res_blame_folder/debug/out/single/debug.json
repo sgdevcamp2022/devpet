@@ -28,6 +28,10 @@
         "source": "com.example.petmily.app-main-52:/menu/main_bottombar_menu.xml"
     },
     {
+        "merged": "com.example.petmily.app-merged_res-50:/drawable_bottom_line.xml.flat",
+        "source": "com.example.petmily.app-main-52:/drawable/bottom_line.xml"
+    },
+    {
         "merged": "com.example.petmily.app-merged_res-50:/drawable-v24_home.png.flat",
         "source": "com.example.petmily.app-main-52:/drawable-v24/home.png"
     },
@@ -88,6 +92,10 @@
         "source": "com.example.petmily.app-main-52:/drawable-v24/check.png"
     },
     {
+        "merged": "com.example.petmily.app-merged_res-50:/drawable_setting.png.flat",
+        "source": "com.example.petmily.app-main-52:/drawable/setting.png"
+    },
+    {
         "merged": "com.example.petmily.app-merged_res-50:/mipmap-mdpi_ic_launcher.webp.flat",
         "source": "com.example.petmily.app-main-52:/mipmap-mdpi/ic_launcher.webp"
     },
@@ -140,6 +148,10 @@
         "source": "com.example.petmily.app-main-52:/layout/activity_chat.xml"
     },
     {
+        "merged": "com.example.petmily.app-merged_res-50:/layout_activity_profile.xml.flat",
+        "source": "com.example.petmily.app-main-52:/layout/activity_profile.xml"
+    },
+    {
         "merged": "com.example.petmily.app-merged_res-50:/menu_make_toolbar_menu.xml.flat",
         "source": "com.example.petmily.app-main-52:/menu/make_toolbar_menu.xml"
     },
@@ -150,6 +162,10 @@
     {
         "merged": "com.example.petmily.app-merged_res-50:/drawable_repair.png.flat",
         "source": "com.example.petmily.app-main-52:/drawable/repair.png"
+    },
+    {
+        "merged": "com.example.petmily.app-merged_res-50:/drawable_tag.png.flat",
+        "source": "com.example.petmily.app-main-52:/drawable/tag.png"
     },
     {
         "merged": "com.example.petmily.app-merged_res-50:/layout_message_list.xml.flat",
@@ -248,6 +264,10 @@
         "source": "com.example.petmily.app-main-52:/layout/activity_main.xml"
     },
     {
+        "merged": "com.example.petmily.app-merged_res-50:/drawable_follow.png.flat",
+        "source": "com.example.petmily.app-main-52:/drawable/follow.png"
+    },
+    {
         "merged": "com.example.petmily.app-merged_res-50:/layout_fragment_profile.xml.flat",
         "source": "com.example.petmily.app-main-52:/layout/fragment_profile.xml"
     },
@@ -288,8 +308,16 @@
         "source": "com.example.petmily.app-main-52:/layout/fragment_alarm.xml"
     },
     {
+        "merged": "com.example.petmily.app-merged_res-50:/drawable_follow_check.png.flat",
+        "source": "com.example.petmily.app-main-52:/drawable/follow_check.png"
+    },
+    {
         "merged": "com.example.petmily.app-merged_res-50:/layout_alarm_list.xml.flat",
         "source": "com.example.petmily.app-main-52:/layout/alarm_list.xml"
+    },
+    {
+        "merged": "com.example.petmily.app-merged_res-50:/layout_activity_post_full.xml.flat",
+        "source": "com.example.petmily.app-main-52:/layout/activity_post_full.xml"
     },
     {
         "merged": "com.example.petmily.app-merged_res-50:/drawable-v24_picture.png.flat",
@@ -302,6 +330,10 @@
     {
         "merged": "com.example.petmily.app-merged_res-50:/menu_chat_room_toolbar_menu.xml.flat",
         "source": "com.example.petmily.app-main-52:/menu/chat_room_toolbar_menu.xml"
+    },
+    {
+        "merged": "com.example.petmily.app-merged_res-50:/drawable_post.png.flat",
+        "source": "com.example.petmily.app-main-52:/drawable/post.png"
     },
     {
         "merged": "com.example.petmily.app-merged_res-50:/layout_post_list_full.xml.flat",

@@ -15,12 +15,12 @@ public class FragmentProfileBindingImpl extends FragmentProfileBinding  {
         sIncludes = null;
         sViewsWithIds = new android.util.SparseIntArray();
         sViewsWithIds.put(R.id.toolbar, 1);
-        sViewsWithIds.put(R.id.repair, 2);
-        sViewsWithIds.put(R.id.nickname, 3);
-        sViewsWithIds.put(R.id.info, 4);
-        sViewsWithIds.put(R.id.profile_image, 5);
-        sViewsWithIds.put(R.id.about, 6);
-        sViewsWithIds.put(R.id.constraintLayout2, 7);
+        sViewsWithIds.put(R.id.dm, 2);
+        sViewsWithIds.put(R.id.setting, 3);
+        sViewsWithIds.put(R.id.nickname, 4);
+        sViewsWithIds.put(R.id.info, 5);
+        sViewsWithIds.put(R.id.profile_image, 6);
+        sViewsWithIds.put(R.id.info_profile, 7);
         sViewsWithIds.put(R.id.post_layout, 8);
         sViewsWithIds.put(R.id.postHalf, 9);
         sViewsWithIds.put(R.id.post_num, 10);
@@ -30,11 +30,13 @@ public class FragmentProfileBindingImpl extends FragmentProfileBinding  {
         sViewsWithIds.put(R.id.follower_layout, 14);
         sViewsWithIds.put(R.id.follower_num, 15);
         sViewsWithIds.put(R.id.follower, 16);
-        sViewsWithIds.put(R.id.constraintLayout3, 17);
-        sViewsWithIds.put(R.id.my_post, 18);
-        sViewsWithIds.put(R.id.message, 19);
-        sViewsWithIds.put(R.id.tag_post, 20);
-        sViewsWithIds.put(R.id.search_post, 21);
+        sViewsWithIds.put(R.id.about, 17);
+        sViewsWithIds.put(R.id.post, 18);
+        sViewsWithIds.put(R.id.my_post_layout, 19);
+        sViewsWithIds.put(R.id.my_post, 20);
+        sViewsWithIds.put(R.id.tag_post_layout, 21);
+        sViewsWithIds.put(R.id.tag_post, 22);
+        sViewsWithIds.put(R.id.search_post, 23);
     }
     // views
     @NonNull
@@ -45,30 +47,32 @@ public class FragmentProfileBindingImpl extends FragmentProfileBinding  {
     // Inverse Binding Event Handlers
 
     public FragmentProfileBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 22, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 24, sIncludes, sViewsWithIds));
     }
     private FragmentProfileBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
-            , (android.widget.TextView) bindings[6]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[7]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[17]
+            , (android.widget.TextView) bindings[17]
+            , (android.widget.ImageView) bindings[2]
             , (android.widget.TextView) bindings[12]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[11]
             , (android.widget.TextView) bindings[13]
             , (android.widget.TextView) bindings[16]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[14]
             , (android.widget.TextView) bindings[15]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[4]
-            , (android.widget.Button) bindings[19]
-            , (android.widget.Button) bindings[18]
-            , (android.widget.TextView) bindings[3]
+            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[5]
+            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[7]
+            , (android.widget.ImageView) bindings[20]
+            , (android.widget.LinearLayout) bindings[19]
+            , (android.widget.TextView) bindings[4]
+            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[18]
             , (android.widget.TextView) bindings[9]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[8]
             , (android.widget.TextView) bindings[10]
-            , (android.widget.ImageView) bindings[5]
-            , (android.widget.ImageView) bindings[2]
-            , (androidx.recyclerview.widget.RecyclerView) bindings[21]
-            , (android.widget.Button) bindings[20]
+            , (android.widget.ImageView) bindings[6]
+            , (androidx.recyclerview.widget.RecyclerView) bindings[23]
+            , (android.widget.ImageView) bindings[3]
+            , (android.widget.ImageView) bindings[22]
+            , (android.widget.LinearLayout) bindings[21]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[1]
             );
         this.mboundView0 = (androidx.constraintlayout.widget.ConstraintLayout) bindings[0];

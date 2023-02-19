@@ -2925,6 +2925,7 @@ drawable avd_show_password
 drawable back
 drawable back_adaptive_fore
 drawable below_shadow
+drawable bottom_line
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
@@ -2962,6 +2963,8 @@ drawable design_password_eye
 drawable design_snackbar_background
 drawable dm
 drawable dm_1
+drawable follow
+drawable follow_check
 drawable googleg_disabled_color_18
 drawable googleg_standard_color_18
 drawable group
@@ -3129,10 +3132,13 @@ drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
 drawable picture
+drawable post
 drawable post_corner
 drawable repair
 drawable search
 drawable search_touch
+drawable setting
+drawable tag
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
@@ -3306,8 +3312,6 @@ id comments
 id compress
 id confirm_button
 id constraint
-id constraintLayout2
-id constraintLayout3
 id container
 id content
 id contentPanel
@@ -3399,6 +3403,7 @@ id fixed
 id flip
 id floating
 id follow
+id follow_button
 id follow_layout
 id follow_num
 id follower
@@ -3446,6 +3451,7 @@ id immediateStop
 id included
 id indeterminate
 id info
+id info_profile
 id invisible
 id inward
 id italic
@@ -3536,6 +3542,7 @@ id mtrl_picker_title_text
 id mtrl_view_tag_bottom_padding
 id multiply
 id my_post
+id my_post_layout
 id name
 id navermap_bar
 id navermap_compass
@@ -3620,6 +3627,7 @@ id place_list
 id placeholder_margin_view
 id plus
 id position
+id post
 id postHalf
 id postLayout
 id post_grid_list
@@ -3641,7 +3649,6 @@ id ratio
 id rectangles
 id refresh_button
 id reject_tv
-id repair
 id reverseSawtooth
 id right
 id rightToLeft
@@ -3679,6 +3686,7 @@ id select_dialog_listview
 id selected
 id selection_type
 id send
+id setting
 id sharedValueSet
 id sharedValueUnset
 id shortcut
@@ -3732,6 +3740,7 @@ id tag_on_apply_window_listener
 id tag_on_receive_content_listener
 id tag_on_receive_content_mime_types
 id tag_post
+id tag_post_layout
 id tag_screen_reader_focusable
 id tag_state_description
 id tag_transition_group
@@ -3941,6 +3950,8 @@ layout activity_main
 layout activity_make
 layout activity_make_profile
 layout activity_pet_append
+layout activity_post_full
+layout activity_profile
 layout activity_talk_auth_code
 layout alarm_list
 layout browser_actions_context_menu_page

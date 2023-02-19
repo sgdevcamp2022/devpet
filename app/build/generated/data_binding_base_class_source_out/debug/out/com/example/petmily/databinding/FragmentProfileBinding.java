@@ -4,8 +4,8 @@ package com.example.petmily.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,10 +24,7 @@ public abstract class FragmentProfileBinding extends ViewDataBinding {
   public final TextView about;
 
   @NonNull
-  public final ConstraintLayout constraintLayout2;
-
-  @NonNull
-  public final ConstraintLayout constraintLayout3;
+  public final ImageView dm;
 
   @NonNull
   public final TextView follow;
@@ -51,13 +48,19 @@ public abstract class FragmentProfileBinding extends ViewDataBinding {
   public final ConstraintLayout info;
 
   @NonNull
-  public final Button message;
+  public final ConstraintLayout infoProfile;
 
   @NonNull
-  public final Button myPost;
+  public final ImageView myPost;
+
+  @NonNull
+  public final LinearLayout myPostLayout;
 
   @NonNull
   public final TextView nickname;
+
+  @NonNull
+  public final ConstraintLayout post;
 
   @NonNull
   public final TextView postHalf;
@@ -72,13 +75,16 @@ public abstract class FragmentProfileBinding extends ViewDataBinding {
   public final ImageView profileImage;
 
   @NonNull
-  public final ImageView repair;
-
-  @NonNull
   public final RecyclerView searchPost;
 
   @NonNull
-  public final Button tagPost;
+  public final ImageView setting;
+
+  @NonNull
+  public final ImageView tagPost;
+
+  @NonNull
+  public final LinearLayout tagPostLayout;
 
   @NonNull
   public final ConstraintLayout toolbar;
@@ -87,16 +93,16 @@ public abstract class FragmentProfileBinding extends ViewDataBinding {
   protected Fragment_Profile mProfile;
 
   protected FragmentProfileBinding(Object _bindingComponent, View _root, int _localFieldCount,
-      TextView about, ConstraintLayout constraintLayout2, ConstraintLayout constraintLayout3,
-      TextView follow, ConstraintLayout followLayout, TextView followNum, TextView follower,
-      ConstraintLayout followerLayout, TextView followerNum, ConstraintLayout info, Button message,
-      Button myPost, TextView nickname, TextView postHalf, ConstraintLayout postLayout,
-      TextView postNum, ImageView profileImage, ImageView repair, RecyclerView searchPost,
-      Button tagPost, ConstraintLayout toolbar) {
+      TextView about, ImageView dm, TextView follow, ConstraintLayout followLayout,
+      TextView followNum, TextView follower, ConstraintLayout followerLayout, TextView followerNum,
+      ConstraintLayout info, ConstraintLayout infoProfile, ImageView myPost,
+      LinearLayout myPostLayout, TextView nickname, ConstraintLayout post, TextView postHalf,
+      ConstraintLayout postLayout, TextView postNum, ImageView profileImage,
+      RecyclerView searchPost, ImageView setting, ImageView tagPost, LinearLayout tagPostLayout,
+      ConstraintLayout toolbar) {
     super(_bindingComponent, _root, _localFieldCount);
     this.about = about;
-    this.constraintLayout2 = constraintLayout2;
-    this.constraintLayout3 = constraintLayout3;
+    this.dm = dm;
     this.follow = follow;
     this.followLayout = followLayout;
     this.followNum = followNum;
@@ -104,16 +110,19 @@ public abstract class FragmentProfileBinding extends ViewDataBinding {
     this.followerLayout = followerLayout;
     this.followerNum = followerNum;
     this.info = info;
-    this.message = message;
+    this.infoProfile = infoProfile;
     this.myPost = myPost;
+    this.myPostLayout = myPostLayout;
     this.nickname = nickname;
+    this.post = post;
     this.postHalf = postHalf;
     this.postLayout = postLayout;
     this.postNum = postNum;
     this.profileImage = profileImage;
-    this.repair = repair;
     this.searchPost = searchPost;
+    this.setting = setting;
     this.tagPost = tagPost;
+    this.tagPostLayout = tagPostLayout;
     this.toolbar = toolbar;
   }
 

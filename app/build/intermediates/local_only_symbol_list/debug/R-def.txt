@@ -23,11 +23,14 @@ color teal_700
 color white
 drawable back
 drawable back_adaptive_fore
+drawable bottom_line
 drawable check
 drawable corner
 drawable corner_layout
 drawable dm
 drawable dm_1
+drawable follow
+drawable follow_check
 drawable group
 drawable home
 drawable home_touch
@@ -37,10 +40,13 @@ drawable kakao_login_medium_narrow
 drawable like
 drawable make
 drawable picture
+drawable post
 drawable post_corner
 drawable repair
 drawable search
 drawable search_touch
+drawable setting
+drawable tag
 drawable touch
 drawable user
 drawable user_touch
@@ -72,8 +78,6 @@ id chatlist
 id check
 id coment
 id comments
-id constraintLayout2
-id constraintLayout3
 id content
 id day
 id day_list
@@ -81,6 +85,7 @@ id division
 id dm
 id email
 id follow
+id follow_button
 id follow_layout
 id follow_num
 id follower
@@ -95,6 +100,7 @@ id imageView4
 id imageView5
 id imageView6
 id info
+id info_profile
 id join
 id left
 id localname
@@ -110,6 +116,7 @@ id message_list
 id month
 id month_list
 id my_post
+id my_post_layout
 id name
 id nickname
 id password
@@ -121,6 +128,7 @@ id phone
 id place
 id place_list
 id plus
+id post
 id postHalf
 id post_grid_list
 id post_half_layout
@@ -132,16 +140,17 @@ id post_num
 id profile
 id profileImage
 id profile_image
-id repair
 id right
 id save
 id search
 id search_post
 id send
+id setting
 id sliding
 id sliding_layout
 id tag
 id tag_post
+id tag_post_layout
 id text
 id textView5
 id time
@@ -164,6 +173,8 @@ layout activity_main
 layout activity_make
 layout activity_make_profile
 layout activity_pet_append
+layout activity_post_full
+layout activity_profile
 layout alarm_list
 layout chat_list
 layout chat_room_toolbar

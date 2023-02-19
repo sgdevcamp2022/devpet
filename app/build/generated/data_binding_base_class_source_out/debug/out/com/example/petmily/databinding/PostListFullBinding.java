@@ -14,7 +14,7 @@ import androidx.databinding.Bindable;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import com.example.petmily.R;
-import com.example.petmily.model.data.post.remote.Post;
+import com.example.petmily.model.data.post.PostFull;
 import java.lang.Deprecated;
 import java.lang.Object;
 
@@ -35,9 +35,6 @@ public abstract class PostListFullBinding extends ViewDataBinding {
   public final Button comments;
 
   @NonNull
-  public final ImageView imageView4;
-
-  @NonNull
   public final ImageView imageView5;
 
   @NonNull
@@ -45,6 +42,9 @@ public abstract class PostListFullBinding extends ViewDataBinding {
 
   @NonNull
   public final TextView nickname;
+
+  @NonNull
+  public final ImageView postImage;
 
   @NonNull
   public final LinearLayout profile;
@@ -56,11 +56,11 @@ public abstract class PostListFullBinding extends ViewDataBinding {
   public final TextView time;
 
   @Bindable
-  protected Post mPost;
+  protected PostFull mPost;
 
   protected PostListFullBinding(Object _bindingComponent, View _root, int _localFieldCount,
       LinearLayout action, LinearLayout body, LinearLayout body2, TextView coment, Button comments,
-      ImageView imageView4, ImageView imageView5, ImageView imageView6, TextView nickname,
+      ImageView imageView5, ImageView imageView6, TextView nickname, ImageView postImage,
       LinearLayout profile, ImageView profileImage, TextView time) {
     super(_bindingComponent, _root, _localFieldCount);
     this.action = action;
@@ -68,19 +68,19 @@ public abstract class PostListFullBinding extends ViewDataBinding {
     this.body2 = body2;
     this.coment = coment;
     this.comments = comments;
-    this.imageView4 = imageView4;
     this.imageView5 = imageView5;
     this.imageView6 = imageView6;
     this.nickname = nickname;
+    this.postImage = postImage;
     this.profile = profile;
     this.profileImage = profileImage;
     this.time = time;
   }
 
-  public abstract void setPost(@Nullable Post Post);
+  public abstract void setPost(@Nullable PostFull Post);
 
   @Nullable
-  public Post getPost() {
+  public PostFull getPost() {
     return mPost;
   }
 

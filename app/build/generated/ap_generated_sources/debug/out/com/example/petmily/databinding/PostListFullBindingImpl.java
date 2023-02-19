@@ -18,7 +18,7 @@ public class PostListFullBindingImpl extends PostListFullBinding  {
         sViewsWithIds.put(R.id.profile_image, 2);
         sViewsWithIds.put(R.id.nickname, 3);
         sViewsWithIds.put(R.id.body, 4);
-        sViewsWithIds.put(R.id.imageView4, 5);
+        sViewsWithIds.put(R.id.post_image, 5);
         sViewsWithIds.put(R.id.body2, 6);
         sViewsWithIds.put(R.id.action, 7);
         sViewsWithIds.put(R.id.imageView5, 8);
@@ -45,10 +45,10 @@ public class PostListFullBindingImpl extends PostListFullBinding  {
             , (android.widget.LinearLayout) bindings[6]
             , (android.widget.TextView) bindings[10]
             , (android.widget.Button) bindings[12]
-            , (android.widget.ImageView) bindings[5]
             , (android.widget.ImageView) bindings[8]
             , (android.widget.ImageView) bindings[9]
             , (android.widget.TextView) bindings[3]
+            , (android.widget.ImageView) bindings[5]
             , (android.widget.LinearLayout) bindings[1]
             , (android.widget.ImageView) bindings[2]
             , (android.widget.TextView) bindings[11]
@@ -82,7 +82,7 @@ public class PostListFullBindingImpl extends PostListFullBinding  {
     public boolean setVariable(int variableId, @Nullable Object variable)  {
         boolean variableSet = true;
         if (BR.Post == variableId) {
-            setPost((com.example.petmily.model.data.post.remote.Post) variable);
+            setPost((com.example.petmily.model.data.post.PostFull) variable);
         }
         else {
             variableSet = false;
@@ -90,7 +90,7 @@ public class PostListFullBindingImpl extends PostListFullBinding  {
             return variableSet;
     }
 
-    public void setPost(@Nullable com.example.petmily.model.data.post.remote.Post Post) {
+    public void setPost(@Nullable com.example.petmily.model.data.post.PostFull Post) {
         this.mPost = Post;
     }
 

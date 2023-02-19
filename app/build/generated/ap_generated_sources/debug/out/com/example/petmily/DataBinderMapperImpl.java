@@ -14,6 +14,8 @@ import com.example.petmily.databinding.ActivityMainBindingImpl;
 import com.example.petmily.databinding.ActivityMakeBindingImpl;
 import com.example.petmily.databinding.ActivityMakeProfileBindingImpl;
 import com.example.petmily.databinding.ActivityPetAppendBindingImpl;
+import com.example.petmily.databinding.ActivityPostFullBindingImpl;
+import com.example.petmily.databinding.ActivityProfileBindingImpl;
 import com.example.petmily.databinding.AlarmListBindingImpl;
 import com.example.petmily.databinding.ChatListBindingImpl;
 import com.example.petmily.databinding.DialogMakeBindingImpl;
@@ -56,37 +58,41 @@ public class DataBinderMapperImpl extends DataBinderMapper {
 
   private static final int LAYOUT_ACTIVITYPETAPPEND = 8;
 
-  private static final int LAYOUT_ALARMLIST = 9;
+  private static final int LAYOUT_ACTIVITYPOSTFULL = 9;
 
-  private static final int LAYOUT_CHATLIST = 10;
+  private static final int LAYOUT_ACTIVITYPROFILE = 10;
 
-  private static final int LAYOUT_DIALOGMAKE = 11;
+  private static final int LAYOUT_ALARMLIST = 11;
 
-  private static final int LAYOUT_FRAGMENTALARM = 12;
+  private static final int LAYOUT_CHATLIST = 12;
 
-  private static final int LAYOUT_FRAGMENTHOME = 13;
+  private static final int LAYOUT_DIALOGMAKE = 13;
 
-  private static final int LAYOUT_FRAGMENTMESSAGE = 14;
+  private static final int LAYOUT_FRAGMENTALARM = 14;
 
-  private static final int LAYOUT_FRAGMENTPROFILE = 15;
+  private static final int LAYOUT_FRAGMENTHOME = 15;
 
-  private static final int LAYOUT_FRAGMENTSEARCH = 16;
+  private static final int LAYOUT_FRAGMENTMESSAGE = 16;
 
-  private static final int LAYOUT_MAKELIST = 17;
+  private static final int LAYOUT_FRAGMENTPROFILE = 17;
 
-  private static final int LAYOUT_MESSAGELIST = 18;
+  private static final int LAYOUT_FRAGMENTSEARCH = 18;
 
-  private static final int LAYOUT_PETLIST = 19;
+  private static final int LAYOUT_MAKELIST = 19;
 
-  private static final int LAYOUT_PLACELIST = 20;
+  private static final int LAYOUT_MESSAGELIST = 20;
 
-  private static final int LAYOUT_POSTLISTFULL = 21;
+  private static final int LAYOUT_PETLIST = 21;
 
-  private static final int LAYOUT_POSTLISTGRID = 22;
+  private static final int LAYOUT_PLACELIST = 22;
 
-  private static final int LAYOUT_POSTLISTHALF = 23;
+  private static final int LAYOUT_POSTLISTFULL = 23;
 
-  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(23);
+  private static final int LAYOUT_POSTLISTGRID = 24;
+
+  private static final int LAYOUT_POSTLISTHALF = 25;
+
+  private static final SparseIntArray INTERNAL_LAYOUT_ID_LOOKUP = new SparseIntArray(25);
 
   static {
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.activity_chat, LAYOUT_ACTIVITYCHAT);
@@ -97,6 +103,8 @@ public class DataBinderMapperImpl extends DataBinderMapper {
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.activity_make, LAYOUT_ACTIVITYMAKE);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.activity_make_profile, LAYOUT_ACTIVITYMAKEPROFILE);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.activity_pet_append, LAYOUT_ACTIVITYPETAPPEND);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.activity_post_full, LAYOUT_ACTIVITYPOSTFULL);
+    INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.activity_profile, LAYOUT_ACTIVITYPROFILE);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.alarm_list, LAYOUT_ALARMLIST);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.chat_list, LAYOUT_CHATLIST);
     INTERNAL_LAYOUT_ID_LOOKUP.put(com.example.petmily.R.layout.dialog_make, LAYOUT_DIALOGMAKE);
@@ -170,6 +178,18 @@ public class DataBinderMapperImpl extends DataBinderMapper {
             return new ActivityPetAppendBindingImpl(component, view);
           }
           throw new IllegalArgumentException("The tag for activity_pet_append is invalid. Received: " + tag);
+        }
+        case  LAYOUT_ACTIVITYPOSTFULL: {
+          if ("layout/activity_post_full_0".equals(tag)) {
+            return new ActivityPostFullBindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for activity_post_full is invalid. Received: " + tag);
+        }
+        case  LAYOUT_ACTIVITYPROFILE: {
+          if ("layout/activity_profile_0".equals(tag)) {
+            return new ActivityProfileBindingImpl(component, view);
+          }
+          throw new IllegalArgumentException("The tag for activity_profile is invalid. Received: " + tag);
         }
         case  LAYOUT_ALARMLIST: {
           if ("layout/alarm_list_0".equals(tag)) {
@@ -332,7 +352,7 @@ public class DataBinderMapperImpl extends DataBinderMapper {
   }
 
   private static class InnerLayoutIdLookup {
-    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(23);
+    static final HashMap<String, Integer> sKeys = new HashMap<String, Integer>(25);
 
     static {
       sKeys.put("layout/activity_chat_0", com.example.petmily.R.layout.activity_chat);
@@ -343,6 +363,8 @@ public class DataBinderMapperImpl extends DataBinderMapper {
       sKeys.put("layout/activity_make_0", com.example.petmily.R.layout.activity_make);
       sKeys.put("layout/activity_make_profile_0", com.example.petmily.R.layout.activity_make_profile);
       sKeys.put("layout/activity_pet_append_0", com.example.petmily.R.layout.activity_pet_append);
+      sKeys.put("layout/activity_post_full_0", com.example.petmily.R.layout.activity_post_full);
+      sKeys.put("layout/activity_profile_0", com.example.petmily.R.layout.activity_profile);
       sKeys.put("layout/alarm_list_0", com.example.petmily.R.layout.alarm_list);
       sKeys.put("layout/chat_list_0", com.example.petmily.R.layout.chat_list);
       sKeys.put("layout/dialog_make_0", com.example.petmily.R.layout.dialog_make);

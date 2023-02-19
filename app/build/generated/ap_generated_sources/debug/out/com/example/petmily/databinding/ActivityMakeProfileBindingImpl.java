@@ -15,16 +15,17 @@ public class ActivityMakeProfileBindingImpl extends ActivityMakeProfileBinding  
         sIncludes = null;
         sViewsWithIds = new android.util.SparseIntArray();
         sViewsWithIds.put(R.id.profileImage, 1);
-        sViewsWithIds.put(R.id.about, 2);
-        sViewsWithIds.put(R.id.birth, 3);
-        sViewsWithIds.put(R.id.year, 4);
-        sViewsWithIds.put(R.id.month, 5);
-        sViewsWithIds.put(R.id.day, 6);
-        sViewsWithIds.put(R.id.petButton, 7);
-        sViewsWithIds.put(R.id.textView5, 8);
-        sViewsWithIds.put(R.id.petAppend, 9);
-        sViewsWithIds.put(R.id.petList, 10);
-        sViewsWithIds.put(R.id.save, 11);
+        sViewsWithIds.put(R.id.nickname, 2);
+        sViewsWithIds.put(R.id.about, 3);
+        sViewsWithIds.put(R.id.birth, 4);
+        sViewsWithIds.put(R.id.year, 5);
+        sViewsWithIds.put(R.id.month, 6);
+        sViewsWithIds.put(R.id.day, 7);
+        sViewsWithIds.put(R.id.petButton, 8);
+        sViewsWithIds.put(R.id.textView5, 9);
+        sViewsWithIds.put(R.id.petAppend, 10);
+        sViewsWithIds.put(R.id.petList, 11);
+        sViewsWithIds.put(R.id.save, 12);
     }
     // views
     @NonNull
@@ -35,21 +36,22 @@ public class ActivityMakeProfileBindingImpl extends ActivityMakeProfileBinding  
     // Inverse Binding Event Handlers
 
     public ActivityMakeProfileBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 12, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 13, sIncludes, sViewsWithIds));
     }
     private ActivityMakeProfileBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
-            , (android.widget.EditText) bindings[2]
-            , (android.widget.LinearLayout) bindings[3]
+            , (android.widget.EditText) bindings[3]
+            , (android.widget.LinearLayout) bindings[4]
+            , (android.widget.TextView) bindings[7]
             , (android.widget.TextView) bindings[6]
-            , (android.widget.TextView) bindings[5]
-            , (android.widget.Button) bindings[9]
-            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[7]
-            , (androidx.recyclerview.widget.RecyclerView) bindings[10]
+            , (android.widget.EditText) bindings[2]
+            , (android.widget.Button) bindings[10]
+            , (androidx.constraintlayout.widget.ConstraintLayout) bindings[8]
+            , (androidx.recyclerview.widget.RecyclerView) bindings[11]
             , (android.widget.ImageButton) bindings[1]
-            , (android.widget.Button) bindings[11]
-            , (android.widget.TextView) bindings[8]
-            , (android.widget.TextView) bindings[4]
+            , (android.widget.Button) bindings[12]
+            , (android.widget.TextView) bindings[9]
+            , (android.widget.TextView) bindings[5]
             );
         this.mboundView0 = (androidx.constraintlayout.widget.ConstraintLayout) bindings[0];
         this.mboundView0.setTag(null);

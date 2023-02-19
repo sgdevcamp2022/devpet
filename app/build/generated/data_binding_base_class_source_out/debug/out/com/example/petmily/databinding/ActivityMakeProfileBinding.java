@@ -35,6 +35,9 @@ public abstract class ActivityMakeProfileBinding extends ViewDataBinding {
   public final TextView month;
 
   @NonNull
+  public final EditText nickname;
+
+  @NonNull
   public final Button petAppend;
 
   @NonNull
@@ -59,14 +62,15 @@ public abstract class ActivityMakeProfileBinding extends ViewDataBinding {
   protected Activity_MakeProfile mMakeProfile;
 
   protected ActivityMakeProfileBinding(Object _bindingComponent, View _root, int _localFieldCount,
-      EditText about, LinearLayout birth, TextView day, TextView month, Button petAppend,
-      ConstraintLayout petButton, RecyclerView petList, ImageButton profileImage, Button save,
-      TextView textView5, TextView year) {
+      EditText about, LinearLayout birth, TextView day, TextView month, EditText nickname,
+      Button petAppend, ConstraintLayout petButton, RecyclerView petList, ImageButton profileImage,
+      Button save, TextView textView5, TextView year) {
     super(_bindingComponent, _root, _localFieldCount);
     this.about = about;
     this.birth = birth;
     this.day = day;
     this.month = month;
+    this.nickname = nickname;
     this.petAppend = petAppend;
     this.petButton = petButton;
     this.petList = petList;

@@ -21,11 +21,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            app:layout_constraintBottom_toTopOf="@+id/about"
+            app:layout_constraintBottom_toTopOf="@+id/nickname"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/user" />
+
+        <EditText
+            android:id="@+id/nickname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="닉네임을 입력해주세요"
+            android:inputType="textPersonName"
+            android:padding="15dp"
+            app:layout_constraintBottom_toTopOf="@+id/about"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/profileImage" />
 
         <EditText
             android:id="@+id/about"
@@ -33,13 +46,11 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="소개글을 입력해주세요"
-
             android:inputType="textPersonName"
             android:padding="15dp"
-            app:layout_constraintBottom_toTopOf="@+id/birth"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/profileImage" />
+            app:layout_constraintTop_toBottomOf="@id/nickname" />
 
         <LinearLayout
             android:id="@+id/birth"
