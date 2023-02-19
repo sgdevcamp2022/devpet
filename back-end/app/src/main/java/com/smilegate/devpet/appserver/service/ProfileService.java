@@ -5,6 +5,7 @@ import com.smilegate.devpet.appserver.api.relation.UserInfoApi;
 import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.repository.mongo.ProfileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.repository.support.SimpleMongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,36 +27,36 @@ public class ProfileService {
         profile.getPetList().forEach(item->item.setProfileId(profile.getProfileId()));
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
-        sendToRelationServer(profile);
+//        sendToRelationServer(profile);
         return result;
     }
 
-    public Profile putProfile(ProfileRequest profileRequest)
+    public Profile putProfile(ProfileRequest profileRequest, UserInfo userInfo)
     {
         Profile profile = profileRepository.findById(profileRequest.getId()).orElseThrow(NullPointerException::new);
         profile.setProfileData(profileRequest);
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
-        sendToRelationServer(profile);
+//        sendToRelationServer(profile, userInfo);
         return result;
     }
-    public void sendToRelationServer(Profile profile)
+    public void sendToRelationServer(Profile profile, UserInfo userInfo)
     {
         List<Pet> petList = profile.getPetList();
-        Long userId = profile.getUserId();
+        String username = userInfo.getUsername();
         List<PetInfoDto> petInfoDtos = petList.stream().map(item->
                 PetInfoDto.builder()
                         .petId(item.getPetId().toString())
                         .petBirth(item.getBirth().toString())
                         .petName(item.getName())
-                        .userId(userId.toString()).build()
+                        .userId(username).build()
         ).collect(Collectors.toList());
-        userInfoApi.saveUserInfo(UserInfoDto.builder()
-                .nickname(profile.getNickname())
-                .userId(userId.toString())
-                .birth(profile.getBirth().toString())
-                .build()
-        );
+//        userInfoApi.saveUserInfo(UserInfoDto.builder()
+//                .nickname(profile.getNickname())
+//                .userId(username)
+//                .birth(profile.getBirth().toString())
+//                .build()
+//        );
 //        petRelationService.savePet(petInfoDtos);
     }
 

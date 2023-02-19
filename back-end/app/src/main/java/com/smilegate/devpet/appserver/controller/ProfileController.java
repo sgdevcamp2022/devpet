@@ -25,9 +25,9 @@ public class ProfileController {
     }
 
     @PutMapping
-    public Long putProfile(@RequestBody ProfileRequest profileRequest)
+    public Long putProfile(@RequestBody ProfileRequest profileRequest,UserInfo userInfo)
     {
-        Profile result = profileService.putProfile(profileRequest);
+        Profile result = profileService.putProfile(profileRequest, userInfo);
         return result.getProfileId();
     }
     @GetMapping("/{profileId}")
