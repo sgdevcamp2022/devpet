@@ -1,6 +1,7 @@
 package com.devpet.feed.controller;
 
 import com.devpet.feed.model.dto.PetInfoDto;
+import com.devpet.feed.model.entity.PetInfo;
 import com.devpet.feed.service.PetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

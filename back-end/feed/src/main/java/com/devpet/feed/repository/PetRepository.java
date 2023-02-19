@@ -6,10 +6,13 @@ import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface PetRepository extends Neo4jRepository<PetInfo, Long> {
+
+    List<PetInfo> findAllByPetIdIn(List<Long> petIds);
 
     // petId를 통해 펫 노드 찾기
     @Query("MATCH (m:PetInfo {petId: $petId}) " + "RETURN m" )

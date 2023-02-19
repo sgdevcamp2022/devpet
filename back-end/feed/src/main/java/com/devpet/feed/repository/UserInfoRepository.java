@@ -1,5 +1,6 @@
 package com.devpet.feed.repository;
 
+import com.devpet.feed.model.entity.PetInfo;
 import com.devpet.feed.model.entity.UserInfo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
@@ -13,6 +14,8 @@ import java.util.Set;
 
 @Repository
 public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
+
+    List<UserInfo> findAllByUserIdIn(List<String> userIds);
 
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
     Optional<UserInfo> findNodeById (@Param("userId") String userId);
