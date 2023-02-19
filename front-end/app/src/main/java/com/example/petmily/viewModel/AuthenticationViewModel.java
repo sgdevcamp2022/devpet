@@ -186,7 +186,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
 
-            if(responseCode == NOT_FOUND)
+            if(responseCode != SUCCESS)
             {
                 ResponseBody errorBody = response.errorBody();
                 if(errorBody != null) {

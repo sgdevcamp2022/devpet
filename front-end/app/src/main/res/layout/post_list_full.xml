@@ -36,7 +36,7 @@
                 android:id="@+id/nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="대충 프로필 라인" />
+                android:text="@={Post.profile.nickname}" />
         </LinearLayout>
 
         <LinearLayout
@@ -93,7 +93,7 @@
                 android:id="@+id/coment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="대충 게시글 내용" />
+                android:text="@={Post.content}" />
 
             <TextView
                 android:id="@+id/time"

@@ -38,6 +38,8 @@
         <service android:name=".viewModel.service.ChatService" />
         <activity android:name=".view.Activity_MakeProfile" />
         <activity android:name=".view.Activity_PetAppend"/>
+        <activity android:name=".view.Activity_PostFull"/>
+        <activity android:name=".view.Activity_Profile"/>
 
         <service
             android:name=".MyFirebaseMessagingService"

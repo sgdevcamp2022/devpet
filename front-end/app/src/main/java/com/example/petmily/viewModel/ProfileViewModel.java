@@ -21,6 +21,7 @@ import com.example.petmily.model.data.profile.remote.API_Interface;
 import com.example.petmily.model.data.profile.remote.Profile;
 import com.example.petmily.model.data.profile.remote.SuccessFollow;
 import com.example.petmily.model.data.profile.remote.SuccessFollower;
+import com.example.petmily.model.data.profile.remote.SuccessTest;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,11 +32,13 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -127,18 +130,34 @@ public class ProfileViewModel extends AndroidViewModel {
         //db = ProfileDatabase.getInstance(context);
         profileCallback = new ProfileCallback(context);
 
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.addInterceptor(new Interceptor() {
-            @Override
-            public okhttp3.Response intercept(Chain chain) throws IOException {
-                Request original = chain.request();
-                Request request = original.newBuilder()
-                        .header("Authorization", token)
-                        .build();
 
-                return chain.proceed(request);
-            }
-        });
+
+
+//
+//        val client = OkHttpClient.Builder()
+//                .readTimeout(10, TimeUnit.SECONDS)
+//                .connectTimeout(5, TimeUnit.SECONDS)
+//                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+//                .build()
+//        retrofit = Retrofit.Builder().baseUrl(API_URL).client(client).addConverterFactory(GsonConverterFactory.create(gson)).build()
+//
+
+
+
+
+
+
+
+
+
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client
+                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+
+        client.addInterceptor(new CustomInterceptor());
+
         OkHttpClient httpClient = client.build();
         Gson gson = new GsonBuilder().setLenient().create();
         retrofit = new Retrofit.Builder()
@@ -156,6 +175,28 @@ public class ProfileViewModel extends AndroidViewModel {
 
         chatRoomInterface = retrofit.create(API_Interface.class);
 
+    }
+
+
+
+
+
+    public class CustomInterceptor implements okhttp3.Interceptor, HttpLoggingInterceptor.Logger {
+        @Override
+        public void log(String message) {
+            android.util.Log.e("MyGitHubData :", message + "");
+        }
+
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request original = chain.request();
+            Request request = original.newBuilder()
+                    .header("Authorization", token)
+                    .build();
+
+            return chain.proceed(request);
+        }
     }
 
     public void profileMyImport()
@@ -280,11 +321,11 @@ public class ProfileViewModel extends AndroidViewModel {
                     firebaseStorage = FirebaseStorage.getInstance();
                     storageRef = firebaseStorage.getReference();
                     Profile result = (Profile) body;
-
+                    profile.setValue(result);
                     //팔로잉 여부 반환
 //                    followEvent.setValue(result.getFollow());
 
-                    //프로필 이미지 메소드
+                    //프로필 이미지 불러오기
 //                    storageReference.child(result.getImageUri()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
 //                        @Override
 //                        public void onSuccess(Uri uri) {
@@ -321,6 +362,8 @@ public class ProfileViewModel extends AndroidViewModel {
 
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
+            Log.e("프로필 통신 에러 : ", "");
+            t.printStackTrace();
         }
     }
 

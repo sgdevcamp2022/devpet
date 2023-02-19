@@ -25,31 +25,11 @@
             app:layout_constraintBottom_toTopOf="@+id/info">
 
             <ImageView
-                android:id="@+id/dm"
-                android:layout_width="43dp"
-                android:layout_height="43dp"
-                android:layout_gravity="end"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:paddingStart="10dp"
-<<<<<<< HEAD
-=======
-                android:paddingEnd="10dp"
->>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/setting"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/dm" />
-
-            <ImageView
                 android:id="@+id/setting"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_gravity="end"
-<<<<<<< HEAD
                 android:layout_marginRight="5dp"
-=======
->>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
                 android:padding="5dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

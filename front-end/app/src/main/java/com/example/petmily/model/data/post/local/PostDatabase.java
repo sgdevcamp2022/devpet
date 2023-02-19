@@ -6,13 +6,9 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.TypeConverters;
 
-import com.example.petmily.model.data.post.local.PostConverters;
-import com.example.petmily.model.data.post.local.PostDao_Interface;
-import com.example.petmily.model.data.post.local.PostSQL;
-
 
 @Database(entities = {PostSQL.class},version = 2)
-@TypeConverters({PostConverters.class})
+@TypeConverters({Converters.class})
 public abstract class PostDatabase extends androidx.room.RoomDatabase
 {
     private static PostDatabase database;
@@ -26,6 +22,7 @@ public abstract class PostDatabase extends androidx.room.RoomDatabase
             database = Room.databaseBuilder(context.getApplicationContext(), PostDatabase.class, DATABASE_NAME)
                     .allowMainThreadQueries()
                     .fallbackToDestructiveMigration()
+
                     .build();
         }
         return database;

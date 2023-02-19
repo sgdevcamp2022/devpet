@@ -1,6 +1,7 @@
 package com.example.petmily.view;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,6 +23,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.petmily.R;
 
@@ -97,17 +99,20 @@ public class MainActivity extends AppCompatActivity {
     }
     public void initObserver()
     {
-        authenticationViewModel.getEventRefreshExpiration().observe(this, new Observer<Boolean>() {
+        final Observer<Boolean> eventRefreshExpiration = new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
+            public void onChanged(@Nullable final Boolean aBoolean) {
                 if(!aBoolean) {
                     Intent intent = new Intent(getApplicationContext(), Activity_Login.class);
                     startActivity(intent);
                     finish();
                     Log.e("토큰이 없어 로그인 화면으로 이동", "");
                 }
+
             }
-        });
+        };
+        authenticationViewModel.getEventRefreshExpiration().observe(this, eventRefreshExpiration);
+
         checkToken();
     }
 

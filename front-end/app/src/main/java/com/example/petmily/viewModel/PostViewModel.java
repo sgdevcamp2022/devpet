@@ -15,12 +15,15 @@ import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
+import androidx.room.Room;
 
 import com.example.petmily.R;
+import com.example.petmily.model.data.auth.local.AuthDatabase;
 import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.Coord;
 import com.example.petmily.model.data.post.Entity.Location;
 import com.example.petmily.model.data.post.Entity.Profile;
+import com.example.petmily.model.data.post.PostFull;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
 import com.example.petmily.model.data.post.local.PostDatabase;
@@ -106,10 +109,10 @@ public class PostViewModel extends AndroidViewModel {
         return postHalf;
     }
 
-    private MutableLiveData<List<Post>> postFull;
-    public MutableLiveData<List<Post>> getPostFull() {
+    private MutableLiveData<List<PostFull>> postFull;
+    public MutableLiveData<List<PostFull>> getPostFull() {
         if (postFull == null) {
-            postFull = new MutableLiveData<List<Post>>();
+            postFull = new MutableLiveData<List<PostFull>>();
         }
         return postFull;
     }
@@ -171,6 +174,7 @@ public class PostViewModel extends AndroidViewModel {
 
     public void init()
     {
+        db  = PostDatabase.getInstance(context);
         uriList = new ArrayList<>();
         viewpagerList = new ArrayList<>();
 
@@ -243,7 +247,8 @@ public class PostViewModel extends AndroidViewModel {
 
             Coord coord = new Coord(latitude+0.0001*i, longitude+0.0001*i);
             Location location = new Location(2, coord);
-            Post post = new Post(i+"" ,null, location, imageUrl1, 3, true, "대충 게시글 내용",
+            Profile profile = new Profile(imageUrl1.get(0), i+"", "1번유저 닉네임");
+            Post post = new Post(i+"" ,profile, location, imageUrl1, 3, true, "대충 게시글 내용",
                     null, null);
             postList.add(post);
         }
@@ -257,7 +262,6 @@ public class PostViewModel extends AndroidViewModel {
                     @Override
                     public void onSuccess(Uri uri) {
                         uriList.add(uri);
-
                         count[0]++;
                         if(count[0] == 10)
                         {
@@ -349,20 +353,20 @@ public class PostViewModel extends AndroidViewModel {
     }
     public void postFull()
     {
-        List<Post> list = new ArrayList<>();
+        List<PostFull> list = new ArrayList<>();
         for(int i = 0; i < postList.size(); i++)
         {
             String postId = postList.get(i).getPostId();
             Profile profile = postList.get(i).getProfile();
             Location location = postList.get(i).getLocation();
-            List<String> imageUrl = uriList.get(i).getPath();
+            //List<String> imageUrl = uriList.get(i).getPath();
             int like = postList.get(i).getLike();
             boolean likeCheck = postList.get(i).isLikeCheck();
             String content = postList.get(i).getContent();
             List<String> hashTag = postList.get(i).getHashTag();
             List<Comment> comments = postList.get(i).getComments();
 
-            list.add(new Post(postId, profile, location, imageUrl, like, likeCheck, content ,hashTag, comments));
+            list.add(new PostFull(postId, profile, location, uriList, like, likeCheck, content ,hashTag, comments));
             postFull.setValue(list);
 
 //            for(int j = 0; j < imageUrl.size(); j++)

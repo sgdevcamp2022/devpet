@@ -15,10 +15,10 @@ public interface API_Interface {
     Call<?> saveProfile(@Body Profile profile);
 
     @GET("my-profile")
-    Call<?> getMyProfile();
+    Call<Profile> getMyProfile();
 
     @GET("{id}")
-    Call<?> getProfile(@Path("id")String id);
+    Call<Profile> getProfile(@Path("id")String id);
 
     @POST("room")
     Call<ChatRoomMake> createRoom(@Body List<String> userId);

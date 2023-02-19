@@ -6,10 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityPostFullBinding;
+import com.example.petmily.model.data.post.PostFull;
 import com.example.petmily.model.data.post.remote.Post;
 import com.example.petmily.viewModel.PostViewModel;
 
@@ -36,16 +38,17 @@ public class Activity_PostFull extends AppCompatActivity {
     {
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.init();
-
+        post = binding.postFull;
+        post.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         initObserver();
     }
 
     public void initObserver()
     {
-        final Observer<List<Post>> getPostFullObserver = new Observer<List<Post>>() {
+        final Observer<List<PostFull>> getPostFullObserver = new Observer<List<PostFull>>() {
             @Override
-            public void onChanged(List<Post> posts) {
+            public void onChanged(List<PostFull> posts) {
                 Adapter_PostFull newAdapter = new Adapter_PostFull(posts);
                 post.setAdapter(newAdapter);
             }

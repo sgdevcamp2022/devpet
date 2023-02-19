@@ -2,16 +2,13 @@
 package com.example.petmily.model.data.post.local;
 
 import androidx.annotation.NonNull;
-import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.Location;
 import com.example.petmily.model.data.post.Entity.Profile;
-import com.google.gson.annotations.SerializedName;
 
-import java.io.Serializable;
 import java.util.List;
 
 @Entity(tableName = "PostSQL")

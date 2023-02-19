@@ -233,12 +233,12 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(@Nullable final Boolean aBoolean) {
                 if(!aBoolean) {
-                    postViewModel.postHalf();
-                    postViewModel.postGrid();
+
                 }
                 else
                 {
-
+                    postViewModel.postHalf();
+                    postViewModel.postGrid();
                 }
 
             }
@@ -257,8 +257,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         });
 
 
-
-        postViewModel.postHalf();
+        postViewModel.postImport();
 
         grid.setVisibility(View.INVISIBLE);
     }

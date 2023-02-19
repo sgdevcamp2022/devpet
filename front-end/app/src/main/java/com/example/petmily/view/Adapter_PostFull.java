@@ -1,6 +1,7 @@
 package com.example.petmily.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,7 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
     public Adapter_PostFull.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         PostListFullBinding postListFullBinding= DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()),
-                R.layout.post_list_grid,
+                R.layout.post_list_full,
                 parent,
                 false
         );
@@ -44,6 +45,15 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
     @Override
     public void onBindViewHolder(@NonNull Adapter_PostFull.Holder holder, int position) {
         PostFull post = list.get(position);
+
+        holder.postListBinding.profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, Activity_Profile.class);
+                intent.putExtra("userId", post.getProfile().getUserId());
+                context.startActivity(intent);
+            }
+        });
 //        Glide.with(context)
 //                .load(post.getUri())
 //                .into(holder.postListBinding.postImage);
@@ -63,7 +73,7 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
         public Holder(@NonNull PostListFullBinding postListBinding) {
             super(postListBinding.getRoot());
             this.postListBinding=postListBinding;
-            //postListBinding.postImage.setImageResource(R.drawable.ic_launcher_background);
+            postListBinding.postImage.setImageResource(R.drawable.ic_launcher_background);
 
         }
     }
