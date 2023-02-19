@@ -1,14 +1,11 @@
 package com.example.petmily.model.data.make.remote;
 
-import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.Location;
-import com.example.petmily.model.data.post.Entity.Profile;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class Post {
-
 
     @SerializedName("content")
     String content;
@@ -20,24 +17,20 @@ public class Post {
     Location location;
     //int category;
     //Coord coord
-    //double latitude;
-    //double lonngitude;
-
-
+        //double latitude;
+        //double lonngitude;
     @SerializedName("tag")
     List<String> tag;
 
     @SerializedName("hashTag")
     List<String> hashTag;
 
-    @SerializedName("imageUrl")
-    List<String> imageUrl;
-
     @SerializedName("groupId")
     int groupId;//null값으로 보낼 예정
 
     //카테고리 0번 -> 시설 1-> 개인 2-> 그룹
-
+    @SerializedName("imageUrl")
+    List<String> imageUrl;
 
     public Post(String content, int category, Location location, List<String> tag, List<String> hashTag, List<String> imageUrl, int groupId) {
         this.content = content;
@@ -45,8 +38,9 @@ public class Post {
         this.location = location;
         this.tag = tag;
         this.hashTag = hashTag;
-        this.imageUrl = imageUrl;
         this.groupId = groupId;
+        this.imageUrl = imageUrl;
+
     }
 
     public String getContent() {
@@ -103,5 +97,19 @@ public class Post {
 
     public void setGroupId(int groupId) {
         this.groupId = groupId;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "content='" + content + '\'' +
+                ", category=" + category +
+                ", location_latitude=" + location.getCoord().getLatitude() +
+                ", location_longitude=" + location.getCoord().getLonngitude() +
+                ", tag=" + tag +
+                ", hashTag=" + hashTag +
+                ", groupId=" + groupId +
+                ", imageUrl=" + imageUrl +
+                '}';
     }
 }

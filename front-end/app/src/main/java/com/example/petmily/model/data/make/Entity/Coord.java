@@ -2,11 +2,11 @@ package com.example.petmily.model.data.make.Entity;
 
 public class Coord {
     double latitude;
-    double lonngitude;
+    double longitude;
 
-    public Coord(double latitude, double lonngitude) {
+    public Coord(double latitude, double longitude) {
         this.latitude = latitude;
-        this.lonngitude = lonngitude;
+        this.longitude = longitude;
     }
 
     public double getLatitude() {
@@ -17,11 +17,11 @@ public class Coord {
         this.latitude = latitude;
     }
 
-    public double getLonngitude() {
-        return lonngitude;
+    public double getLongitude() {
+        return longitude;
     }
 
-    public void setLonngitude(double lonngitude) {
-        this.lonngitude = lonngitude;
+    public void setLongitude(double lonngitude) {
+        this.longitude = lonngitude;
     }
 }

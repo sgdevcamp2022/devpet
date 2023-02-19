@@ -39,6 +39,7 @@ import com.google.gson.GsonBuilder;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.MarkerIcons;
 
@@ -148,6 +149,13 @@ public class PostViewModel extends AndroidViewModel {
             postEvent = new SingleLiveEvent<Boolean>();
         }
         return postEvent;
+    }
+    private MutableLiveData<Integer> markerPosition;
+    public MutableLiveData<Integer> getMarkerPosition() {
+        if (markerPosition == null) {
+            markerPosition = new MutableLiveData<Integer>();
+        }
+        return markerPosition;
     }
 
 
@@ -315,6 +323,14 @@ public class PostViewModel extends AndroidViewModel {
             marker.setPosition(new LatLng(coord.getLatitude(), coord.getLonngitude()));
             marker.setZIndex(5000+i);
             marker.setIcon(MarkerIcons.GREEN);
+            int finalI = i;
+            marker.setOnClickListener(new Overlay.OnClickListener() {
+                @Override
+                public boolean onClick(@NonNull Overlay overlay) {
+                    markerPosition.setValue(finalI);
+                    return false;
+                }
+            });
             //marker.setHideCollidedMarkers(true);
             markers.add(marker);
         }
@@ -396,8 +412,6 @@ public class PostViewModel extends AndroidViewModel {
                     18                         // 줌 레벨
             );
             this.cameraPosion.setValue(cameraPosition);
-            markers.get(position).setWidth(150);
-            markers.get(position).setHeight(150);
             markerList.setValue(markers);
         }
     }
@@ -429,7 +443,21 @@ public class PostViewModel extends AndroidViewModel {
         }
         Address address = addresses.get(0);
         //Log.e("주소 테스트 : ", address.getLocality());
-        localName.setValue(address.getLocality());
+
+        if(address.getThoroughfare() != null)//동
+        {
+            localName.setValue(address.getThoroughfare());
+            Log.e("getThoroughfare", address.getThoroughfare());
+        }
+        else if(address.getFeatureName() != null)//지번
+        {
+            localName.setValue(address.getFeatureName());
+        }
+        else if(address.getLocality() != null)//군, 구
+        {
+            localName.setValue(address.getFeatureName());
+        }
+
 
         return address.getAddressLine(0).toString()+"\n";
     }
@@ -494,6 +522,15 @@ public class PostViewModel extends AndroidViewModel {
 
                     postHalf();
                     postGrid();
+                }
+            }
+            else
+            {
+                Log.e("프로필 통신 에러 : ", responseCode+"");
+                try {
+                    Log.e("프로필 통신 에러 : ", response.errorBody().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }

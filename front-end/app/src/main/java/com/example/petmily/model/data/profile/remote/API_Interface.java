@@ -11,15 +11,15 @@ import retrofit2.http.Path;
 
 public interface API_Interface {
 
-    @POST
-    Call<?> saveProfile(@Body Profile profile);
+    @POST("profile")
+    Call<Success> saveProfile(@Body Profile profile);
 
-    @GET("my-profile")
+    @GET("profile/my-profile")
     Call<Profile> getMyProfile();
 
-    @GET("{id}")
+    @GET("profile/{id}")
     Call<Profile> getProfile(@Path("id")String id);
 
-    @POST("room")
+    @POST("profile/room")
     Call<ChatRoomMake> createRoom(@Body List<String> userId);
 }

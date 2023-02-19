@@ -38,6 +38,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -240,7 +242,7 @@ public class ProfileViewModel extends AndroidViewModel {
     }
     public void petAppend(String imageUri, String name, String division, String birth, String about)
     {
-        Pet pet = new Pet(name, division, birth, about, imageUri, "");
+        Pet pet = new Pet(name, division, birth, about, imageUri, "2023-02-19");
         pets.add(pet);
         petList.setValue(pets);
 
@@ -311,10 +313,30 @@ public class ProfileViewModel extends AndroidViewModel {
 
         @Override
         public void onResponse(retrofit2.Call<T> call, retrofit2.Response<T> response) {
-
             Gson gson = new Gson();
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
+
+            ResponseBody errorBody = response.errorBody();
+
+            Log.e("프로필 통신 확인 : ", responseCode+"");
+
+            if(errorBody != null)
+            {
+                try {
+                    Log.e("프로필 통신 확인 : ", errorBody.string());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                Profile result = (Profile) body;
+                Log.e("프로필 통신 확인 : ",  result.toString());
+            }
+
+
+
 
             if(responseCode == SUCCESS) {
                 if (body instanceof Profile) {
@@ -358,11 +380,23 @@ public class ProfileViewModel extends AndroidViewModel {
                     roomIdLive.setValue(result.getRoomId());
                 }
             }
+            else if(responseCode == INTERNAL_SERVER_ERROR)
+            {
+                Profile result = (Profile) body;
+                profile.setValue(result);
+                //profile.setValue(null);
+            }
+            else
+            {
+
+
+            }
         }
+
 
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
-            Log.e("프로필 통신 에러 : ", "");
+            Log.e("프로필 통신 실패 : ", t.getMessage());
             t.printStackTrace();
         }
     }

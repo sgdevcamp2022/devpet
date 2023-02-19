@@ -61,8 +61,7 @@ public class Activity_Join extends AppCompatActivity {
             public void onChanged(@Nullable final Boolean emailDuplication) {
                 if(emailDuplication)
                 {
-                    Intent intent = new Intent(getApplicationContext(), Activity_MakeProfile.class);
-                    startActivity(intent);
+                    finish();
                 }
                 else
                 {

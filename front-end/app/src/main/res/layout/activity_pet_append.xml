@@ -65,14 +65,14 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/division">
-
+            <!--
             <TextView
                 android:id="@+id/year"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp"
-                android:text="0000년"
+                android:text="0000-"
                 android:textSize="20dp" />
 
             <TextView
@@ -81,16 +81,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp"
-                android:text="00월"
+                android:text="00-"
                 android:textSize="20dp" />
+                -->
 
             <TextView
-                android:id="@+id/day"
+                android:id="@+id/time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:padding="3dp"
-                android:text="00일"
+                android:text="0000-00-00"
                 android:textSize="20dp" />
         </LinearLayout>
         <EditText

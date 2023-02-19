@@ -103,7 +103,7 @@ public class ChatService extends Service{
 //        thread.stopForever();
 //        thread = null;//쓰레기 값을 만들어서 빠르게 회수하라고 null을 넣어줌.
 
-        if(count <= 100)
+        if(count <= 20)
         {
             registerRestartAlarm();
         }
@@ -151,7 +151,7 @@ public class ChatService extends Service{
                                 String receiver = result.get(i).getReceiverName();
                                 String message = result.get(i).getMessage();
                                 String timeLog = result.get(i).getTimelog();
-                                Message addMessage = new Message("TALK", roomId, sender, receiver, message, timeLog);
+                                Message addMessage = new Message(type, roomId, sender, receiver, message, timeLog);
 
                                 RoomSQL roomSQL = db.chatRoomDao().getMessage(roomId);
                                 List<Message> messageList = roomSQL.getMessages();

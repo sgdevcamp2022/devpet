@@ -26,8 +26,10 @@ import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.profile.remote.Profile;
 import com.example.petmily.model.data.profile.remote.SuccessFollow;
 import com.example.petmily.model.data.profile.remote.SuccessFollower;
+import com.example.petmily.viewModel.AuthenticationViewModel;
 import com.example.petmily.viewModel.PostViewModel;
 import com.example.petmily.viewModel.ProfileViewModel;
+import com.example.petmily.viewModel.service.ChatService;
 
 import java.util.List;
 
@@ -76,6 +78,16 @@ public class Fragment_Profile extends Fragment {
     {
         post = binding.searchPost;
         post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        AuthenticationViewModel authenticationViewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
+        binding.setting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //authenticationViewModel.logout();
+                Intent intent = new Intent(context, Activity_MakeProfile.class);
+                startActivity(intent);
+
+            }
+        });
         initObserver();
     }
 
@@ -93,14 +105,29 @@ public class Fragment_Profile extends Fragment {
         final Observer<Profile> profileObserver  = new Observer<Profile>() {
             @Override
             public void onChanged(@Nullable final Profile profile) {
-//                nickname = profile.getNickname();
-//                about = profile.getAbout();
-                binding.nickname.setText(profile.getNickname());
-                binding.about.setText(profile.getAbout());
-                birth = profile.getBirth();
+
+
+                if(profile != null)
+                {
+                    binding.nickname.setText(profile.getNickname());
+                    binding.about.setText(profile.getAbout());
+                    birth = profile.getBirth();
+                }
+                else
+                {
+                    Intent intent = new Intent(context, Activity_MakeProfile.class);
+                    startActivity(intent);
+                    Log.e("프로필 정보가 없어 프로필 화면으로 이동 : ", profile.getNickname());
+
+                }
+
+
 //                Glide.with(context)
 //                        .load(profile.getImageUri())
 //                        .into(binding.profileImage);
+
+
+
 
             }
         };
@@ -125,12 +152,7 @@ public class Fragment_Profile extends Fragment {
         };
         profileViewModel.getFollower().observe(getViewLifecycleOwner(), followerObserver);
 
-        profileViewModel.profileMyImport();
-
-
-
-
-
+        profileViewModel.profileImport("12");
 
     }
 

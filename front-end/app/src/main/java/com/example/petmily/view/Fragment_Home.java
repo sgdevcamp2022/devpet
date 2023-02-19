@@ -72,6 +72,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     private LinearLayoutManager linearLayoutManager;
 
     private GpsTracker gpsTracker;
+    private SlidingUpPanelLayout sliding;
     double latitude;
     double longitude;
 
@@ -140,7 +141,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
 
 
-        SlidingUpPanelLayout sliding = binding.slidingLayout;
+        sliding = binding.slidingLayout;
         sliding.setClipToOutline(true);
         sliding.setTouchEnabled(true);
         sliding.setAnchorPoint(0.4F);
@@ -229,21 +230,27 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         };
         postViewModel.getLocalName().observe(getViewLifecycleOwner(), localNameObserver);
 
-        final Observer<Boolean> eventPost = new Observer<Boolean>() {
+        final Observer<Boolean> eventCompletePost = new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable final Boolean aBoolean) {
-                if(!aBoolean) {
-
-                }
-                else
-                {
+                if(aBoolean) {
                     postViewModel.postHalf();
                     postViewModel.postGrid();
                 }
-
             }
         };
-        postViewModel.getPostEvent().observe(this, eventPost);
+        postViewModel.getPostEvent().observe(this, eventCompletePost);
+
+        final Observer<Integer> markerPositionObserver  = new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable final Integer position) {
+                sliding.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+                linearLayoutManager = (LinearLayoutManager)halfView.getLayoutManager();
+                if(linearLayoutManager != null)
+                    linearLayoutManager.scrollToPosition(position);
+            }
+        };
+        postViewModel.getMarkerPosition().observe(getViewLifecycleOwner(), markerPositionObserver);
 
         halfView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override

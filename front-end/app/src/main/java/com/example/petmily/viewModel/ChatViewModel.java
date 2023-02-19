@@ -223,13 +223,13 @@ public class ChatViewModel extends AndroidViewModel{
             Gson gson = new Gson();
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
-            Log.e("통신 성공 : ", "");
+            Log.e("채팅 통신 성공 : ", "응답 코드 "+responseCode + "\t"+response.message());
 
 
         }
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
-            Log.e("통신 실패 : ", "");
+            Log.e("채팅 실패 : ", "");
             t.printStackTrace();
         }
     }

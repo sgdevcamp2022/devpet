@@ -10,6 +10,7 @@ import java.util.List;
 
 public class Post implements Serializable {
 
+
     @SerializedName("postId")
     String postId;
 
