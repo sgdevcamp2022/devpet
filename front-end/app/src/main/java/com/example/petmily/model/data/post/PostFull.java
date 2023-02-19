@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.example.petmily.model.data.post;
 
 import android.net.Uri;
@@ -127,7 +127,5 @@ public class PostFull {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
-=======
-package com.example.petmily.model.data.post;public class PostFull {
->>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
+
 }

@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.example.petmily.model.data.post.local;
 
 import androidx.annotation.NonNull;
@@ -143,7 +143,4 @@ public class PostSQL {
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
-=======
-package com.example.petmily.model.data.post.local;public class PostSQL {
->>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
 }

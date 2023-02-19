@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 package com.example.petmily.model.data.post.local;
 
 import android.content.Context;
@@ -6,6 +5,10 @@ import android.content.Context;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.TypeConverters;
+
+import com.example.petmily.model.data.post.local.PostConverters;
+import com.example.petmily.model.data.post.local.PostDao_Interface;
+import com.example.petmily.model.data.post.local.PostSQL;
 
 
 @Database(entities = {PostSQL.class},version = 2)
@@ -28,8 +31,4 @@ public abstract class PostDatabase extends androidx.room.RoomDatabase
         return database;
     }
     public abstract PostDao_Interface postDao();
-
-=======
-package com.example.petmily.model.data.post.local;public class PostDatabase {
->>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
 }

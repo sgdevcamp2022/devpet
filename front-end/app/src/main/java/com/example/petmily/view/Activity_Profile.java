@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 package com.example.petmily.view;
 
 import android.content.Context;
@@ -24,6 +24,8 @@ import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.profile.remote.Profile;
 import com.example.petmily.model.data.profile.remote.SuccessFollow;
 import com.example.petmily.model.data.profile.remote.SuccessFollower;
+import com.example.petmily.view.Activity_Chat;
+import com.example.petmily.view.Adapter_PostGrid;
 import com.example.petmily.viewModel.PostViewModel;
 import com.example.petmily.viewModel.ProfileViewModel;
 
@@ -177,7 +179,4 @@ public class Activity_Profile extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-=======
-package com.example.petmily.view;public class Activity_Profile {
->>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
 }

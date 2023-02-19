@@ -1,10 +1,11 @@
-<<<<<<< HEAD
 package com.example.petmily.model.data.post.local;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+
+import com.example.petmily.model.data.post.local.PostSQL;
 
 import java.util.List;
 
@@ -16,9 +17,4 @@ public interface PostDao_Interface {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertPost(List<PostSQL> postSQLList);
-
-
-=======
-package com.example.petmily.model.data.post.local;public interface PostDao_Interface {
->>>>>>> ec9fdf7e880a8cb7a530320265355487b63419e6
 }
