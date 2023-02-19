@@ -19,6 +19,7 @@ import com.example.petmily.model.data.profile.remote.ChatRoomMake;
 import com.example.petmily.model.data.profile.Pet;
 import com.example.petmily.model.data.profile.remote.API_Interface;
 import com.example.petmily.model.data.profile.remote.Profile;
+import com.example.petmily.model.data.profile.remote.Success;
 import com.example.petmily.model.data.profile.remote.SuccessFollow;
 import com.example.petmily.model.data.profile.remote.SuccessFollower;
 import com.example.petmily.model.data.profile.remote.SuccessTest;
@@ -26,11 +27,14 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -113,6 +117,8 @@ public class ProfileViewModel extends AndroidViewModel {
 
     private List<Pet> pets;
     private String token;
+    private String userId;
+    private Uri imageUri;
 
     public ProfileViewModel(@NonNull Application application) {
         super(application);
@@ -129,6 +135,7 @@ public class ProfileViewModel extends AndroidViewModel {
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
+        userId = sharedPreferences.getString("userId", "");
         //db = ProfileDatabase.getInstance(context);
         profileCallback = new ProfileCallback(context);
 
@@ -242,6 +249,7 @@ public class ProfileViewModel extends AndroidViewModel {
     }
     public void petAppend(String imageUri, String name, String division, String birth, String about)
     {
+
         Pet pet = new Pet(name, division, birth, about, imageUri, "2023-02-19");
         pets.add(pet);
         petList.setValue(pets);
@@ -249,6 +257,8 @@ public class ProfileViewModel extends AndroidViewModel {
     }
     public void profileSave(String imageUri, String nickname, String about, String birth)
     {
+        //this.imageUri = imageUri;
+        this.imageUri = null;
         Profile profile = new Profile(nickname, about, birth, pets);
         //Profile profile = new Profile(imageUri, name, about, birth, pets);
         restApi = profileInterface.saveProfile(profile);
@@ -378,6 +388,45 @@ public class ProfileViewModel extends AndroidViewModel {
                 {
                     ChatRoomMake result = (ChatRoomMake) response.body();
                     roomIdLive.setValue(result.getRoomId());
+                }
+               else if (body instanceof Success)//프로필 등록 성공시
+                {
+//                    Date date = new Date(System.currentTimeMillis());
+//                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//                    String getTime = dateFormat.format(date);
+//                    UploadTask uploadTask = storageReference.child("profile/"+userId+"/"+getTime+".jpg").putFile(imageUri);
+//
+//                    //UploadTask uploadTask = storageReference.child("dog2.png").putFile(imageUri.get(i));
+//                    uploadTask.addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            Log.e("스토리지 저장 실패 : ", e.toString());
+//                            e.printStackTrace();
+//                        }
+//                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                        @Override
+//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                            Log.e("스토리지 저장 성공 : ", taskSnapshot.getMetadata().getPath());
+//                        }
+//                    });
+//                    for(int i = 0; i < pets.size(); i++)//펫 프로필사진 저장
+//                    {
+//                        uploadTask = storageReference.child("profile/"+userId+"/pets/"+getTime+".jpg").putFile(imageUri);//pets.get(i).getImageUrl();
+//
+//                        //UploadTask uploadTask = storageReference.child("dog2.png").putFile(imageUri.get(i));
+//                        uploadTask.addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.e("스토리지 저장 실패 : ", e.toString());
+//                                e.printStackTrace();
+//                            }
+//                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                            @Override
+//                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                                Log.e("스토리지 저장 성공 : ", taskSnapshot.getMetadata().getPath());
+//                            }
+//                        });
+//                    }
                 }
             }
             else if(responseCode == INTERNAL_SERVER_ERROR)

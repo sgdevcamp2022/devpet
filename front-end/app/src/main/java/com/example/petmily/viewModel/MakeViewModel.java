@@ -168,13 +168,13 @@ public class MakeViewModel extends AndroidViewModel {
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.e("실패 메시지 : ", "");
+                    Log.e("스토리지 저장 실패 : ", e.toString());
                     e.printStackTrace();
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.e("스토리지 주소 출력 : ", taskSnapshot.getMetadata().getPath());
+                    Log.e("스토리지 저장 성공 : ", taskSnapshot.getMetadata().getPath());
                 }
             });
         }

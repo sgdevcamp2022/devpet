@@ -120,15 +120,9 @@ public class Fragment_Profile extends Fragment {
                     Log.e("프로필 정보가 없어 프로필 화면으로 이동 : ", profile.getNickname());
 
                 }
-
-
 //                Glide.with(context)
 //                        .load(profile.getImageUri())
 //                        .into(binding.profileImage);
-
-
-
-
             }
         };
         profileViewModel.getProfile().observe(getViewLifecycleOwner(), profileObserver);
