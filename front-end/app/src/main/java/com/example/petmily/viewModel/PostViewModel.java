@@ -240,7 +240,6 @@ public class PostViewModel extends AndroidViewModel {
     {
 //        restApi = postInterface.getPost();
 //        restApi.enqueue(postCallback);
-
         //테스트용 코드
         postList = new ArrayList<Post>();
         List<String> imageUrl1 = new ArrayList<>();
@@ -251,8 +250,6 @@ public class PostViewModel extends AndroidViewModel {
 
         for(int i = 0; i < 10; i++)
         {
-            //38.2078015 	127.2129742
-
             Coord coord = new Coord(latitude+0.0001*i, longitude+0.0001*i);
             Location location = new Location(2, coord);
             Profile profile = new Profile(imageUrl1.get(0), i+"", "1번유저 닉네임");

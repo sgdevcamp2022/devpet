@@ -105,8 +105,8 @@ public class Fragment_Profile extends Fragment {
         final Observer<Profile> profileObserver  = new Observer<Profile>() {
             @Override
             public void onChanged(@Nullable final Profile profile) {
-
-
+                //nickname = profile.getNickname();
+                //about = profile.getAbout();
                 if(profile != null)
                 {
                     binding.nickname.setText(profile.getNickname());

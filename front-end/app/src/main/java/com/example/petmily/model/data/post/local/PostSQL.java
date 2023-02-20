@@ -17,40 +17,24 @@ public class PostSQL {
     @NonNull
     @PrimaryKey
     String postId;
-
-
     Profile profile;
     //String profileImage;
     //int userId;
     //String nickname;
 
-
+    //카테고리 0번 -> 시설 1-> 개인 2-> 그룹
     Location location;
     //int category;
     //Coord coord
     //double latitude;
     //double lonngitude;
 
-
     List<String> imageUrl;
-
-
     int like;//좋아요 수
-
-
     boolean likeCheck;
-
     String content;
-
-    //카테고리 0번 -> 시설 1-> 개인 2-> 그룹
-
-
     List<String> hashTag;
-
-
     List<Comment> comments;
-    //Profile profile;
-    //S
 
     public PostSQL(@NonNull String postId, Profile profile, Location location, List<String> imageUrl, int like, boolean likeCheck, String content, List<String> hashTag, List<Comment> comments) {
         this.postId = postId;
@@ -62,10 +46,6 @@ public class PostSQL {
         this.content = content;
         this.hashTag = hashTag;
         this.comments = comments;
-    }
-
-    public PostSQL() {
-
     }
 
     @NonNull
