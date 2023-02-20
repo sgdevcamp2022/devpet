@@ -48,7 +48,7 @@ public class ProfileService {
         profile.setProfileData(profileRequest);
         List<Pet> savePetList = petService.postAllPet(profile.getPetList());
         Profile result = profileRepository.save(profile);
-//        sendToRelationServer(profile, userInfo);
+        sendToRelationServer(profile, userInfo);
         return result;
     }
     public void sendToRelationServer(Profile profile, UserInfo userInfo)
@@ -60,6 +60,7 @@ public class ProfileService {
                         .petId(item.getPetId().toString())
                         .petBirth(item.getBirth().toString())
                         .petName(item.getName())
+                        .tags(item.getTags())
                         .userId(username).build()
         ).collect(Collectors.toList());
         userInfoService.saveUserInfo(UserInfoDto.builder()
