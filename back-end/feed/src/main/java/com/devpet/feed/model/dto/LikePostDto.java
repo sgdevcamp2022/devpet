@@ -10,4 +10,5 @@ import lombok.Setter;
 public class LikePostDto {
     private String userId;
     private String postId;
+    private Boolean isFavorite;
 }

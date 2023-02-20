@@ -39,8 +39,8 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return DISTINCT n.postId " +
             "order by n.createdAt DESC")
 
-    List<String> getPostList(@Param("userId") String userId);
-    
+    Set<String> getPostList(@Param("userId") String userId);
+
     @Query("match(u:UserInfo{userId : $userId})" + "DETACH DELETE u")
     void deleteUser(@Param("userId") String userId);
 

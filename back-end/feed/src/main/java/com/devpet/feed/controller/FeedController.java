@@ -1,48 +1,47 @@
 package com.devpet.feed.controller;
 
 import com.devpet.feed.model.dto.ScoreDto;
-import com.devpet.feed.model.dto.UserInfoDto;
 import com.devpet.feed.service.FeedService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.neo4j.driver.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/feed")
 public class FeedController {
+    @Value("${spring.neo4j.uri}")
+    String uri;
+    @Value("${spring.neo4j.authentication.username}")
+    String username;
+    @Value("${spring.neo4j.authentication.password}")
+    String password;
 
     private final FeedService feedService;
-    @GetMapping("/test")
-    public List<ScoreDto> test(){
-        List<ScoreDto> scoreDtoList = new ArrayList<>();
-        ScoreDto scoreDto1 = new ScoreDto();
-        ScoreDto scoreDto2 = new ScoreDto();
-        ScoreDto scoreDto3 = new ScoreDto();
+//    @GetMapping("/test")
+//    public Neo4jRepository test(){
+//        var app = new Neo4jRepository(uri, username, password, Config.defaultConfig());
+//        app.findAllUser();
+//        Object result =  session.run("Match (a:UserInfo {userId: ${userId})} return a",
+//                parameters("userId1"));
+//
+//        Object result = session.run("MATCH (a:UserInfo) WHERE a.userId = {name} " +
+//                        "RETURN a.name AS name, a.title AS title",
+//                parameters("name", "Arthur"));
 
-        scoreDto1.setUserId("k@gmail.com");
-        scoreDto2.setUserId("a@gmail.com");
-        scoreDto3.setUserId("b@gmail.com");
-
-        scoreDto1.setPostId("ida");
-        scoreDto2.setPostId("idb");
-        scoreDto3.setPostId("idc");
-
-        scoreDto1.setScore(4.5);
-        scoreDto2.setScore(5);
-        scoreDto3.setScore(3);
-        scoreDtoList.add(scoreDto1);
-        scoreDtoList.add(scoreDto2);
-        scoreDtoList.add(scoreDto3);
-
-        return scoreDtoList;
-
-    }
+//        var m = Cypher.node("UserInfo").named("m");
+//        var statement = Cypher.match(m)
+//                .returning(m)
+//                .build();
+//        List<UserInfo> user = (List<UserInfo>) statement;
+//        System.out.println(statement.getCypher());
+//        return app;
+//    }
 
 
     @GetMapping("")

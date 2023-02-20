@@ -41,7 +41,7 @@ public class ChatController {
 
     @GetMapping("/messages")
     @ResponseBody
-    public List<String> getMessageList(@RequestHeader("token") String token){
+    public List<String> getMessageList(@RequestHeader("Authorization") String token){
         String userId = jwtTokenProvider.getEmail(token);
         List<String> ChatMessageList = chatService.getUserMessages(userId);
         return ChatMessageList;

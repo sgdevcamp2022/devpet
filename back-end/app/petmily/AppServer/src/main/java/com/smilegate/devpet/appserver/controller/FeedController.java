@@ -22,6 +22,7 @@ public class FeedController {
     @Autowired
     private FavoriteService favoriteService;
 
+
     @PostMapping
     public long postFeed(@RequestBody FeedRequest feedRequest, UserInfo userInfo) {
         Feed feed = feedService.postFeed(feedRequest, userInfo);
