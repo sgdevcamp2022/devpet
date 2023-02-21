@@ -360,11 +360,6 @@ public class ProfileViewModel extends AndroidViewModel {
                 profile.setValue(result);
                 //profile.setValue(null);
             }
-            else
-            {
-
-
-            }
         }
 
 
