@@ -15,6 +15,7 @@ spring:
     redis:
       host: 121.187.22.37
       port: 6379
+      password: mypassword
     application:
       name: relation
 eureka:
