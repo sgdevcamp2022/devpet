@@ -98,8 +98,8 @@ public class ProfileService {
     }
     private void setProfileFollowAnFollowerCount(Profile profile)
     {
-        profile.setFollower(userInfoService.countFollower(FollowRequest.builder().follower(profile.getUsername()).build()));
-        profile.setFollow(userInfoService.countFollowing(FollowRequest.builder().follower(profile.getUsername()).build()));
+        profile.setFollower(userInfoService.countFollower(profile.getUsername()));
+        profile.setFollow(userInfoService.countFollowing(profile.getUsername()));
     }
     public List<Profile> getFollowerList(Long profileId)
     {

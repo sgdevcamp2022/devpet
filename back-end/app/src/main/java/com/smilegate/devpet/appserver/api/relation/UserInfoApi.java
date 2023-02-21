@@ -17,15 +17,15 @@ public interface UserInfoApi {
     public void saveUserInfo(UserInfoDto userInfo);
     @PostMapping("/userinfo/follow")
     public UserInfoDto followUser(FollowRequest followRequest);
-    @PatchMapping("/userinfo")
+    @PutMapping("/userinfo")
     public UserInfoDto patchUserInfo(UserInfoDto userInfoDto);
 
     @PostMapping("/userinfo/follow/cancel")
     public void cancelFollow(FollowRequest followRequest);
-    @RequestMapping(method = RequestMethod.POST, path = "/userinfo/count/follower")//
-    public Long countFollower(@RequestBody FollowRequest followRequest);
-    @RequestMapping(method = RequestMethod.POST,path= "/userinfo/count/following")//
-    public Long countFollowing(@RequestBody FollowRequest followRequest);
+    @GetMapping(  "/userinfo/count/follower") //
+    public Long countFollower(@RequestParam String followerUsername);
+    @GetMapping( "/userinfo/count/following") //
+    public Long countFollowing(@RequestParam String followingUsername);
     @GetMapping("/userinfo/list/follower")//
     public Set<String> getFollowerList(FollowRequest followRequest);
     @GetMapping("/userinfo/list/following")//

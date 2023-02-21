@@ -73,9 +73,10 @@ public class UserInfoController {
      * 팔로워 수 전달
      * followDto 의 follower 필드가 사용자 본인
      * */
-    @PostMapping("/count/follower")
-    public ResponseEntity<Long> countFollower(@RequestBody FollowDto followDto) {
-
+    @GetMapping("/count/follower")
+    public ResponseEntity<Long> countFollower(@RequestParam String followerUsername) {
+        FollowDto followDto = new FollowDto();
+        followDto.setFollower(followerUsername);
         return ResponseEntity.ok(userInfoService.countFollower(followDto.getFollower()));
     }
 
@@ -83,9 +84,10 @@ public class UserInfoController {
      * 팔로잉 수 전달
      * followDto 의 follower 필드가 사용자 본인
      * */
-    @PostMapping("/count/following")
-    public ResponseEntity<Long> countFollowing(@RequestBody FollowDto followDto) {
-
+    @GetMapping("/count/following")
+    public ResponseEntity<Long> countFollowing(@RequestParam String followingUsername) {
+        FollowDto followDto = new FollowDto();
+        followDto.setFollower(followingUsername);
         return ResponseEntity.ok(userInfoService.countFollowing(followDto.getFollower()));
     }
 
