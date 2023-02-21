@@ -266,7 +266,6 @@ public class ProfileViewModel extends AndroidViewModel {
 
     }
 
-    //프로필로 넘어갈 예졍
     public void createChatRoom(String userId)
     {
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
@@ -344,9 +343,6 @@ public class ProfileViewModel extends AndroidViewModel {
                 Profile result = (Profile) body;
                 Log.e("프로필 통신 확인 : ",  result.toString());
             }
-
-
-
 
             if(responseCode == SUCCESS) {
                 if (body instanceof Profile) {

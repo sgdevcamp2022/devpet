@@ -30,6 +30,8 @@ import com.example.petmily.viewModel.AuthenticationViewModel;
 import com.example.petmily.viewModel.PostViewModel;
 import com.example.petmily.viewModel.ProfileViewModel;
 import com.example.petmily.viewModel.service.ChatService;
+import com.example.petmily.viewModel.service.ChatWorker;
+import com.example.petmily.viewModel.service.UndeadService;
 
 import java.util.List;
 
@@ -83,8 +85,11 @@ public class Fragment_Profile extends Fragment {
             @Override
             public void onClick(View view) {
                 //authenticationViewModel.logout();
-                Intent intent = new Intent(context, Activity_MakeProfile.class);
-                startActivity(intent);
+//                Intent intent = new Intent(context, Activity_MakeProfile.class);
+//                startActivity(intent);
+                ChatWorker.isRunning = false;
+                UndeadService.isRunning = false;
+                ChatService.isRunning = false;
 
             }
         });

@@ -16,6 +16,8 @@ import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityLoginBinding;
 import com.example.petmily.viewModel.AuthenticationViewModel;
 import com.example.petmily.viewModel.service.ChatService;
+import com.example.petmily.viewModel.service.ChatWorker;
+import com.example.petmily.viewModel.service.UndeadService;
 
 
 public class Activity_Login extends AppCompatActivity {
@@ -79,7 +81,10 @@ public class Activity_Login extends AppCompatActivity {
                 {
                     intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
-                    //startService(service);
+                    ChatService.isRunning = true;
+                    ChatWorker.isRunning = true;
+                    UndeadService.isRunning = true;
+                    startService(service);
                 }
 
             }
@@ -97,7 +102,7 @@ public class Activity_Login extends AppCompatActivity {
                 {
                     intent = new Intent(getApplicationContext(), MainActivity.class);
                     startActivity(intent);
-                    //startService(service);
+                    startService(service);
                 }
 
             }
