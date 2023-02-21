@@ -58,6 +58,9 @@ public class RedisRepository {
      */
     public void cachedDuplicatedId(String userId, Set<String> postList) {
         String key = keyGeneratePost(userId);
+        if(postList.size()==0){
+            return;
+        }
         redisTemplate.opsForList().rightPushAll(key, postList);
         redisTemplate.expire(key, Duration.ofMinutes(10) );
     }
