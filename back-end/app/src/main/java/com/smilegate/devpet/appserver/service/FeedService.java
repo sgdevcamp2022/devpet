@@ -149,13 +149,12 @@ public class FeedService {
     {
 
         PageRequest pageRequest = PageRequest.of(start/count,count);
-        List<Feed> result = feedRepository.findByUserIdOrderByCreatedAtDesc(userInfo.getUserId());
+        List<Feed> result = feedRepository.findByProfileIdOrderByCreatedAtDesc(userInfo.getUserId());
         return  result.stream().map((feed)->{
             if (feed.getImageUrl().size()<1)
                 return null;
             return feed.getImageUrl().get(0);
         }).collect(Collectors.toList());
-
     }
 
     /**
