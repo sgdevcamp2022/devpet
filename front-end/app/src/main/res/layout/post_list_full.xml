@@ -36,7 +36,7 @@
                 android:id="@+id/nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@={Post.profile.nickname}" />
+                android:text="@={Post.comments}" />
         </LinearLayout>
 
         <LinearLayout
@@ -99,7 +99,7 @@
                 android:id="@+id/time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="1시간 전" />
+                android:text="@={Post.createdAt}" />
 
             <Button
                 android:id="@+id/comments"

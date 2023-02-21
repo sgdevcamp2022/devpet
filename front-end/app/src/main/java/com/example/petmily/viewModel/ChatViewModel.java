@@ -16,15 +16,16 @@ import androidx.lifecycle.Observer;
 import com.example.petmily.model.data.chat.list.ChatList;
 import com.example.petmily.model.data.chat.list.local.ChatDatabase;
 import com.example.petmily.model.data.chat.list.local.ChatListSQL;
-import com.example.petmily.model.data.chat.list.remote.ListAPI_Interface;
 import com.example.petmily.model.data.chat.room.Message;
 import com.example.petmily.model.data.chat.room.local.RoomDatabase;
 import com.example.petmily.model.data.chat.room.local.RoomSQL;
 import com.google.gson.Gson;
 
 
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -36,7 +37,7 @@ import ua.naiksoftware.stomp.StompClient;
 
 public class ChatViewModel extends AndroidViewModel{
 
-    final private String URL = "https://121.187.37.22:1367/api/chat/";
+    final private String URL = "https://121.187.37.22:5555/api/chat/";
     //final private String URL = "10.0.2.2:4444";
 
     boolean isUnexpectedClosed;
@@ -45,9 +46,7 @@ public class ChatViewModel extends AndroidViewModel{
     private RoomSQL roomSQL;
     private ChatDatabase listDB;
     private RoomDatabase roomDB;
-    private ChatCallback chatCallback;
 
-    private ListAPI_Interface chatInterface;
     private Retrofit retrofit;
     private Context context;
 
@@ -87,8 +86,6 @@ public class ChatViewModel extends AndroidViewModel{
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
-        chatInterface = retrofit.create(ListAPI_Interface.class);
-        chatCallback = new ChatCallback(context);
         listDB = ChatDatabase.getInstance(context);
         roomDB = RoomDatabase.getInstance(context);
     }
@@ -110,10 +107,16 @@ public class ChatViewModel extends AndroidViewModel{
     {
         List<ChatListSQL> list = listDB.chatListDao().getChatList();
         List<ChatList> chatLists = new ArrayList<ChatList>();
-        chatLists.add(new ChatList("roomid", "시간", "보낸사람", "profile", "보낸사람 이메일", 1, "마지막텍스트", "1"));
         for(int i = 0; i < list.size(); i++)
         {
             String roomIdLive = list.get(i).getRoodId();
+
+//            String strDate = list.get(i).getTimeLog();
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+//            Date currentDay = dateFormat.parse(strDate, new ParsePosition(0));
+//            Long currentLong = currentDay.getTime();
+//            formatTimeString(currentLong);
+
             String timeLog = list.get(i).getTimeLog();
             String senderNickname = list.get(i).getSenderNickname();
             String profileImage = list.get(i).getProfileImage();
@@ -124,7 +127,6 @@ public class ChatViewModel extends AndroidViewModel{
             ChatList chatList = new ChatList(roomIdLive, timeLog, senderNickname, profileImage, sender, count, lastText, alarm);
             chatLists.add(chatList);
         }
-
         chatList.setValue(chatLists);
     }
 
@@ -167,7 +169,6 @@ public class ChatViewModel extends AndroidViewModel{
 
     @SuppressLint("CheckResult")
     public void initStomp(){
-        //stompClient= Stomp.over(Stomp.ConnectionProvider.JWS, "ws://10.0.2.2:8080/ws-stomp/websocket"); // /websocket 꼭 붙이기
         stompClient= Stomp.over(Stomp.ConnectionProvider.JWS, "ws://"+URL+"/ws-stomp/websocket");
         stompClient.lifecycle().subscribe(lifecycleEvent -> {
             switch (lifecycleEvent.getType()) {
@@ -196,44 +197,6 @@ public class ChatViewModel extends AndroidViewModel{
         stompClient.disconnect();
     }
 
-
-
-    public class ChatCallback<T> implements retrofit2.Callback<T> {
-        /*
-        final int SUCCESS               = 200;
-
-        final int INVALID_PARAMETER     = 400;
-        final int NEED_LOGIN            = 401;
-        final int UNAUTHORIZED          = 403;
-        final int NOT_FOUND             = 404;
-
-        final int INTERNAL_SERVER_ERROR = 500;
-
-         */
-
-        Context context;
-
-        public ChatCallback(Context context) {
-            this.context = context;
-        }
-
-        @Override
-        public void onResponse(retrofit2.Call<T> call, retrofit2.Response<T> response) {
-
-            Gson gson = new Gson();
-            int responseCode = response.code();//네트워크 탐지할 때 사용 코드
-            T body = response.body();
-            Log.e("통신 성공 : ", "");
-
-
-        }
-        @Override
-        public void onFailure(retrofit2.Call<T> call, Throwable t) {
-            Log.e("통신 실패 : ", "");
-            t.printStackTrace();
-        }
-    }
-
     public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
         private static final String TAG = "SingleLiveEvent";
@@ -257,7 +220,6 @@ public class ChatViewModel extends AndroidViewModel{
                 }
             });
         }
-
         @MainThread
         public void setValue(@Nullable T t) {
             mPending.set(true);
@@ -299,4 +261,6 @@ public class ChatViewModel extends AndroidViewModel{
         }
         return msg;
     }
+
+
 }

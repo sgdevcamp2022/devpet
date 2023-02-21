@@ -26,7 +26,10 @@ import com.example.petmily.databinding.ActivityMakeProfileBinding;
 import com.example.petmily.databinding.ActivityPetAppendBinding;
 import com.example.petmily.viewModel.ProfileViewModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class Activity_PetAppend extends AppCompatActivity {
 
@@ -34,9 +37,9 @@ public class Activity_PetAppend extends AppCompatActivity {
     private ProfileViewModel profileViewModel;
     private Uri uri;
     private String imageUrl;
-    private String year;
-    private String month;
-    private String day;
+    private int year;
+    private int month;
+    private int day;
 
 
     @Override
@@ -64,30 +67,45 @@ public class Activity_PetAppend extends AppCompatActivity {
                 mStartForResult.launch(intent);
             }
         });
-
+        final Calendar c = Calendar.getInstance();
+        year = c.get(Calendar.YEAR);
+        month = c.get(Calendar.MONTH);
+        day = c.get(Calendar.DAY_OF_MONTH);
         View.OnClickListener birthClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Dialog dialog = onCreateDialog();
-                dialog.show();
+                Dialog_DatePicker datePickerDialog = new Dialog_DatePicker(Activity_PetAppend.this, new Dialog_DatePicker.Dialog_DateListener() {
+                    @Override
+                    public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
+                        SimpleDateFormat old_sdf = new SimpleDateFormat("yyyyMdd");
+                        SimpleDateFormat new_sdf = new SimpleDateFormat("yyyy-MM-dd");
+                        year = i;
+                        month = (i1+1);
+                        day = i2;
+                        String add = i + "" + (i1+1) + "" + i2;
+                        try {
+                            Date date = old_sdf.parse(add);
+                            binding.time.setText(new_sdf.format(date));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, year, month, day);
+                datePickerDialog.show();
             }
         };
         binding.birth.setOnClickListener(birthClickListener);
-
 
         binding.save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String name = binding.name.getText().toString();
                 String division = binding.division.getText().toString();
-                String birth =
-                        binding.year.getText()+"-"+
-                        binding.month.getText()+"-"+
-                        binding.day.getText();
+                String birth = binding.time.getText().toString();
                 String about = binding.about.getText().toString();
 
                 Intent intent = new Intent();
-                intent.putExtra("uri", uri.toString());
+                intent.putExtra("uri", "");
                 intent.putExtra("name", name);
                 intent.putExtra("division", division);
                 intent.putExtra("birth", birth);
@@ -99,36 +117,7 @@ public class Activity_PetAppend extends AppCompatActivity {
 
             }
         });
-        /*
-        File file = getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/profile_img");
-
-        if(!file.isDirectory())
-            file.mkdir();
-
-         */
     }
-
-
-    @NonNull
-    public Dialog onCreateDialog() {
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-                binding.year.setText(i + "년");
-                binding.month.setText((i1 + 1) + "월");
-                binding.day.setText(i2 + "일");
-            }
-        }, year, month, day);
-
-        return datePickerDialog;
-    }
-
-
     public ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {

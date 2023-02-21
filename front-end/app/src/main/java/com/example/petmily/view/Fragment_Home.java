@@ -3,7 +3,10 @@ package com.example.petmily.view;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,6 +75,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     private LinearLayoutManager linearLayoutManager;
 
     private GpsTracker gpsTracker;
+    private SlidingUpPanelLayout sliding;
     double latitude;
     double longitude;
 
@@ -140,7 +144,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
 
 
-        SlidingUpPanelLayout sliding = binding.slidingLayout;
+        sliding = binding.slidingLayout;
         sliding.setClipToOutline(true);
         sliding.setTouchEnabled(true);
         sliding.setAnchorPoint(0.4F);
@@ -229,21 +233,27 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         };
         postViewModel.getLocalName().observe(getViewLifecycleOwner(), localNameObserver);
 
-        final Observer<Boolean> eventPost = new Observer<Boolean>() {
+        final Observer<Boolean> eventCompletePost = new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable final Boolean aBoolean) {
-                if(!aBoolean) {
-
-                }
-                else
-                {
+                if(aBoolean) {
                     postViewModel.postHalf();
                     postViewModel.postGrid();
                 }
-
             }
         };
-        postViewModel.getPostEvent().observe(this, eventPost);
+        postViewModel.getPostEvent().observe(this, eventCompletePost);
+
+        final Observer<Integer> markerPositionObserver  = new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable final Integer position) {
+                sliding.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+                linearLayoutManager = (LinearLayoutManager)halfView.getLayoutManager();
+                if(linearLayoutManager != null)
+                    linearLayoutManager.scrollToPosition(position);
+            }
+        };
+        postViewModel.getMarkerPosition().observe(getViewLifecycleOwner(), markerPositionObserver);
 
         halfView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
@@ -292,6 +302,20 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onPermissionGranted() {
                 Log.e("퍼미션 동의 : ", "true");
+                Intent i = new Intent();
+                String packageName = context.getPackageName();
+                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+                if (pm.isIgnoringBatteryOptimizations(packageName))
+                {
+                    //i.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                }
+                else {
+                    i.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                    i.setData(Uri.parse("package:" + packageName));
+                    startActivity(i);
+                }
+
             }
 
             @Override
@@ -301,8 +325,13 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         };
         TedPermission.create()
                 .setPermissionListener(permissionlistener)
-                .setDeniedMessage("서비스를 사용하기 위해서는 위치 권한을 등록해야 합니다.")
-                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
+                .setDeniedMessage("서비스를 사용하기 위해서는 권한을 등록해야 합니다.")
+                .setDeniedCloseButtonText("닫기")
+                .setGotoSettingButtonText("설정")
+                .setPermissions(
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                        )
                 .check();
     }
 

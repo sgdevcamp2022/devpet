@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityChatBinding;
+import com.example.petmily.viewModel.service.ChatService;
 
 public class Activity_Chat extends AppCompatActivity {
 
@@ -44,7 +45,19 @@ public class Activity_Chat extends AppCompatActivity {
         fragment_message = new Fragment_Message();
 
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.chat_frame, fragment_alarm).commitAllowingStateLoss();
+
+        String roomId = getIntent().getStringExtra("roomId");
+        if(roomId != null)//푸시 알림으로 앱을 킨 상태
+        {
+            fragmentTransaction.replace(R.id.chat_frame, fragment_message).commitAllowingStateLoss();
+            Intent intent = new Intent(getApplicationContext(), Activity_Chat_Room.class);
+            intent.putExtra("roomId", roomId);
+            startActivity(intent);
+        }
+        else
+        {
+            fragmentTransaction.replace(R.id.chat_frame, fragment_alarm).commitAllowingStateLoss();
+        }
 
         Button b1 = binding.alarm;
         Button b2 = binding.message;
@@ -55,6 +68,7 @@ public class Activity_Chat extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.chat_frame, fragment_alarm).commitAllowingStateLoss();
             }
         });
+
 
         b2.setOnClickListener(new View.OnClickListener() {
             @Override

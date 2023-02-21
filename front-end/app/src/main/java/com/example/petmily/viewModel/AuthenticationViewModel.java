@@ -22,22 +22,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import okhttp3.Request;
 import okhttp3.ResponseBody;
-import okhttp3.internal.http.HttpHeaders;
 import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class AuthenticationViewModel extends AndroidViewModel {
 
-    final String URL = "http://10.0.2.2:7070/oauth/";
+    final String URL = "http://121.187.22.37:7070/oauth/";
     //final String URL = "http://10.0.2.2:8080/oauth/";
 
     private AuthDatabase db;
@@ -105,6 +100,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
         if(tokenSQL != null)
         {
             token =  db.authDao().getToken();
+
         }
         else
         {
@@ -115,10 +111,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
     public void accessTokenCheck()
     {
         //checkToken을 사용해 엑세스 토큰 유효성 확인
-        restApi = authInterface.checkToken(token.getAccessToken());
-        Request request = restApi.request();
-        request = request.newBuilder().header("Connection","close").build();
-        //Log.e("토큰 확인 : ", request.method()+"\t"+request.toString());
+        restApi = authInterface.checkToken(token.getAccessToken());;
         restApi.enqueue(authCallback);
     }
 
@@ -184,22 +177,22 @@ public class AuthenticationViewModel extends AndroidViewModel {
         @Override
         public void onResponse(retrofit2.Call<T> call, retrofit2.Response<T> response) {
 
+
             Gson gson = new Gson();
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
-
+            FailMessage errorBody =null;
             if(responseCode != SUCCESS)
             {
-                ResponseBody errorBody = response.errorBody();
-                if(errorBody != null) {
-                    try {
-                        body = (T) gson.fromJson(errorBody.string(), FailMessage.class);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                Log.e("인증서버 통신 에러 : ", responseCode+"");
+                try {
+                    errorBody = gson.fromJson( response.errorBody().string(), FailMessage.class);
+                    Log.e("인증서버 통신 에러 : ", errorBody.getMessage());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                if(body instanceof FailMessage) {
-                    int code = Integer.parseInt(((FailMessage) body).getMessage());
+                if(errorBody  != null) {
+                    int code = Integer.parseInt(errorBody.getMessage());
 
                     switch (code) {
                         //회원가입 페이지
@@ -240,17 +233,23 @@ public class AuthenticationViewModel extends AndroidViewModel {
                 {
                     tokenSave((RefreshToken) body);
                     eventRefreshExpiration.setValue(true);
+
                     SharedPreferences sharedPreferences= context.getSharedPreferences("token", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor= sharedPreferences.edit();
                     editor.putString("token", token.getAccessToken());
+                    editor.putString("refresh", token.getAccessToken());
                     editor.putString("userId", token.getUid());
                     editor.commit();
                 }
                 else if(body instanceof  AccessToken)//자동 로그인 성공
                 {
+                    Log.e("자동 로그인 성공 - token",token.getAccessToken());
+                    Log.e("자동 로그인 성공 - refresh",token.getRefreshToken());
+                    Log.e("자동 로그인 성공 - userId",token.getUid());
                     SharedPreferences sharedPreferences= context.getSharedPreferences("token", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor= sharedPreferences.edit();
                     editor.putString("token", token.getAccessToken());
+                    editor.putString("refresh", token.getAccessToken());
                     editor.putString("userId", token.getUid());
                     editor.commit();
                 }
@@ -267,9 +266,9 @@ public class AuthenticationViewModel extends AndroidViewModel {
             }
             else
             {
-                ResponseBody errorBody = response.errorBody();
+                ResponseBody hh = response.errorBody();
                 try {
-                    Log.e("통신 성공 후 에러 : ", errorBody.string());
+                    Log.e("인증 통신 에러 : ", responseCode + "\t" +hh.string());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -279,7 +278,6 @@ public class AuthenticationViewModel extends AndroidViewModel {
 
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
-            Log.e("통신 연결 실패 : ", call.request().body().toString());
             Log.e("통신 실패 : ", t.getMessage());
             t.printStackTrace();
         }
