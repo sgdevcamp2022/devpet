@@ -39,7 +39,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "order by n.createdAt DESC "+
             "return DISTINCT n.postId LIMIT 20"
             )
-
     Set<String> getPostList(@Param("userId") String userId);
 
 
@@ -134,23 +133,9 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 10 " +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
-
-//    // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
-//    @Query("match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[:COMMENT]->(:PostInfo)-[:TAGD]->(t:Tag)<-[:TAGD]-(p:PostInfo) " +
-//            "WITH p, datetime() AS now, p.createdAt AS date " +
-//            "order by p.createdAt DESC " +
-//            "where duration.inSeconds(date, now).hours < 8 " +
-//            "return DISTINCT p.postId ")
-//    Set<String> getFollowingCommentPostList(@Param("userId") String userId);
-
-    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물 + 팔로우한 유저가 작성한 게시물(주황색 부분)
-    @Query("match (u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[:POST]->(p1:PostInfo) " +
-            "WITH p1, datetime() AS now, datetime(p1.createdAt) AS date " +
-            "where duration.inSeconds(date, now).hours < 24 " +
-            "return p1.postId as postId " +
-            "union " +
-            "match (u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
-            "WITH p, datetime() AS now, datetime(p.createdAt) AS date " +
+    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
+    @Query("match (u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
+            "WITH p, datetime() AS now, p.createdAt AS date " +
             "where duration.inSeconds(date, now).hours < 24 " +
             "return p.postId as postId " +
             "union " +

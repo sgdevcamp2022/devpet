@@ -106,6 +106,7 @@
                             -->
                         </androidx.constraintlayout.widget.ConstraintLayout>
 
+                        <!--
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/place_list"
                             android:layout_width="match_parent"
@@ -113,6 +114,7 @@
                             tools:listitem="@layout/place_list" >
 
                         </androidx.recyclerview.widget.RecyclerView>
+                        -->
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/post_half_list"
@@ -127,7 +129,8 @@
                         android:id="@+id/post_grid_list"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:padding="25dp"
+                        android:paddingRight="25dp"
+                        android:paddingLeft="25dp"
                         android:gravity="center"/>
 
 

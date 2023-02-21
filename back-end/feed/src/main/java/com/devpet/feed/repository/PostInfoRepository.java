@@ -33,8 +33,8 @@ public interface PostInfoRepository extends Neo4jRepository<PostInfo, String> {
             "return m;")
     Optional<PostInfo> existsComment(String postId, String userId);
 
-    @Query("match(u1:UserInfo{userId:$userId)-[:Follow]->()-[c:COMMENT]->(p:PostInfo)" +
-            "WITH datetime() AS now, datetime(c.createdAt) AS date , p, u1" +
+    @Query("match(u1:UserInfo{userId:$userId)-[:Follow]->()-[c:COMMENT]->(p:PostInfo) " +
+            "WITH datetime() AS now, datetime(c.createdAt) AS date , p, u1 " +
             "where duration.inSeconds(date, now).hours < 1" +
             "return DISTINCT p.postId")
     List<String> findCommentedPostById(String userId);
