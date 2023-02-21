@@ -63,12 +63,11 @@ public class FeedService {
 
         // 게시물 캐시에 내가 작성한 게시물 추가.
         newPostRedisRepository.save(userInfo.getUserId(), feed.getFeedId());
-
 //        // 저장된 게시물 관계 연산 서버로 전송
         PostInfoDto postInfoDto = PostInfoDto.builder()
                 .postId(feed.getFeedId().toString())
                 .postCategory(feed.getLocation().getCategory().toString())
-                .userId(feed.getUserId().toString())
+                .userId(userInfo.getUsername())
                 .createdAt(feed.getCreatedAt().toString())
                 .tags(feed.getHashTags()).build();
         relationPostService.savePostInfo(postInfoDto);

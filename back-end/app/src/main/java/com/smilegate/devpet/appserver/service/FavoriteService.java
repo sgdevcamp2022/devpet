@@ -69,7 +69,7 @@ public class FavoriteService {
         List<Favorite> favoriteStream = favoriteList.stream().filter(item->item.getFavoriteId()==null).collect(Collectors.toList());
 
         // 설정할 아이디의 마지막 번호를 가져옵니다.
-        AtomicLong lastSeq = new AtomicLong(favoriteSequenceGeneratorService.longSequenceBulkGenerate(Feed.SEQUENCE_NAME, (int) favoriteStream.size()));
+        AtomicLong lastSeq = new AtomicLong(favoriteSequenceGeneratorService.longSequenceBulkGenerate(Favorite.SEQUENCE_NAME, (int) favoriteStream.size()));
 
         // 각 정보별로 id를 설정합니다.
         favoriteStream.forEach(item->{
@@ -97,8 +97,10 @@ public class FavoriteService {
                         .build())
                 .collect(Collectors.toList());
 
-        postInfoApi.likePost(likes);
-        postInfoApi.dislikePost(dislikes);
+        if (!likes.isEmpty())
+            postInfoApi.likePost(likes);
+        if (!dislikes.isEmpty())
+            postInfoApi.dislikePost(dislikes);
 //        kafkaProducerServi8ce.feedFavoriteSend(favoriteList);
         return result;
     }

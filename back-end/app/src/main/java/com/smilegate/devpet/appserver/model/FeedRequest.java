@@ -9,7 +9,6 @@ import java.util.Set;
 @Getter @Setter
 public class FeedRequest {
     private String content;
-    private String category;
     private Location location;
     private ArrayList<Long> tagUsers;
     private Long groupId;

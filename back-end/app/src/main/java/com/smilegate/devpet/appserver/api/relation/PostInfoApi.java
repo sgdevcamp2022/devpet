@@ -17,11 +17,11 @@ public interface PostInfoApi {
 
     // 좋아요
     @PostMapping("/postinfo/like")
-    public List<PostInfoDto> likePost(List<LikePostDto> likePostDto);
+    public String likePost(List<LikePostDto> likePostDto);
 
     // 좋아요 취소
     @PatchMapping("/postinfo/like")
-    public List<PostInfoDto> dislikePost(List<LikePostDto> likePostDto);
+    public String dislikePost(List<LikePostDto> likePostDto);
 
     // 코멘트가를 달은 내 게시글 가져오기
     @GetMapping("/postinfo/comment")
