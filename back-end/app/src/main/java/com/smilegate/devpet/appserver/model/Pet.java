@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisHash;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Getter @Setter
@@ -28,4 +29,7 @@ public class Pet extends BaseModel{
     private String division;
     private String about;
     private String imageUrl;
+
+    @Transient
+    private Set<Tag> tags;
 }

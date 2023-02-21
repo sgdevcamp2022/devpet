@@ -3,10 +3,10 @@ package com.example.petmily.model.data.post.Entity;
 public class Profile {
 
     String profileImage;
-    int userId;
+    String userId;
     String nickname;
 
-    public Profile(String profileImage, int userId, String nickname) {
+    public Profile(String profileImage, String userId, String nickname) {
         this.profileImage = profileImage;
         this.userId = userId;
         this.nickname = nickname;
@@ -20,11 +20,11 @@ public class Profile {
         this.profileImage = profileImage;
     }
 
-    public int getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
 

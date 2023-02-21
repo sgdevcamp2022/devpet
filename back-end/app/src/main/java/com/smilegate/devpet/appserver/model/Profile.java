@@ -37,16 +37,19 @@ public class Profile extends BaseModel{
     private long follow;
     private String imageUrl;
 
-    public Profile(ProfileRequest profileRequest,UserInfo userInfo)
-    {
-        this.setProfileData(profileRequest);
-        this.userId = userInfo.getUserId();
-    }
 
     public Profile(ProfileRequest profileRequest,Long userId)
     {
         this.setProfileData(profileRequest);
         this.userId = userId;
+    }
+    public Profile(ProfileRequest profileRequest,UserInfo userInfo)
+    {
+        this(profileRequest,userInfo.getUserId());
+    }
+    public Profile(UserInfo userInfo)
+    {
+        this(null,userInfo.getUserId());
     }
     public void setProfileData(ProfileRequest profileRequest)
     {

@@ -1,7 +1,6 @@
 package com.example.petmily.model.data.chat.room.local;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 

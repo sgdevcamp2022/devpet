@@ -8,17 +8,26 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.room.Room;
 
 import com.example.petmily.R;
+import com.example.petmily.model.data.auth.local.AuthDatabase;
 import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.Coord;
 import com.example.petmily.model.data.post.Entity.Location;
 import com.example.petmily.model.data.post.Entity.Profile;
+import com.example.petmily.model.data.post.PostFull;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
+import com.example.petmily.model.data.post.local.PostDatabase;
+import com.example.petmily.model.data.post.local.PostSQL;
 import com.example.petmily.model.data.post.remote.API_Interface;
 import com.example.petmily.model.data.post.remote.Post;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -37,6 +46,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import retrofit2.Call;
 import retrofit2.Retrofit;
@@ -44,13 +54,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PostViewModel extends AndroidViewModel {
 
-    final String URL = "https://121.187.37.22:5555/api/app/";
+    final String URL = "https://121.187.37.22:1367/api/app/";
 
     FirebaseStorage storage;
     StorageReference storageReference;
 
     private PostCallback postCallback;
     private List<Post> postList;
+    private PostDatabase db;
 
     private API_Interface postInterface;
     private Retrofit retrofit;
@@ -98,10 +109,10 @@ public class PostViewModel extends AndroidViewModel {
         return postHalf;
     }
 
-    private MutableLiveData<List<Post>> postFull;
-    public MutableLiveData<List<Post>> getPostFull() {
+    private MutableLiveData<List<PostFull>> postFull;
+    public MutableLiveData<List<PostFull>> getPostFull() {
         if (postFull == null) {
-            postFull = new MutableLiveData<List<Post>>();
+            postFull = new MutableLiveData<List<PostFull>>();
         }
         return postFull;
     }
@@ -130,6 +141,16 @@ public class PostViewModel extends AndroidViewModel {
         return localName;
     }
 
+    private SingleLiveEvent<Boolean> postEvent;
+    public SingleLiveEvent<Boolean> getPostEvent()
+    {
+        if (postEvent == null) {
+            postEvent = new SingleLiveEvent<Boolean>();
+        }
+        return postEvent;
+    }
+
+
     int like;
 
     private List<Comment> comments;
@@ -137,6 +158,8 @@ public class PostViewModel extends AndroidViewModel {
     private List<PostGrid> gridList;
     private List<Marker> markers;
     private List<Uri> uriList;
+    private List<Uri> viewpagerList;
+    private List<PostSQL> postSQL;
 
     private double latitude;
     private double longitude;
@@ -151,7 +174,9 @@ public class PostViewModel extends AndroidViewModel {
 
     public void init()
     {
+        db  = PostDatabase.getInstance(context);
         uriList = new ArrayList<>();
+        viewpagerList = new ArrayList<>();
 
         markers = new ArrayList<Marker>();
         Gson gson = new GsonBuilder().setLenient().create();
@@ -170,25 +195,34 @@ public class PostViewModel extends AndroidViewModel {
 
 
 
+        postSQL = db.postDao().getPost();
 
-        //테스트용 코드
-        postList = new ArrayList<Post>();
-        List<String> imageUrl = new ArrayList<>();
-        imageUrl.add("dog2.png");
-        GpsTracker gpsTracker = new GpsTracker(context);
-        latitude = gpsTracker.getLatitude();
-        longitude = gpsTracker.getLongitude();
-
-        for(int i = 0; i < 10; i++)
+        if(postSQL != null)
         {
-            //38.2078015 	127.2129742
+            List<Post> postList = new ArrayList<Post>();
+            for(int i = 0; i < postSQL.size(); i++)
+            {
+                String postId = postSQL.get(i).getPostId();
+                Profile profile = postSQL.get(i).getProfile();
+                Location location = postSQL.get(i).getLocation();
+                List<String> imageUrl = postSQL.get(i).getImageUrl();
+                int like = postSQL.get(i).getLike();
+                boolean likeCheck = postSQL.get(i).isLikeCheck();
+                String content = postSQL.get(i).getContent();
+                List<String> hashTag = postSQL.get(i).getHashTag();
+                List<Comment> comments = postSQL.get(i).getComments();
 
-            Coord coord = new Coord(latitude+0.0001*i, longitude+0.0001*i);
-            Location location = new Location(2, coord);
-            Post post = new Post(null, location, imageUrl, 3, true, "대충 게시글 내용",
-                    null, null);
-            postList.add(post);
+                postList.add(new Post(postId, profile, location, imageUrl, like, likeCheck, content ,hashTag, comments));
+            }
+            this.postList = postList;
         }
+        else
+        {
+            postSQL = new ArrayList<PostSQL>();
+        }
+
+
+
 
 
 
@@ -196,8 +230,81 @@ public class PostViewModel extends AndroidViewModel {
     //rest통신으로 포스트 불러오기 구현 x
     public void postImport()
     {
-        restApi = postInterface.getPost();
-        restApi.enqueue(postCallback);
+//        restApi = postInterface.getPost();
+//        restApi.enqueue(postCallback);
+
+        //테스트용 코드
+        postList = new ArrayList<Post>();
+        List<String> imageUrl1 = new ArrayList<>();
+        imageUrl1.add("dog2.png");
+        GpsTracker gpsTracker = new GpsTracker(context);
+        latitude = gpsTracker.getLatitude();
+        longitude = gpsTracker.getLongitude();
+
+        //
+        for(int i = 0; i < 10; i++)
+        {
+            //38.2078015 	127.2129742
+
+            Coord coord = new Coord(latitude+0.0001*i, longitude+0.0001*i);
+            Location location = new Location(2, coord);
+            Profile profile = new Profile(imageUrl1.get(0), i+"", "1번유저 닉네임");
+            Post post = new Post(i+"" ,profile, location, imageUrl1, 3, true, "대충 게시글 내용",
+                    null, null);
+            postList.add(post);
+        }
+        final int[] count = {0};
+        for(int i = 0; i < 10; i++)
+        {
+            for(int j = 0; j < postList.get(i).getImageUrl().size(); j++)
+            {
+                String uri = postList.get(i).getImageUrl().get(j);
+                storageReference.child(uri).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                    @Override
+                    public void onSuccess(Uri uri) {
+                        uriList.add(uri);
+                        count[0]++;
+                        if(count[0] == 10)
+                        {
+                            postEvent.setValue(true);
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        //Log.e("파일 불러오기 실패 : ", e.getMessage());
+                        count[0]++;
+                        if(count[0] == 10)
+                        {
+                            postEvent.setValue(true);
+                        }
+                    }
+                });
+            }
+
+        }
+
+
+        // room에 저장될 객체 생성
+        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
+        for(int i = 0; i < postList.size(); i++)
+        {
+            String postId = postList.get(i).getPostId();
+            Profile profile = postList.get(i).getProfile();
+            Location location = postList.get(i).getLocation();
+            List<String> imageUrl = postList.get(i).getImageUrl();
+            int like = postList.get(i).getLike();
+            boolean likeCheck = postList.get(i).isLikeCheck();
+            String content = postList.get(i).getContent();
+            List<String> hashTag = postList.get(i).getHashTag();
+            List<Comment> comments = postList.get(i).getComments();
+
+            postSQLList.add(new PostSQL(postId, profile, location, imageUrl, like, likeCheck, content ,hashTag, comments));
+        }
+        postSQL = postSQLList;
+        db.postDao().insertPost(postSQL);
+
+
     }
     public void setMarker()
     {
@@ -218,38 +325,16 @@ public class PostViewModel extends AndroidViewModel {
     public void postHalf()
     {
         halfList = new ArrayList<>();
-        final int[] count = {0};
         for(int i = 0; i < postList.size(); i++)
         {
             Coord coord = postList.get(i).getLocation().getCoord();
             String placename = "닉네임";
             //String placename = postList.get(i).getProfile().getNickname();//일단 닉네임으로 진행
             String imageUrl = postList.get(i).getImageUrl().get(0);//첫 이미지만 가지고옴
-            storageReference.child(imageUrl).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    halfList.add(new PostHalf(coord,placename, uri));
-                    uriList.add(uri);
-                    postHalf.setValue(halfList);
-                    count[0]++;
-                    if(count[0] == 10)
-                    {
-                        postGrid();
-                    }
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    //Log.e("파일 불러오기 실패 : ", e.getMessage());
-                    count[0]++;
-                    if(count[0] == 10)
-                    {
-                        postGrid();
-                    }
-                }
-            });
+            halfList.add(new PostHalf(coord, placename, uriList.get(i)));
         }
         getCurrentAddress(latitude, longitude);
+        postHalf.setValue(halfList);
     }
     public void postGrid()
     {
@@ -264,38 +349,42 @@ public class PostViewModel extends AndroidViewModel {
             String time = "1시간 전";
             //String time = getTime();
             gridList.add(new PostGrid(uriList.get(i), nickname, content, time));
-            postGrid.setValue(gridList);
         }
+        postGrid.setValue(gridList);
     }
     public void postFull()
     {
-        List<Post> list = new ArrayList<>();
+        List<PostFull> list = new ArrayList<>();
         for(int i = 0; i < postList.size(); i++)
         {
+            String postId = postList.get(i).getPostId();
             Profile profile = postList.get(i).getProfile();
             Location location = postList.get(i).getLocation();
-            List<String> imageUrl = postList.get(i).getImageUrl();
+            //List<String> imageUrl = uriList.get(i).getPath();
             int like = postList.get(i).getLike();
             boolean likeCheck = postList.get(i).isLikeCheck();
             String content = postList.get(i).getContent();
             List<String> hashTag = postList.get(i).getHashTag();
             List<Comment> comments = postList.get(i).getComments();
 
-            for(int j = 0; j < imageUrl.size(); j++)
-            {
-                storageReference.child(imageUrl.get(j)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        list.add(new Post(profile, location, imageUrl, like, likeCheck, content ,hashTag, comments));
-                        postFull.setValue(list);
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //Log.e("파일 불러오기 실패 : ", e.getMessage());
-                    }
-                });
-            }
+            list.add(new PostFull(postId, profile, location, uriList, like, likeCheck, content ,hashTag, comments));
+            postFull.setValue(list);
+
+//            for(int j = 0; j < imageUrl.size(); j++)
+//            {
+//                storageReference.child(imageUrl.get(j)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                    @Override
+//                    public void onSuccess(Uri uri) {
+//                        list.add(new Post(postId, profile, location, imageUrl, like, likeCheck, content ,hashTag, comments));
+//                        postFull.setValue(list);
+//                    }
+//                }).addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        //Log.e("파일 불러오기 실패 : ", e.getMessage());
+//                    }
+//                });
+//            }
         }
     }
 
@@ -379,7 +468,31 @@ public class PostViewModel extends AndroidViewModel {
             {
                 if(body instanceof Post)
                 {
-                    postList = (List<Post>) body;
+                    List<Post> posts = (List<Post>) body;
+                    for(int i = 0; i < posts.size(); i++)
+                    {
+                        postList.add(posts.get(i));
+
+                    }
+
+                    List<PostSQL> postSQLList = new ArrayList<PostSQL>();
+                    for(int i = 0; i < postList.size(); i++)
+                    {
+                        String postId = postList.get(i).getPostId();
+                        Profile profile = postList.get(i).getProfile();
+                        Location location = postList.get(i).getLocation();
+                        List<String> imageUrl = postList.get(i).getImageUrl();
+                        int like = postList.get(i).getLike();
+                        boolean likeCheck = postList.get(i).isLikeCheck();
+                        String content = postList.get(i).getContent();
+                        List<String> hashTag = postList.get(i).getHashTag();
+                        List<Comment> comments = postList.get(i).getComments();
+
+                        postSQLList.add(new PostSQL(postId, profile, location, imageUrl, like, likeCheck, content ,hashTag, comments));
+                    }
+                    postSQL = postSQLList;
+                    db.postDao().insertPost(postSQL);
+
                     postHalf();
                     postGrid();
                 }
@@ -389,4 +502,49 @@ public class PostViewModel extends AndroidViewModel {
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
         }
     }
+
+
+
+    public class SingleLiveEvent<T> extends MutableLiveData<T> {
+
+        private static final String TAG = "SingleLiveEvent";
+
+        private final AtomicBoolean mPending = new AtomicBoolean(false);
+
+        @MainThread
+        public void observe(LifecycleOwner owner, final Observer<? super T> observer) {
+
+            if (hasActiveObservers()) {
+                Log.w(TAG, "Multiple observers registered but only one will be notified of changes.");
+            }
+
+            // Observe the internal MutableLiveData
+            super.observe(owner, new Observer<T>() {
+                @Override
+                public void onChanged(@Nullable T t) {
+                    if (mPending.compareAndSet(true, false)) {
+                        observer.onChanged(t);
+                    }
+                }
+            });
+        }
+
+        @MainThread
+        public void setValue(@Nullable T t) {
+            mPending.set(true);
+            super.setValue(t);
+        }
+
+        /**
+         * Used for cases where T is Void, to make calls cleaner.
+         */
+        @MainThread
+        public void call() {
+            setValue(null);
+        }
+    }
+
+
+
+
 }

@@ -7,9 +7,12 @@ import com.example.oauth.exception.DuplicateUserException;
 import com.example.oauth.repository.VUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -38,14 +41,14 @@ public class UserServiceImpl implements UserService {
     }
 
     public void saveKaKaoUser(SignUpRequest signUpRequest) {
-
+        checkDuplicateKaKaoEmail(signUpRequest.getUsername());
         User user = User.builder()
                 .username(signUpRequest.getUsername())
                 .name(signUpRequest.getName())
                 .password(passwordEncoder.encode(signUpRequest.getPassword()))
                 .build();
-
         userRepository.save(user);
+        JdbcTemplate template;
     }
 
 //    public void checkDuplicateNickname(String nickname) {
@@ -65,12 +68,22 @@ public class UserServiceImpl implements UserService {
     }
 
     // 카카오 로그인 진행 후 추가 정보 기입해서 기존에 자동 회원가입 되어 있는 카카오 유저 정보 업데이트
-    public void saveKaKaoUserLast (SignUpRequest signUpRequest) {
-
+//    public void saveKaKaoUserLast (SignUpRequest signUpRequest) {
+//        createKaKaoUser(signUpRequest);
 //        checkDuplicateNickname(signUpRequest.getNickname());
-        updateKaKaoUser(signUpRequest);
-    }
-
+//        updateKaKaoUser(signUpRequest);
+//    }
+//    public void createKaKaoUser (SignUpRequest signUpRequest) {
+//        checkDuplicateEmail(signUpRequest.getUsername());
+//        User user = User.builder()
+//                        .username(signUpRequest.getUsername())
+//                        .name(signUpRequest.getName())
+//                        .password(signUpRequest.getPassword())
+//                        .phone(signUpRequest.getPhone()).build();
+//        user.setProvider(signUpRequest.getProvider());
+//        user.setPhone(signUpRequest.getPhone());
+//        userRepository.save(user);
+//    }
     public void updateKaKaoUser (SignUpRequest signUpRequest) {
             User user = userRepository.findByUsername(signUpRequest.getUsername()).orElseThrow(() -> new DataNotFoundException("4005"));
             user.setProvider(signUpRequest.getProvider());

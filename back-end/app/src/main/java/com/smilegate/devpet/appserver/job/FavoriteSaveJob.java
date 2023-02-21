@@ -29,13 +29,13 @@ public class FavoriteSaveJob extends QuartzJobBean {
     @Transactional
     @Override
     protected void executeInternal(JobExecutionContext context){
-        log.info("--------- favorite save -------------");
         Set<String> keys = redisTemplate.keys("*_"+ FavoriteRedisRepository.KEY_GENERATOR);
 
         // 데이터가 하나도 없다면 종료
         if (keys==null || keys.isEmpty())
             return;
 
+        log.info("--------- favorite save -------------");
         // db에 저장, kafka로 전송할 데이터 생성
         ArrayList<Favorite> favoriteArrayList = new ArrayList<>();
         for(String postKey:keys)

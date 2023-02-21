@@ -7,12 +7,11 @@ import com.devpet.chat.service.ChatService;
 import com.devpet.chat.service.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.http.HttpHeaders;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.LocalDateTime;
@@ -21,7 +20,6 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/chat")
 public class ChatController {
 
     private final JwtTokenProvider jwtTokenProvider;
@@ -41,7 +39,11 @@ public class ChatController {
 
     @GetMapping("/messages")
     @ResponseBody
-    public List<String> getMessageList(@RequestHeader("token") String token){
+<<<<<<< HEAD
+    public List<String> getMessageList(@RequestHeader(HttpHeaders.AUTHORIZATION) String token){
+=======
+    public List<String> getMessageList(@RequestHeader("Authorization") String token){
+>>>>>>> origin/DH
         String userId = jwtTokenProvider.getEmail(token);
         List<String> ChatMessageList = chatService.getUserMessages(userId);
         return ChatMessageList;

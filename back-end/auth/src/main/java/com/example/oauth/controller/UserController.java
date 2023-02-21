@@ -36,7 +36,7 @@ public class UserController {
                 .build();
 
         if (!Objects.equals(provider, "")) {
-            userService.saveKaKaoUserLast(signUpRequest);
+            userService.saveKaKaoUser(signUpRequest);
             return ResponseEntity.ok("카카오 회원가입");
         }
 

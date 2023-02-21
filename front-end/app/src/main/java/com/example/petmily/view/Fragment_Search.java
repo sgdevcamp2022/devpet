@@ -1,5 +1,7 @@
 package com.example.petmily.view;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;

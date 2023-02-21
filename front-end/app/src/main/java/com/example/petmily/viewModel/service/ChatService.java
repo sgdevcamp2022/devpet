@@ -37,7 +37,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChatService extends Service{
-    String URL = "https://121.187.22.37:5555/api/chat/chat";
+    String URL = "https://10.0.2.2:1367/api/chat/chat";
 
     NotificationManager Notifi_M;
     ChatServiceThread thread;
@@ -49,6 +49,8 @@ public class ChatService extends Service{
     private String token;
     private RoomDatabase db;
 
+
+    int count = 0;
 
     private SingleLiveEvent<Boolean> eventLoginExpiration;
     public SingleLiveEvent<Boolean> getEventLoginExpiration() {
@@ -101,7 +103,11 @@ public class ChatService extends Service{
 //        thread.stopForever();
 //        thread = null;//쓰레기 값을 만들어서 빠르게 회수하라고 null을 넣어줌.
 
-        registerRestartAlarm();
+        if(count <= 100)
+        {
+            registerRestartAlarm();
+        }
+
 
     }
 
@@ -110,7 +116,11 @@ public class ChatService extends Service{
         public void handleMessage(android.os.Message msg) {
             Intent intent = new Intent(ChatService.this, MainActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(ChatService.this, 0, intent,PendingIntent.FLAG_UPDATE_CURRENT);
-
+            count++;
+            if(count > 100)
+            {
+                onDestroy();
+            }
 
             Notifi = new NotificationCompat.Builder(getApplicationContext(), "채널 아이디")//채널
                     .setSmallIcon(R.drawable.corner)
@@ -162,6 +172,8 @@ public class ChatService extends Service{
                     }
                     @Override
                     public void onFailure(Call<List<Room>> call, Throwable t) {
+                        Log.e("서비스 연결 실패 : ", "");
+                                t.printStackTrace();
 
                     }
                 });

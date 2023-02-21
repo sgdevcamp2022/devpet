@@ -1,6 +1,60 @@
 package com.example.petmily.view;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
 
-public class Activity_PostFull  extends AppCompatActivity {
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.petmily.R;
+import com.example.petmily.databinding.ActivityPostFullBinding;
+import com.example.petmily.model.data.post.PostFull;
+import com.example.petmily.model.data.post.remote.Post;
+import com.example.petmily.viewModel.PostViewModel;
+
+import java.util.List;
+
+public class Activity_PostFull extends AppCompatActivity {
+    private ActivityPostFullBinding binding;
+    private PostViewModel postViewModel;
+    private RecyclerView post;
+    private int position;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_post_full);
+        binding.setPost(this);
+
+        position = getIntent().getIntExtra("position", -1);
+
+        init();
+
+    }
+    public void init()
+    {
+        postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
+        postViewModel.init();
+        post = binding.postFull;
+        post.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        initObserver();
+    }
+
+    public void initObserver()
+    {
+        final Observer<List<PostFull>> getPostFullObserver = new Observer<List<PostFull>>() {
+            @Override
+            public void onChanged(List<PostFull> posts) {
+                Adapter_PostFull newAdapter = new Adapter_PostFull(posts);
+                post.setAdapter(newAdapter);
+            }
+        };
+        postViewModel.getPostFull().observe(this, getPostFullObserver);
+        postViewModel.postFull();
+    }
+
 }

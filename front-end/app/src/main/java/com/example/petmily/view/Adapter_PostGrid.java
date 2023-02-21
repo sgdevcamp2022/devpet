@@ -20,13 +20,13 @@ import java.util.List;
 
 public class Adapter_PostGrid extends RecyclerView.Adapter<Adapter_PostGrid.Holder>{
 
-    private Adapter_Message.OnItemClickListener itemClickListener;
+    private OnItemClickListener itemClickListener;
 
     public interface OnItemClickListener {
-        void onItemClick(View v, int position, Post pots) ;
+        void onItemClick(View v, int position) ;
     }
 
-    public void setOnItemClickListener(Adapter_Message.OnItemClickListener listener){
+    public void setOnItemClickListener(OnItemClickListener listener){
         this.itemClickListener = listener;
     }
 
@@ -83,7 +83,7 @@ public class Adapter_PostGrid extends RecyclerView.Adapter<Adapter_PostGrid.Hold
                     if(pos != RecyclerView.NO_POSITION){
                         //동작 호출 (onItemClick 함수 호출)
                         if(itemClickListener != null){
-                            //itemClickListener.onItemClick(v, pos, );
+                            itemClickListener.onItemClick(v, pos);
 
                         }
                     }

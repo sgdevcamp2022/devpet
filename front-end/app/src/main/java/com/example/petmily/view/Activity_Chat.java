@@ -1,6 +1,7 @@
 package com.example.petmily.view;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,10 +43,8 @@ public class Activity_Chat extends AppCompatActivity {
         fragment_alarm = new Fragment_Alarm();
         fragment_message = new Fragment_Message();
 
-
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.chat_frame, fragment_alarm).commitAllowingStateLoss();
-
 
         Button b1 = binding.alarm;
         Button b2 = binding.message;
@@ -64,11 +63,7 @@ public class Activity_Chat extends AppCompatActivity {
                 fragmentTransaction.replace(R.id.chat_frame, fragment_message).commitAllowingStateLoss();
             }
         });
-
-
     }
-
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {

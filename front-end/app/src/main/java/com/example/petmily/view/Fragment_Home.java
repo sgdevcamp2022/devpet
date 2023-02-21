@@ -2,6 +2,7 @@ package com.example.petmily.view;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,6 +28,7 @@ import com.example.petmily.R;
 import com.example.petmily.databinding.FragmentHomeBinding;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
+import com.example.petmily.model.data.post.remote.Post;
 import com.example.petmily.viewModel.GpsTracker;
 import com.example.petmily.viewModel.PostViewModel;
 import com.gun0912.tedpermission.PermissionListener;
@@ -45,6 +48,7 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 import com.example.petmily.model.Place;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -116,6 +120,10 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         half = binding.postHalfLayout;
 
 
+        List<Post> asd = new ArrayList<Post>();
+        Intent asdsad = new Intent();
+        asdsad.putExtra("post", (Serializable) asd);
+
 
         //테스트 코드
         place = binding.placeList;
@@ -162,6 +170,14 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
                 Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids);
+                newAdapter.setOnItemClickListener(new Adapter_PostGrid.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int position) {
+                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+                        intent.putExtra("position", position);
+                        startActivity(intent);
+                    }
+                });
                 grid.setAdapter(newAdapter);
             }
         };
@@ -171,6 +187,14 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(@Nullable final List<PostHalf> postHalfList) {
                 Adapter_PostHalf newAdapter = new Adapter_PostHalf(postHalfList);
+                newAdapter.setOnItemClickListener(new Adapter_PostHalf.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int position) {
+                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+                        intent.putExtra("position", position);
+                        startActivity(intent);
+                    }
+                });
                 halfView.setAdapter(newAdapter);
             }
         };
@@ -205,6 +229,22 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         };
         postViewModel.getLocalName().observe(getViewLifecycleOwner(), localNameObserver);
 
+        final Observer<Boolean> eventPost = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable final Boolean aBoolean) {
+                if(!aBoolean) {
+
+                }
+                else
+                {
+                    postViewModel.postHalf();
+                    postViewModel.postGrid();
+                }
+
+            }
+        };
+        postViewModel.getPostEvent().observe(this, eventPost);
+
         halfView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
@@ -217,7 +257,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         });
 
 
-        postViewModel.postHalf();
+        postViewModel.postImport();
 
         grid.setVisibility(View.INVISIBLE);
     }

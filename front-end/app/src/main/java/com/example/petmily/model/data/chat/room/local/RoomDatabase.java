@@ -8,7 +8,7 @@ import androidx.room.TypeConverters;
 
 
 @Database(entities = {RoomSQL.class},version = 2)
-@TypeConverters({Converters.class})
+@TypeConverters({RoomConverters.class})
 public abstract class RoomDatabase extends androidx.room.RoomDatabase
 {
     private static RoomDatabase database;

@@ -1,6 +1,8 @@
 package com.example.petmily.model.data.profile.remote;
 
 
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -12,6 +14,12 @@ public interface API_Interface {
     @POST
     Call<?> saveProfile(@Body Profile profile);
 
+    @GET("my-profile")
+    Call<Profile> getMyProfile();
+
     @GET("{id}")
-    Call<?> getProfile(@Path("id")String id);
+    Call<Profile> getProfile(@Path("id")String id);
+
+    @POST("room")
+    Call<ChatRoomMake> createRoom(@Body List<String> userId);
 }

@@ -1,11 +1,11 @@
 package com.devpet.feed.model.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.devpet.feed.model.entity.PetInfo;
+import com.devpet.feed.model.entity.Tag;
+import lombok.*;
 
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,12 +18,14 @@ public class PetInfoDto {
     private String petBirth;
     private String petSpecies;
 
-    @Builder
-    public PetInfoDto(Long petId, String petName, String petBirth, String petSpecies) {
-        this.petId = petId;
-        this.petName = petName;
-        this.petBirth = petBirth;
-        this.petSpecies = petSpecies;
+    private Set<Tag> tags;
+
+    public PetInfoDto(PetInfo petInfo) {
+        this.petId = petInfo.getPetId();
+        this.petName = petInfo.getPetName();
+        this.petBirth = petInfo.getPetBirth();
+        this.petSpecies = petInfo.getPetSpecies();
+        this.tags = petInfo.getTags();
     }
 
 }

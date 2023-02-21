@@ -1,3 +1,5 @@
+///*
+/////*
 //package com.devpet.feed.job;
 //
 //import com.devpet.feed.repository.RedisRepository;
@@ -45,10 +47,11 @@
 ////                    service.saveFollowRelation(userId, follower);
 ////                } catch (Exception e) {
 ////                    throw new RuntimeException(e);
-////                }
+//                }
 ////            }
 //            redisTemplate.delete(key);
 //        }
 //    }
 //
 //}
+//*/
