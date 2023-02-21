@@ -13,7 +13,7 @@ import java.util.Set;
 
 @Repository
 public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
-
+    List<UserInfo> findAllByUserIdIn(List<String> userIds);
     @Query("MATCH (m:UserInfo {id: $followedUser}) " +
             "MATCH (n:UserInfo {id: $followUser}) "+
             "MATCH (m)<-[F:FOLLOW]-(n)"+
@@ -33,7 +33,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     @Query("match(u:UserInfo{userId : $userId})-[r:RECOMMENDED]->(p:PostInfo) " +
             "with u, r, p " +
             "ORDER BY r.score DESC " +
-            "LIMIT 4 " +
+            "LIMIT 6 " +
             "match (u)-[r]->(p) " +
             "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
             "return DISTINCT n.postId " +
@@ -101,7 +101,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     @Query("Match(u:UserInfo{userId: $userId})-[:FOLLOW]->()-[r:RECOMMENDED]->(p:PostInfo) " +
             "with r, p " +
             "ORDER BY r.score DESC " +
-            "LIMIT 4 " +
+            "LIMIT 6 " +
             "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo) " +
             "with DISTINCT n, n.postId as postId " +
             "return postId " +
@@ -121,7 +121,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     @Query("Match (u:UserInfo{userId: $userId1})-[:FOLLOW]->()-[f:FOLLOW]-()-[:POST]->(p:PostInfo)" +
             "Match (n:PostInfo)<-[:RECOMMENDED]-(u)" +
             "with n" +
-            "limit 4" +
+            "limit 6" +
             "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo)" +
             "return DISTINCT p.postId")
     List<String> getFollowingRecommendPostList(String userId);
@@ -159,7 +159,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     @Query("Match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[r1:RECOMMENDED]->(p1:PostInfo) " +
             "with r1, p1 " +
             "ORDER BY r1.score DESC " +
-            "LIMIT 4 " +
+            "LIMIT 6 " +
             "MATCH (p1)-[:TAGD]->(:Tag)<-[:TAGD]-(n1:PostInfo) " +
             "return n1.postId as postId " +
             "order by n1.createdAt DESC " +
@@ -167,7 +167,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "match(u2:UserInfo{userId : $userId})-[r2:RECOMMENDED]->(p2:PostInfo) " +
             "with r2, p2 " +
             "ORDER BY r2.score DESC " +
-            "LIMIT 4 " +
+            "LIMIT 6 " +
             "match (p2)-[:TAGD]->(:Tag)<-[:TAGD]-(n2:PostInfo) " +
             "return n2.postId as postId " +
             "order by n2.createdAt DESC " +
@@ -175,7 +175,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "Match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[f:FOLLOW]-()-[:POST]->(p:PostInfo) " +
             "Match (n:PostInfo)<-[:RECOMMENDED]-(u) " +
             "with n " +
-            "limit 4 " +
+            "limit 6 " +
             "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo) " +
             "return DISTINCT p.postId as postId ")
     Set<String> getRecommendedFollowPostList(@Param("userId") String userId);
