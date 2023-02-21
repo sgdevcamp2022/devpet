@@ -2,6 +2,7 @@ package com.example.petmily.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -83,6 +84,24 @@ public class Activity_Login extends AppCompatActivity {
 
             }
         };
-        authenticationViewModel.getEventRefreshExpiration().observe(this, eventLoginExiration);
+        authenticationViewModel.getEventLoginExpiration().observe(this, eventLoginExiration);
+
+
+        final Observer<Boolean> eventRefreshObserver = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable final Boolean aBoolean) {
+                if(!aBoolean) {
+                    Log.e("리프레시 만료 : ", "");
+                }
+                else
+                {
+                    intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                    //startService(service);
+                }
+
+            }
+        };
+        authenticationViewModel.getEventRefreshExpiration().observe(this, eventRefreshObserver);
     }
 }

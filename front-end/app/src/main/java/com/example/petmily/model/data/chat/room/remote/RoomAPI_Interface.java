@@ -18,7 +18,4 @@ public interface RoomAPI_Interface {
     @GET("chat/messages")
     Call<List<Room>> getMessage(@Header("Authorization") String token);
 
-
-
-
 }

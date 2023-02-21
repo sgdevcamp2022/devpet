@@ -1,6 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,java,gradle,windows,maven,intellij,android,eclipse,androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,java,gradle,windows,maven,intellij,android,eclipse,androidstudio
-
+nohup.out
 ### Android ###
 # Gradle files
 .gradle/

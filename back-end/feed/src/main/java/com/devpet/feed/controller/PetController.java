@@ -1,6 +1,7 @@
 package com.devpet.feed.controller;
 
 import com.devpet.feed.model.dto.PetInfoDto;
+import com.devpet.feed.model.entity.PetInfo;
 import com.devpet.feed.service.PetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,13 +42,12 @@ public class PetController {
         return ResponseEntity.ok("삭제 성공");
     }
 
-
-    @GetMapping()
-    public ResponseEntity<PetInfoDto> getPet(@RequestBody PetInfoDto pet) {
-
-        PetInfoDto petInfoDto = petService.getPet(pet.getPetId());
-
-        return ResponseEntity.ok(petInfoDto);
-    }
+//    @GetMapping()
+//    public ResponseEntity<PetInfoDto> getPet(@RequestBody PetInfoDto pet) {
+//
+//        PetInfoDto petInfoDto = petService.getPet(pet.getPetId());
+//
+//        return ResponseEntity.ok(petInfoDto);
+//    }
 
 }

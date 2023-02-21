@@ -8,7 +8,9 @@ import com.devpet.feed.model.entity.Tag;
 import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Comment;
 import com.devpet.feed.model.relationship.Post;
+
 import com.devpet.feed.repository.Neo4jRepo;
+
 import com.devpet.feed.repository.PostInfoRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +38,7 @@ public class PostInfoService {
     String password;
     private final static Config config = Config.defaultConfig();
 //    private final Neo4jRepo neo4jRepository;
+
     private final PostInfoRepository postInfoRepository;
     private final UserInfoRepository userInfoRepository;
 

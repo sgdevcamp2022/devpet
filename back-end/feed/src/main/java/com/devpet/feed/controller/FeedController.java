@@ -15,6 +15,12 @@ import java.util.*;
 @Slf4j
 @RequestMapping("/feed")
 public class FeedController {
+    @Value("${spring.neo4j.uri}")
+    String uri;
+    @Value("${spring.neo4j.authentication.username}")
+    String username;
+    @Value("${spring.neo4j.authentication.password}")
+    String password;
 
 
     private final FeedService feedService;
@@ -30,16 +36,4 @@ public class FeedController {
         return ResponseEntity.ok().build();
     }
 
-//
-//    @GetMapping("/feed/list")
-//    public void firstAverage(@RequestBody List<ScoreDto> scoreList) {
-//
-//        feedService.firstAverage(scoreList);
-//    }
-//
-//    @PostMapping("/feed")
-//    public void createRecommend(@RequestBody List<ScoreDto> scoreList) {
-//
-//        feedService.createRecommend(scoreList);
-//    }
 }

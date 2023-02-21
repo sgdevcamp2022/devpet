@@ -1,15 +1,13 @@
 package com.devpet.feed.model.entity;
 
 import com.devpet.feed.model.dto.PetInfoDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Property;
+import lombok.*;
+import org.springframework.data.neo4j.core.schema.*;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
+
+import java.util.Set;
+
+import static org.springframework.data.neo4j.core.schema.Relationship.Direction.OUTGOING;
 
 @Node
 @Getter
@@ -29,6 +27,9 @@ public class PetInfo {
     @Property
     private String petSpecies;
 
+    @Relationship(type="TAGD" , direction = OUTGOING)
+    private Set<Tag> tags ;
+
     @Builder
     public PetInfo(Long petId, String petName, String petBirth, String petSpecies) {
         this.petId = petId;
@@ -44,5 +45,6 @@ public class PetInfo {
         this.petName = dto.getPetName();
         this.petBirth = dto.getPetBirth();
         this.petSpecies = dto.getPetSpecies();
+        this.tags = dto.getTags();
     }
 }

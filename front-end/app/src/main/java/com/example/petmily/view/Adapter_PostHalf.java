@@ -2,6 +2,7 @@ package com.example.petmily.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,18 @@ import java.util.List;
 
 
 public class Adapter_PostHalf extends RecyclerView.Adapter<Adapter_PostHalf.Holder>{
+
+    private OnItemClickListener itemClickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position) ;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.itemClickListener = listener;
+    }
+
+
 
     List<PostHalf> list;
     Context context;
@@ -69,6 +82,23 @@ public class Adapter_PostHalf extends RecyclerView.Adapter<Adapter_PostHalf.Hold
             super(postListHalfBinding.getRoot());
             this.postListHalfBinding=postListHalfBinding;
             //postListHalfBinding.postImage.setImageResource(R.drawable.ic_launcher_background);
+
+            postListHalfBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //존재하는 포지션인지 확인
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        //동작 호출 (onItemClick 함수 호출)
+                        if(itemClickListener != null){
+                            itemClickListener.onItemClick(v, pos);
+
+                        }
+                    }
+                }
+            });
+
         }
     }
 

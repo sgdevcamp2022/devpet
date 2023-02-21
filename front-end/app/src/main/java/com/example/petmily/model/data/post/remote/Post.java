@@ -5,9 +5,13 @@ import com.example.petmily.model.data.post.Entity.Location;
 import com.example.petmily.model.data.post.Entity.Profile;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Post {
+public class Post implements Serializable {
+
+    @SerializedName("postId")
+    String postId;
 
     @SerializedName("profile")
     Profile profile;
@@ -45,7 +49,8 @@ public class Post {
     //S
 
 
-    public Post(Profile profile, Location location, List<String> imageUrl, int like, boolean likeCheck, String content, List<String> hashTag, List<Comment> comments) {
+    public Post(String postId, Profile profile, Location location, List<String> imageUrl, int like, boolean likeCheck, String content, List<String> hashTag, List<Comment> comments) {
+        this.postId = postId;
         this.profile = profile;
         this.location = location;
         this.imageUrl = imageUrl;
@@ -54,6 +59,14 @@ public class Post {
         this.content = content;
         this.hashTag = hashTag;
         this.comments = comments;
+    }
+
+    public String getPostId() {
+        return postId;
+    }
+
+    public void setPostId(String postId) {
+        this.postId = postId;
     }
 
     public Profile getProfile() {

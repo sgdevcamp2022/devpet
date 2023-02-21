@@ -1,6 +1,7 @@
 package com.example.petmily.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -66,19 +67,16 @@ public class Fragment_Profile extends Fragment {
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.init();
 
-        post = binding.searchPost;
-        post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
-        binding.message.setOnClickListener((view)->{
-    });
 
 
-        initObserver();
+        initView();
     }
 
     public void initView()
     {
-
+        post = binding.searchPost;
+        post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        initObserver();
     }
 
     public void initObserver()
@@ -127,7 +125,13 @@ public class Fragment_Profile extends Fragment {
         };
         profileViewModel.getFollower().observe(getViewLifecycleOwner(), followerObserver);
 
-        profileViewModel.profileImport();
+        profileViewModel.profileMyImport();
+
+
+
+
+
+
     }
 
 }
