@@ -218,7 +218,8 @@ public class FeedService {
 
         // 캐시에 가져온 데이터 저장 합니다.
         newPostRedisRepository.saveAll(userInfo.getUsername(),feedIds);
-        saveRecommendUserPostList(userInfo);
+        if(recommendPostRedisRepository.count(userInfo.getUsername())<20)
+            saveRecommendUserPostList(userInfo);
 
         // 캐시에서 게시글을 20개 꺼내 옵니다.
         List<Long> postIds = newPostRedisRepository.findById(userInfo.getUsername(), 20);
