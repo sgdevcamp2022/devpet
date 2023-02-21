@@ -6,7 +6,7 @@ spring:
     neo4j:
 #      : movies # neo4j 데스크톱에서 movies 데이터 베이스를 하나 만들어주자.
 
-      uri: bolt://localhost:9001
+      uri: bolt://121.187.22.37:9001
 #      uri: bolt://121.187.22.37:9001
       authentication:
         username: neo4j #디폴트 유저 네임이다. 따로 설정 안했으면 똑같이 적어줄것
@@ -15,6 +15,7 @@ spring:
     redis:
       host: 121.187.22.37
       port: 6379
+      password: mypassword
     application:
       name: relation
 eureka:
