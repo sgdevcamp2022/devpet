@@ -38,7 +38,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
             "with n " +
             "order by n.createdAt DESC "+
-            "return DISTINCT n.postId "
+            "return DISTINCT n.postId LIMIT 20"
             )
     Set<String> getPostList(@Param("userId") String userId);
 
