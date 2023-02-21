@@ -129,7 +129,7 @@ public class MakeViewModel extends AndroidViewModel {
         {
             hashTagList.add(hashTag.get(i).getMake());
         }
-        Location location = new Location(category, new Coord(latitude, longitude));
+        Location location = new Location(1, "이름", "주소",category, new Coord(latitude, longitude));
 
         List<String> imageList = new ArrayList<String>();
         for(int i = 0; i < imageUri.size(); i++)

@@ -1,6 +1,7 @@
 package com.example.petmily.model.data.post.remote;
 
 import com.example.petmily.model.data.post.Entity.Comment;
+import com.example.petmily.model.data.post.Entity.HashTags;
 import com.example.petmily.model.data.post.Entity.Location;
 import com.example.petmily.model.data.post.Entity.Profile;
 import com.google.gson.annotations.SerializedName;
@@ -10,104 +11,83 @@ import java.util.List;
 
 public class Post implements Serializable {
 
+    @SerializedName("createdAt")
+    String createdAt;
 
-    @SerializedName("postId")
-    String postId;
+    @SerializedName("updatedAt")
+    String updatedAt;
 
-    @SerializedName("profile")
-    Profile profile;
-    //String profileImage;
-    //int userId;
-    //String nickname;
-
-    @SerializedName("location")
-    Location location;
-    //int category;
-    //Coord coord
-        //double latitude;
-        //double lonngitude;
-
-    @SerializedName("imageUrl")
-    List<String> imageUrl;
-
-    @SerializedName("like")
-    int like;//좋아요 수
-
-    @SerializedName("likeCheck")
-    boolean likeCheck;
+    @SerializedName("feedId")
+    int feedId;
 
     @SerializedName("content")
     String content;
 
-    //카테고리 0번 -> 시설 1-> 개인 2-> 그룹
+    @SerializedName("location")
+    Location location;
+
+    @SerializedName("tagUsers")
+    List<Integer> tagUsers;
+
+    @SerializedName("groupId")
+    int groupId;//null
+
+    @SerializedName("imageUrl")
+    List<String> imageUrl;
+
+    @SerializedName("userId")
+    int userId;
 
     @SerializedName("hashTag")
-    List<String> hashTag;
+    HashTags hashTag;
 
     @SerializedName("comments")
-    List<Comment> comments;
-    //Profile profile;
-    //S
+    String comments;
 
+    @SerializedName("favorite")
+    boolean favorite;
 
-    public Post(String postId, Profile profile, Location location, List<String> imageUrl, int like, boolean likeCheck, String content, List<String> hashTag, List<Comment> comments) {
-        this.postId = postId;
-        this.profile = profile;
-        this.location = location;
-        this.imageUrl = imageUrl;
-        this.like = like;
-        this.likeCheck = likeCheck;
+    @SerializedName("used")
+    boolean used;
+
+    public Post(String createdAt, String updatedAt, int feedId, String content, Location location, List<Integer> tagUsers, int groupId, List<String> imageUrl, int userId, HashTags hashTag, String comments, boolean favorite, boolean used) {
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.feedId = feedId;
         this.content = content;
+        this.location = location;
+        this.tagUsers = tagUsers;
+        this.groupId = groupId;
+        this.imageUrl = imageUrl;
+        this.userId = userId;
         this.hashTag = hashTag;
         this.comments = comments;
+        this.favorite = favorite;
+        this.used = used;
     }
 
-    public String getPostId() {
-        return postId;
+    public String getCreatedAt() {
+        return createdAt;
     }
 
-    public void setPostId(String postId) {
-        this.postId = postId;
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
-    public Profile getProfile() {
-        return profile;
+    public String getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setProfile(Profile profile) {
-        this.profile = profile;
+    public void setUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
-    public Location getLocation() {
-        return location;
+    public int getFeedId() {
+        return feedId;
     }
 
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public List<String> getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(List<String> imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public int getLike() {
-        return like;
-    }
-
-    public void setLike(int like) {
-        this.like = like;
-    }
-
-    public boolean isLikeCheck() {
-        return likeCheck;
-    }
-
-    public void setLikeCheck(boolean likeCheck) {
-        this.likeCheck = likeCheck;
+    public void setFeedId(int feedId) {
+        this.feedId = feedId;
     }
 
     public String getContent() {
@@ -118,19 +98,75 @@ public class Post implements Serializable {
         this.content = content;
     }
 
-    public List<String> getHashTag() {
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public List<Integer> getTagUsers() {
+        return tagUsers;
+    }
+
+    public void setTagUsers(List<Integer> tagUsers) {
+        this.tagUsers = tagUsers;
+    }
+
+    public int getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(int groupId) {
+        this.groupId = groupId;
+    }
+
+    public List<String> getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(List<String> imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+    public HashTags getHashTag() {
         return hashTag;
     }
 
-    public void setHashTag(List<String> hashTag) {
+    public void setHashTag(HashTags hashTag) {
         this.hashTag = hashTag;
     }
 
-    public List<Comment> getComments() {
+    public String getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
+    }
+
+    public boolean isUsed() {
+        return used;
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
     }
 }
