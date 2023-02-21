@@ -22,7 +22,7 @@ public class Profile extends BaseModel{
     @Id
     private Long profileId;
     @Field
-    private Long userId;
+    private String username;
     @Field
     private String nickname;
     @Field
@@ -38,18 +38,18 @@ public class Profile extends BaseModel{
     private String imageUrl;
 
 
-    public Profile(ProfileRequest profileRequest,Long userId)
+    public Profile(ProfileRequest profileRequest,String username)
     {
         this.setProfileData(profileRequest);
-        this.userId = userId;
+        this.username = username;
     }
     public Profile(ProfileRequest profileRequest,UserInfo userInfo)
     {
-        this(profileRequest,userInfo.getUserId());
+        this(profileRequest,userInfo.getUsername());
     }
     public Profile(UserInfo userInfo)
     {
-        this(null,userInfo.getUserId());
+        this(null,userInfo.getUsername());
     }
     public void setProfileData(ProfileRequest profileRequest)
     {

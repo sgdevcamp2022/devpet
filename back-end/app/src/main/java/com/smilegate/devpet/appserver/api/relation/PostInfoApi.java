@@ -20,7 +20,7 @@ public interface PostInfoApi {
     public String likePost(List<LikePostDto> likePostDto);
 
     // 좋아요 취소
-    @PatchMapping("/postinfo/like")
+    @PostMapping("/postinfo/like")
     public String dislikePost(List<LikePostDto> likePostDto);
 
     // 코멘트가를 달은 내 게시글 가져오기

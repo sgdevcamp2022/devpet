@@ -41,6 +41,7 @@ public class FeedService {
     private final FeedApi relationFeedService;
     private final UserInfoApi userInfoService;
     private final PostInfoApi relationPostService;
+    private final ProfileService profileService;
     /**
      * 게시글 데이터를 저장합니다.
      * @param feedRequest 저장할 게시글 데이터
@@ -49,8 +50,9 @@ public class FeedService {
      */
     public Feed postFeed(FeedRequest feedRequest, UserInfo userInfo)
     {
+        Profile profile = profileService.getProfile(userInfo);
         // 저장할 게시글 데이터 생성
-        Feed feed = new Feed(feedRequest,userInfo);
+        Feed feed = new Feed(feedRequest,profile.getProfileId());
 
         // 게시글 데이터 아이디 설정
         feed.setFeedId(sequenceGeneratorService.longSequenceGenerate(Feed.SEQUENCE_NAME));
@@ -62,7 +64,7 @@ public class FeedService {
         feed = feedRepository.save(feed);
 
         // 게시물 캐시에 내가 작성한 게시물 추가.
-        newPostRedisRepository.save(userInfo.getUserId(), feed.getFeedId());
+        newPostRedisRepository.save(userInfo.getUsername(), feed.getFeedId());
 //        // 저장된 게시물 관계 연산 서버로 전송
         PostInfoDto postInfoDto = PostInfoDto.builder()
                 .postId(feed.getFeedId().toString())
@@ -80,7 +82,7 @@ public class FeedService {
      * @param feedId 수정할 게시글 아이디.
      * @return db에 수정된 게시글 데이터
      */
-    public Feed putFeed(FeedRequest feedRequest,Long feedId)
+    public Feed putFeed(FeedRequest feedRequest,Long feedId,UserInfo userInfo)
     {
         // 게시글 아이디로 게시글 데이터를 가져옵니다.
         Feed feed = feedRepository.findById(feedId).orElseThrow(NullPointerException::new);
@@ -100,7 +102,7 @@ public class FeedService {
         PostInfoDto postInfoDto = PostInfoDto.builder()
                 .postId(feed.getFeedId().toString())
                 .postCategory(feed.getLocation().getCategory().toString())
-                .userId(feed.getUserId().toString())
+                .userId(userInfo.getUsername().toString())
                 .createdAt(feed.getCreatedAt().toString())
                 .tags(feed.getHashTags()).build();
         relationPostService.savePostInfo(postInfoDto);
@@ -216,15 +218,15 @@ public class FeedService {
         List<Long> feedIds = relationFeedService.getPostList(userInfo).stream().map(Long::parseLong).collect(Collectors.toList());
 
         // 캐시에 가져온 데이터 저장 합니다.
-        newPostRedisRepository.saveAll(userInfo.getUserId(),feedIds);
+        newPostRedisRepository.saveAll(userInfo.getUsername(),feedIds);
         saveRecommendUserPostList(userInfo);
         // 캐시에서 게시글을 20개 꺼내 옵니다.
-        List<Long> postIds = newPostRedisRepository.findById(userInfo.getUserId(), 20);
+        List<Long> postIds = newPostRedisRepository.findById(userInfo.getUsername(), 20);
 
         // 만약 사용자 관계 관련 게시글이 20개보다 적다면 추천 게시글 리스트를 받아옵니다.
         if (postIds.size()<20)
         {
-            postIds.addAll(recommendPostRedisRepository.findById(userInfo.getUserId(), 20- postIds.size()));
+            postIds.addAll(recommendPostRedisRepository.findById(userInfo.getUsername(), 20- postIds.size()));
         }
         Set<Long> postIdSet = new HashSet<>(postIds);
         // db에서 현재 사용되고 있는 게시글 20개를 꺼내옵니다.
@@ -247,7 +249,7 @@ public class FeedService {
         resultSet.addAll(userInfoService.getRecommendedFollowPostList(followRequest).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new)));
 
         // 캐시에 사용자 추천 게시글 저장.
-        recommendPostRedisRepository.saveAll(userInfo.getUserId(),resultSet);
+        recommendPostRedisRepository.saveAll(userInfo.getUsername(),resultSet);
     }
 
     private List<Feed> findNearFeedList(String content, Integer category,Shape shape, Pageable pageable)

@@ -98,15 +98,15 @@ public class ProfileService {
     }
     private void setProfileFollowAnFollowerCount(Profile profile)
     {
-//        profile.setFollower(userInfoService.countFollower(FollowRequest.builder().follower(profile.getUserId().toString()).build()));
-//        profile.setFollow(userInfoService.countFollowing(FollowRequest.builder().follower(profile.getUserId().toString()).build()));
+        profile.setFollower(userInfoService.countFollower(FollowRequest.builder().follower(profile.getUsername()).build()));
+        profile.setFollow(userInfoService.countFollowing(FollowRequest.builder().follower(profile.getUsername()).build()));
     }
     public List<Profile> getFollowerList(Long profileId)
     {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
         List<Long> followerUserIds = userInfoService.getFollowerList(
-                FollowRequest.builder().follower(profile.getUserId().toString()).build()
+                FollowRequest.builder().follower(profile.getUsername()).build()
         ).stream().map(Long::parseLong).collect(Collectors.toList());
         List<Profile> result = profileRepository.findByUserIdIn(followerUserIds);
         return result;
@@ -117,7 +117,7 @@ public class ProfileService {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
         List<Long> followUserIds = userInfoService.getFollowingList(
-                FollowRequest.builder().follower(profile.getUserId().toString()).build()
+                FollowRequest.builder().follower(profile.getUsername()).build()
         ).stream().map(Long::parseLong).collect(Collectors.toList());
         List<Profile> result = profileRepository.findByUserIdIn(followUserIds);
         return result;

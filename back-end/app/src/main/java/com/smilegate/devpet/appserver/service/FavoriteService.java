@@ -42,7 +42,7 @@ public class FavoriteService {
      */
     public boolean setFeedFavorite(long feedId, FavoriteRequest favoriteRequest, UserInfo userInfo)
     {
-        favoriteRedisRepository.save(feedId, userInfo.getUserId(),favoriteRequest.getIsFavorite());
+        favoriteRedisRepository.save(feedId, userInfo.getUsername(),favoriteRequest.getIsFavorite());
         return true;
     }
     /**
@@ -54,8 +54,8 @@ public class FavoriteService {
         List<Favorite> favoriteList = favoriteRepository.findAllByPostIdAndFavorite(feedId,true);
         if (favoriteList==null || favoriteList.isEmpty())
             return;
-        for(Long userId : favoriteList.stream().map(Favorite::getUserId).collect(Collectors.toList()))
-            newPostRedisRepository.save(userId,feedId);
+//        for(Long userId : favoriteList.stream().map(Favorite::getUserId).collect(Collectors.toList()))\
+//            newPostRedisRepository.save(username,feedId);
     }
 
     /**
@@ -84,7 +84,7 @@ public class FavoriteService {
                 .filter(Favorite::isFavorite)
                 .map(item->LikePostDto.builder()
                         .postId(item.getPostId().toString())
-                        .userId(item.getUserId().toString())
+                        .userId(item.getUsername().toString())
 //                        .isFavorite(item.isFavorite())
                         .build())
                 .collect(Collectors.toList());
@@ -92,7 +92,7 @@ public class FavoriteService {
                 .filter(item->!item.isFavorite())
                 .map(item->LikePostDto.builder()
                         .postId(item.getPostId().toString())
-                        .userId(item.getUserId().toString())
+                        .userId(item.getUsername().toString())
 //                        .isFavorite(item.isFavorite())
                         .build())
                 .collect(Collectors.toList());
