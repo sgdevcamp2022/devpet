@@ -26,8 +26,7 @@ public class FeedController {
     private final FeedService feedService;
 
     @GetMapping("")
-    public ResponseEntity<Set<String>> getPostList(@RequestBody Map<String, String> user) {
-        String userId = user.get("userId");
+    public ResponseEntity<Set<String>> getPostList(@RequestParam("username") String userId) {
         return ResponseEntity.ok(feedService.getPostList(userId));
     }
     @PostMapping("")

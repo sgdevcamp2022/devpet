@@ -98,15 +98,15 @@ public class ProfileService {
     }
     private void setProfileFollowAnFollowerCount(Profile profile)
     {
-        profile.setFollower(userInfoService.countFollower(FollowRequest.builder().follower(profile.getUsername()).build()));
-        profile.setFollow(userInfoService.countFollowing(FollowRequest.builder().follower(profile.getUsername()).build()));
+        profile.setFollower(userInfoService.countFollower(profile.getUsername()));
+        profile.setFollow(userInfoService.countFollowing(profile.getUsername()));
     }
     public List<Profile> getFollowerList(Long profileId)
     {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
         List<String> followerUserIds = new ArrayList<>(userInfoService.getFollowerList(
-                FollowRequest.builder().follower(profile.getUsername()).build()
+                profile.getUsername()
         ));
         List<Profile> result = profileRepository.findByUsernameIn(followerUserIds);
         return result;
@@ -117,7 +117,7 @@ public class ProfileService {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
         List<String> followUsernames = new ArrayList<>(userInfoService.getFollowingList(
-                FollowRequest.builder().follower(profile.getUsername()).build()
+                profile.getUsername()
         ));
         List<Profile> result = profileRepository.findByUsernameIn(followUsernames);
         return result;

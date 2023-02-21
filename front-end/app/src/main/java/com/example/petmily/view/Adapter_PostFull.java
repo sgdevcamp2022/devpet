@@ -50,13 +50,13 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, Activity_Profile.class);
-                intent.putExtra("userId", post.getProfile().getUserId());
+                intent.putExtra("userId", post.getUserId());
                 context.startActivity(intent);
             }
         });
-//        Glide.with(context)
-//                .load(post.getUri())
-//                .into(holder.postListBinding.postImage);
+        Glide.with(context)
+                .load(post.getImageUrl().get(0))
+                .into(holder.postListBinding.postImage);
         holder.postListBinding.setPost(post);
 
     }

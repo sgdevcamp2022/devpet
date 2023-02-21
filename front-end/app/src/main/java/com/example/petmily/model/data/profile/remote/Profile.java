@@ -60,4 +60,14 @@ public class Profile {
     public void setPetList(List<Pet> petList) {
         this.petList = petList;
     }
+
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "nickname='" + nickname + '\'' +
+                ", about='" + about + '\'' +
+                ", birth='" + birth + '\'' +
+                ", petList=" + petList +
+                '}';
+    }
 }

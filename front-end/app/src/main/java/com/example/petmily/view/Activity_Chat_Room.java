@@ -46,7 +46,6 @@ public class Activity_Chat_Room extends AppCompatActivity {
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
         chatViewModel.init();
-        chatViewModel.initChatRoom(roomId);
 
         messageList = binding.chatlist;
         messageList.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
@@ -74,6 +73,7 @@ public class Activity_Chat_Room extends AppCompatActivity {
             }
         };
         chatViewModel.getMessageList().observe(this, messageListObserver);
+        chatViewModel.initChatRoom(roomId);
     }
 
     @Override

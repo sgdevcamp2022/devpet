@@ -17,54 +17,54 @@ public interface UserInfoApi {
     public void saveUserInfo(UserInfoDto userInfo);
     @PostMapping("/userinfo/follow")
     public UserInfoDto followUser(FollowRequest followRequest);
-    @PatchMapping("/userinfo")
+    @PutMapping("/userinfo")
     public UserInfoDto patchUserInfo(UserInfoDto userInfoDto);
 
     @PostMapping("/userinfo/follow/cancel")
     public void cancelFollow(FollowRequest followRequest);
-    @RequestMapping(method = RequestMethod.POST, path = "/userinfo/count/follower")//
-    public Long countFollower(@RequestBody FollowRequest followRequest);
-    @RequestMapping(method = RequestMethod.POST,path= "/userinfo/count/following")//
-    public Long countFollowing(@RequestBody FollowRequest followRequest);
+    @GetMapping(  "/userinfo/count/follower") //
+    public Long countFollower(@RequestParam String followerUsername);
+    @GetMapping( "/userinfo/count/following") //
+    public Long countFollowing(@RequestParam String followingUsername);
     @GetMapping("/userinfo/list/follower")//
-    public Set<String> getFollowerList(FollowRequest followRequest);
+    public Set<String> getFollowerList(@RequestParam("followerId") String username);
     @GetMapping("/userinfo/list/following")//
-    public Set<String> getFollowingList(FollowRequest followRequest);
+    public Set<String> getFollowingList(@RequestParam("followId") String username);
 
     @GetMapping("/userinfo/list/follow/post")
-    public Set<String> getFollowPostList(FollowRequest followRequest);
+    public Set<String> getFollowPostList(@RequestParam("userId") String username);
     @GetMapping("/userinfo/list/like/post")
-    public Set<String> getLikePostList(FollowRequest followRequest);
+    public Set<String> getLikePostList(@RequestParam("userId") String username);
     @GetMapping("/userinfo/list/comment/post")
-    public Set<String> getCommentPostList(FollowRequest followRequest);
+    public Set<String> getCommentPostList(@RequestParam("userId") String username);
     @GetMapping("/userinfo/list/recommend/post")
-    public Set<String> getFollowRecommendPostList(FollowRequest followRequest);
+    public Set<String> getFollowRecommendPostList(@RequestParam("userId") String username);
 
     @GetMapping("/userinfo/list/pet/post")
-    public Set<String> getPetPostList(FollowRequest followRequest);
+    public Set<String> getPetPostList(@RequestParam("userId") String username);
     /**
      * 내가 알 수 있는 사람의 게시물
      */
     @GetMapping("/userinfo/list/follow/recommend/post")
-    public List<String> getFollowingRecommendPostList(UserInfo userInfo);
+    public List<String> getFollowingRecommendPostList(@RequestParam("userId") String username);
 
     /**
      * 내가 팔로우 한 유저의 새로운 게시물 보기
-     * @param userInfo 사용자 정보
+     * @param followUsername 사용자 이메일
      * @return
      */
     @GetMapping("/userinfo/list/follow/new")
-    public Set<String> getFollowUserPost(UserInfo userInfo);
+    public Set<String> getFollowUserPost(@RequestParam("userId") String followUsername);
 
     /**
      * 사용자의 관심 기반 추천
      */
     @GetMapping("/userinfo/feed1/list/post")
-    public Set<String> getPetLikeCommentPostList(FollowRequest followDto);
+    public Set<String> getPetLikeCommentPostList(@RequestParam("userId") String username);
 
     /**
      * 사용자의 팔로우 기반 추천
      */
     @GetMapping("/userinfo/feed2/list/post")
-    public Set<String> getRecommendedFollowPostList(FollowRequest followDto);
+    public Set<String> getRecommendedFollowPostList(@RequestParam("userId") String username);
 }
