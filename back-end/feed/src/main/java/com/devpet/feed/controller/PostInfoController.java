@@ -58,9 +58,8 @@ public class PostInfoController {
     }
 
     @GetMapping("/comment")
-    public ResponseEntity<?> getCommentPost(@RequestBody Map<String, String> userId) {
-        String user = userId.get("userId");
-        return postInfoService.getCommentPost(user);
+    public ResponseEntity<?> getCommentPost(@RequestParam String userId) {
+        return postInfoService.getCommentPost(userId);
     }
 
     @PostMapping("/comment")
