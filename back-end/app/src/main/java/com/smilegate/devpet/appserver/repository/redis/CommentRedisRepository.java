@@ -26,7 +26,9 @@ public class CommentRedisRepository implements RedisSetRepository<Long,Long>{
     }
     public void saveAll(Long userId, Collection<Long> commentIds)
     {
-        commentIdSetOperation.union(keyGenerator(userId),commentIds.stream().map(Object::toString).collect(Collectors.toList()));
+        if( commentIds==null || commentIds.isEmpty())
+            return;
+        commentIdSetOperation.add(keyGenerator(userId),commentIds.stream().map(Object::toString).collect(Collectors.toList()).toArray(new String[commentIds.size()]));
     }
     public List<Long> findById(Long userId, int count)
     {

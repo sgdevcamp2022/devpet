@@ -214,11 +214,12 @@ public class FeedService {
     public List<Feed> getFeedList(UserInfo userInfo)
     {
         // 피드 서버에서 사용자가 조회할 피드 리스트를 꺼내 옵니다.
-        List<Long> feedIds = relationFeedService.getPostList(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toList());
+        List<Long> feedIds = userInfoService.getFollowPostList(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toList());
 
         // 캐시에 가져온 데이터 저장 합니다.
         newPostRedisRepository.saveAll(userInfo.getUsername(),feedIds);
         saveRecommendUserPostList(userInfo);
+
         // 캐시에서 게시글을 20개 꺼내 옵니다.
         List<Long> postIds = newPostRedisRepository.findById(userInfo.getUsername(), 20);
 
@@ -240,7 +241,7 @@ public class FeedService {
     public void saveRecommendUserPostList(UserInfo userInfo)
     {
         // 사용자 팔로우기반 게시글 추천을 받아와 저장합니다.
-        HashSet<Long> resultSet = userInfoService.getFollowUserPost(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new));
+        HashSet<Long> resultSet = relationFeedService.getPostList(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new));
 
         // 사용자 관심 기반 게시글을 추천 받아와 저장합니다.
         resultSet.addAll(userInfoService.getPetLikeCommentPostList(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new)));

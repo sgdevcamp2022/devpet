@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,9 @@ public class RecommendPostRedisRepository implements RedisSetRepository<String,L
     }
     public void saveAll(String username, Collection<Long> feedIds)
     {
-        feedIdListOperation.union(keyGenerator(username),feedIds.stream().map(Object::toString).collect(Collectors.toList()));
+        if( feedIds==null || feedIds.isEmpty())
+            return;
+        feedIdListOperation.add(keyGenerator(username),feedIds.stream().map(Object::toString).collect(Collectors.toList()).toArray(new String[feedIds.size()]));
     }
 
     public List<Long> findById(String username, int count)
