@@ -8,11 +8,15 @@ import com.devpet.feed.model.entity.Tag;
 import com.devpet.feed.model.entity.UserInfo;
 import com.devpet.feed.model.relationship.Comment;
 import com.devpet.feed.model.relationship.Post;
-import com.devpet.feed.repository.Neo4jRepository;
+
+import com.devpet.feed.repository.Neo4jRepo;
+
 import com.devpet.feed.repository.PostInfoRepository;
 import com.devpet.feed.repository.UserInfoRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.neo4j.driver.Config;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -26,8 +30,15 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class PostInfoService {
+        @Value("${spring.neo4j.uri}")
+    String uri;
+    @Value("${spring.neo4j.authentication.username}")
+    String username;
+    @Value("${spring.neo4j.authentication.password}")
+    String password;
+    private final static Config config = Config.defaultConfig();
+//    private final Neo4jRepo neo4jRepository;
 
-    private final Neo4jRepository neo4jRepository;
     private final PostInfoRepository postInfoRepository;
     private final UserInfoRepository userInfoRepository;
 
@@ -47,12 +58,10 @@ public class PostInfoService {
      */
     @Transactional
     public PostInfoDto savePostInfo(PostInfoDto postInfoDto){
-        UserInfo userInfo = userInfoRepository.findNodeById(postInfoDto.getUserId()).orElseThrow(RuntimeException::new);
+        String userId =postInfoDto.getUserId();
+        UserInfo userInfo = userInfoRepository.findNodeById(userId).orElseThrow(RuntimeException::new);
+//        UserInfo userInfo = userInfoRepository.findNodeById2(postInfoDto.getUserId());
         PostInfo postInfo = postInfoDtoToPostInfo(postInfoDto);
-
-
-        Set<Tag> postTags = postInfo.getTags();
-
         Post post = new Post(postInfo);
         userInfo.getPosts().add(post);
         userInfoRepository.save(userInfo);
@@ -92,7 +101,7 @@ public class PostInfoService {
      */
     @Transactional
     public ResponseEntity likePostInfo(List<LikePostDto> likePostDto){
-//        var app = new Neo4jRepository(uri, username, password, Config.defaultConfig());
+        Neo4jRepo neo4jRepository = new Neo4jRepo(uri, username, password, config);
         neo4jRepository.saveLikeAll(likePostDto);
         return ResponseEntity.ok("SUCCESS");
     }
@@ -104,6 +113,7 @@ public class PostInfoService {
      */
     @Transactional
     public ResponseEntity dislikePostInfo(List<LikePostDto> likePostDto) {
+        Neo4jRepo neo4jRepository = new Neo4jRepo(uri, username, password, config);
         neo4jRepository.deleteLikeAll(likePostDto);
         return ResponseEntity.ok("SUCCESS");
     }
@@ -123,7 +133,11 @@ public class PostInfoService {
 //        return postInfoRepository.dislikePost(likePostDto.getPostId(), likePostDto.getUserId());
 //    }
 
-
+    /**
+     * 댓글 정보 Node 생성
+     * @param commentDto
+     * @return
+     */
     @Transactional
     public ResponseEntity<?> postComment(CommentDto commentDto)  {
         Optional<PostInfo> post = postInfoRepository.existsComment(commentDto.getPostId(), commentDto.getUserId());
@@ -140,6 +154,11 @@ public class PostInfoService {
         return ResponseEntity.ok(postInfo.getPostId());
     }
 
+    /**
+     * 내가 follow 한 유저가 1시간 이내에 작성한 댓글이 달린 게시물ID 불러오기
+     * @param userId
+     * @return
+     */
     @Transactional
     public ResponseEntity<?> getCommentPost(String userId) {
         UserInfo userInfo = userInfoRepository.findNodeById(userId).orElseThrow(RuntimeException::new);

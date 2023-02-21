@@ -22,9 +22,9 @@ public interface UserInfoApi {
 
     @PostMapping("/userinfo/follow/cancel")
     public void cancelFollow(FollowRequest followRequest);
-    @RequestMapping(method = RequestMethod.GET, path = "/userinfo/count/follower")//
+    @RequestMapping(method = RequestMethod.POST, path = "/userinfo/count/follower")//
     public Long countFollower(@RequestBody FollowRequest followRequest);
-    @RequestMapping(method = RequestMethod.GET,path= "/userinfo/count/following")//
+    @RequestMapping(method = RequestMethod.POST,path= "/userinfo/count/following")//
     public Long countFollowing(@RequestBody FollowRequest followRequest);
     @GetMapping("/userinfo/list/follower")//
     public Set<String> getFollowerList(FollowRequest followRequest);

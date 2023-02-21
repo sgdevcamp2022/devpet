@@ -5,6 +5,7 @@ import com.smilegate.devpet.appserver.repository.mongo.FeedRepository;
 import com.smilegate.devpet.appserver.repository.redis.FavoriteRedisRepository;
 import com.smilegate.devpet.appserver.repository.redis.NewPostRedisRepository;
 import com.smilegate.devpet.appserver.service.FavoriteService;
+import com.smilegate.devpet.appserver.service.ProfileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobExecutionContext;
@@ -26,6 +27,7 @@ public class FavoriteSaveJob extends QuartzJobBean {
     private final FeedRepository feedRepository;
     private final FavoriteService favoriteService;
     private final NewPostRedisRepository newPostRedisRepository;
+    private final ProfileService profileService;
     @Transactional
     @Override
     protected void executeInternal(JobExecutionContext context){
@@ -46,13 +48,13 @@ public class FavoriteSaveJob extends QuartzJobBean {
 
             for(Map.Entry<Object,Object> favoritePair : redisTemplate.opsForHash().entries(postKey).entrySet())
             {
-                Long userId = (Long)favoritePair.getKey();
+                String username = (String)favoritePair.getKey();
                 Boolean isFavorite = (Boolean)favoritePair.getValue();
-                favoriteArrayList.add(new Favorite(postId,isFavorite,userId));
+                favoriteArrayList.add(new Favorite(postId,isFavorite,username));
                 // 좋아요를 누른 사람은 피드 캐시에 해당 게시글 추가.
                 if(isFavorite)
                 {
-                    newPostRedisRepository.save(userId,postId);
+                    newPostRedisRepository.save(username,postId);
                     favoriteCount++;
                 }
             }
@@ -60,8 +62,9 @@ public class FavoriteSaveJob extends QuartzJobBean {
             if(favoriteCount>0)
             {
                 // TODO: postId에 해당하는 작성자에게 좋아요 알람(true가 1개라도 있으면)
+
                 feedRepository.findById(postId).ifPresent((feed)->{
-                    newPostRedisRepository.save(feed.getUserId(),postId);
+                    newPostRedisRepository.save(profileService.getProfile(feed.getProfileId()).getUsername(),postId);
                 });
             }
         }

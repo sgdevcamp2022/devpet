@@ -1,22 +1,43 @@
 package com.devpet.feed.repository;
 
 
-import com.devpet.feed.config.Neo4jMangerConfig;
 import com.devpet.feed.model.dto.LikePostDto;
 import org.neo4j.driver.*;
-import org.neo4j.driver.Record;
 import org.neo4j.driver.exceptions.Neo4jException;
-import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-@Repository
-public class Neo4jRepository implements AutoCloseable {
+/**
+ * bulk 연산 위주 Native Query
+ */
 
-    private static final Logger LOGGER = Logger.getLogger(Neo4jRepository.class.getName());
+public class Neo4jRepo implements AutoCloseable {
+//    @Value("${spring.neo4j.uri}")
+//    String uri;
+//    @Value("${spring.neo4j.authentication.username}")
+//    String username;
+//    @Value("${spring.neo4j.authentication.password}")
+//    String password;
+//    private final static Config config = Config.defaultConfig();
+
     private final Driver driver;
+    public Neo4jRepo(String uri, String user, String password, Config config){
+        driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password), config);
+    }
+    @Override
+    public void close() throws Exception {
+        driver.close();
+    }
+
+//    public Driver Neo4jManager() {
+//        return driver = GraphDatabase.driver(uri, AuthTokens.basic(username, password), config);
+//    }
+
+    private static final Logger LOGGER = Logger.getLogger(Neo4jRepo.class.getName());
 
     public void saveLikeAll(List<LikePostDto> likePostDtoList) {
         StringBuilder queryString = new StringBuilder();
@@ -97,14 +118,11 @@ public class Neo4jRepository implements AutoCloseable {
     }
 
 
-    public Neo4jRepository(Neo4jMangerConfig config) {
-        this.driver = config.getDriver();
-    }
+//    public Neo4jRepo(Neo4jMangerConfig config) {
+//        this.driver = config.getDriver();
+//    }
 
-    @Override
-    public void close() throws Exception {
-        driver.close();
-    }
+
 
 }
 

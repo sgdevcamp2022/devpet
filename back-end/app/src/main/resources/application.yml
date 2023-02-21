@@ -49,3 +49,9 @@ logging:
           mongodb:
             core:
               MongoTemplate: DEBUG
+feign:
+  client:
+    config:
+      default:
+        connect-timeout: 16000000
+        read-timeout: 16000000
