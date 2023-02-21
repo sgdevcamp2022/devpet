@@ -54,17 +54,17 @@ public interface UserInfoApi {
      * @return
      */
     @GetMapping("/userinfo/list/follow/new")
-    public Set<String> getFollowUserPost(UserInfo userInfo);
+    public Set<String> getFollowUserPost(@RequestParam("follow") String followUsername);
 
     /**
      * 사용자의 관심 기반 추천
      */
     @GetMapping("/userinfo/feed1/list/post")
-    public Set<String> getPetLikeCommentPostList(FollowRequest followDto);
+    public Set<String> getPetLikeCommentPostList(@RequestParam("userId") String username);
 
     /**
      * 사용자의 팔로우 기반 추천
      */
     @GetMapping("/userinfo/feed2/list/post")
-    public Set<String> getRecommendedFollowPostList(FollowRequest followDto);
+    public Set<String> getRecommendedFollowPostList(@RequestParam("userId") String username);
 }

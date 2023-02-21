@@ -214,7 +214,7 @@ public class FeedService {
     public List<Feed> getFeedList(UserInfo userInfo)
     {
         // 피드 서버에서 사용자가 조회할 피드 리스트를 꺼내 옵니다.
-        List<Long> feedIds = relationFeedService.getPostList(userInfo).stream().map(Long::parseLong).collect(Collectors.toList());
+        List<Long> feedIds = relationFeedService.getPostList(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toList());
 
         // 캐시에 가져온 데이터 저장 합니다.
         newPostRedisRepository.saveAll(userInfo.getUsername(),feedIds);
@@ -239,13 +239,12 @@ public class FeedService {
     @Transactional
     public void saveRecommendUserPostList(UserInfo userInfo)
     {
-        FollowRequest followRequest = FollowRequest.builder().follower(Long.valueOf(userInfo.getUserId()).toString()).build();
         // 사용자 팔로우기반 게시글 추천을 받아와 저장합니다.
-        HashSet<Long> resultSet = userInfoService.getFollowUserPost(userInfo).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new));
+        HashSet<Long> resultSet = userInfoService.getFollowUserPost(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new));
 
         // 사용자 관심 기반 게시글을 추천 받아와 저장합니다.
-        resultSet.addAll(userInfoService.getPetLikeCommentPostList(followRequest).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new)));
-        resultSet.addAll(userInfoService.getRecommendedFollowPostList(followRequest).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new)));
+        resultSet.addAll(userInfoService.getPetLikeCommentPostList(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new)));
+        resultSet.addAll(userInfoService.getRecommendedFollowPostList(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toCollection(HashSet::new)));
 
         // 캐시에 사용자 추천 게시글 저장.
         recommendPostRedisRepository.saveAll(userInfo.getUsername(),resultSet);
