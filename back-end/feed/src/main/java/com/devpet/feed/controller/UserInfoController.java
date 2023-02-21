@@ -73,7 +73,7 @@ public class UserInfoController {
      * 팔로워 수 전달
      * followDto 의 follower 필드가 사용자 본인
      * */
-    @GetMapping("/count/follower")
+    @PostMapping("/count/follower")
     public ResponseEntity<Long> countFollower(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.countFollower(followDto.getFollower()));
@@ -83,7 +83,7 @@ public class UserInfoController {
      * 팔로잉 수 전달
      * followDto 의 follower 필드가 사용자 본인
      * */
-    @GetMapping("/count/following")
+    @PostMapping("/count/following")
     public ResponseEntity<Long> countFollowing(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.countFollowing(followDto.getFollower()));
