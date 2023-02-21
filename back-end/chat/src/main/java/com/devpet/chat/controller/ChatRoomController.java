@@ -15,7 +15,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/chat")
+@RequestMapping
 public class ChatRoomController {
 
     private final ChatRoomRepository chatRoomRepository;

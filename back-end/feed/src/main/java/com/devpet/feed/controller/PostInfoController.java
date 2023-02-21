@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,20 +35,31 @@ public class PostInfoController {
         return postInfoService.savePostInfo(postInfoDto);
     }
 
+    /**
+     * like bulk insert
+     * @param likePostDto
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/like")
-    public PostInfoDto likePost(@RequestBody LikePostDto likePostDto) throws Exception {
+    public ResponseEntity<?> likePost(@RequestBody List<LikePostDto> likePostDto) throws Exception {
         return postInfoService.likePostInfo(likePostDto);
     }
 
-    @PatchMapping("/like")
-    public PostInfo dislikePost(@RequestBody LikePostDto likePostDto) throws Exception {
+    /**
+     * dislike bulk insert
+     * @param likePostDto
+     * @return
+     * @throws Exception
+     */
+    @PutMapping("/dislike")
+    public ResponseEntity<?> dislikePost(@RequestBody List<LikePostDto> likePostDto) throws Exception {
         return postInfoService.dislikePostInfo(likePostDto);
     }
 
     @GetMapping("/comment")
-    public ResponseEntity<?> getCommentPost(@RequestBody Map<String, String> userId) {
-        String user = userId.get("userId");
-        return postInfoService.getCommentPost(user);
+    public ResponseEntity<?> getCommentPost(@RequestParam String userId) {
+        return postInfoService.getCommentPost(userId);
     }
 
     @PostMapping("/comment")

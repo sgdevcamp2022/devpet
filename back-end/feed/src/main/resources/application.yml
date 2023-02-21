@@ -13,9 +13,8 @@ spring:
         password: 1q2w3e4r!@# #neo4j 데스크톱 콘솔에서 설정할 수 있다.
       database: feed
     redis:
-      host: 121.187.22.37
+      host: localhost
       port: 6379
-      password: mypassword
     application:
       name: relation
 eureka:
