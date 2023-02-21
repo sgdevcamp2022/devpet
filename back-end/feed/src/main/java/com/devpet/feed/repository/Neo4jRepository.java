@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * bulk 연산 위주 Native Query
+ */
 @Repository
 public class Neo4jRepository implements AutoCloseable {
 

@@ -49,10 +49,6 @@ public class PostInfoService {
     public PostInfoDto savePostInfo(PostInfoDto postInfoDto){
         UserInfo userInfo = userInfoRepository.findNodeById(postInfoDto.getUserId()).orElseThrow(RuntimeException::new);
         PostInfo postInfo = postInfoDtoToPostInfo(postInfoDto);
-
-
-        Set<Tag> postTags = postInfo.getTags();
-
         Post post = new Post(postInfo);
         userInfo.getPosts().add(post);
         userInfoRepository.save(userInfo);
@@ -92,7 +88,6 @@ public class PostInfoService {
      */
     @Transactional
     public ResponseEntity likePostInfo(List<LikePostDto> likePostDto){
-//        var app = new Neo4jRepository(uri, username, password, Config.defaultConfig());
         neo4jRepository.saveLikeAll(likePostDto);
         return ResponseEntity.ok("SUCCESS");
     }
@@ -123,7 +118,11 @@ public class PostInfoService {
 //        return postInfoRepository.dislikePost(likePostDto.getPostId(), likePostDto.getUserId());
 //    }
 
-
+    /**
+     * 댓글 정보 Node 생성
+     * @param commentDto
+     * @return
+     */
     @Transactional
     public ResponseEntity<?> postComment(CommentDto commentDto)  {
         Optional<PostInfo> post = postInfoRepository.existsComment(commentDto.getPostId(), commentDto.getUserId());
@@ -140,6 +139,11 @@ public class PostInfoService {
         return ResponseEntity.ok(postInfo.getPostId());
     }
 
+    /**
+     * 내가 follow 한 유저가 1시간 이내에 작성한 댓글이 달린 게시물ID 불러오기
+     * @param userId
+     * @return
+     */
     @Transactional
     public ResponseEntity<?> getCommentPost(String userId) {
         UserInfo userInfo = userInfoRepository.findNodeById(userId).orElseThrow(RuntimeException::new);

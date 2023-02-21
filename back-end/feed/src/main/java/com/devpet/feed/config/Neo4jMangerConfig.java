@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Neo4j native query 사용 설정
+ */
 @Configuration
 @RequiredArgsConstructor
 @Getter
