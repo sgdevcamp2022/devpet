@@ -24,7 +24,7 @@ public class ProfileService {
     {
 
         AtomicReference<Profile> profile = new AtomicReference<>();
-        profileRepository.findByUserId(userInfo.getUserId()).ifPresent((item)->{
+        profileRepository.findByUsername(userInfo.getUsername()).ifPresent((item)->{
             item.setProfileData(profileRequest);
             profile.set(item);
         });
@@ -87,12 +87,12 @@ public class ProfileService {
     }
     public Profile getProfile(UserInfo userInfo)
     {
-        Profile result = getProfileByUserId(userInfo.getUserId());
+        Profile result = getProfileByUsername(userInfo.getUsername());
         return result;
     }
-    public Profile getProfileByUserId(Long userId)
+    public Profile getProfileByUsername(String username)
     {
-        Profile result = profileRepository.findByUserId(userId).orElseThrow(NullPointerException::new);
+        Profile result = profileRepository.findByUsername(username).orElseThrow(NullPointerException::new);
         setProfileFollowAnFollowerCount(result);
         return result;
     }
@@ -105,10 +105,10 @@ public class ProfileService {
     {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
-        List<Long> followerUserIds = userInfoService.getFollowerList(
+        List<String> followerUserIds = new ArrayList<>(userInfoService.getFollowerList(
                 FollowRequest.builder().follower(profile.getUsername()).build()
-        ).stream().map(Long::parseLong).collect(Collectors.toList());
-        List<Profile> result = profileRepository.findByUserIdIn(followerUserIds);
+        ));
+        List<Profile> result = profileRepository.findByUsernameIn(followerUserIds);
         return result;
     }
 
@@ -116,10 +116,10 @@ public class ProfileService {
     {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
-        List<Long> followUserIds = userInfoService.getFollowingList(
+        List<String> followUsernames = new ArrayList<>(userInfoService.getFollowingList(
                 FollowRequest.builder().follower(profile.getUsername()).build()
-        ).stream().map(Long::parseLong).collect(Collectors.toList());
-        List<Profile> result = profileRepository.findByUserIdIn(followUserIds);
+        ));
+        List<Profile> result = profileRepository.findByUsernameIn(followUsernames);
         return result;
     }
 }
