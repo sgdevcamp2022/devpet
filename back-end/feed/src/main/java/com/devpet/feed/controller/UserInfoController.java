@@ -105,7 +105,7 @@ public class UserInfoController {
      * followDto 의 follower 필드가 사용자 본인
      * */
     @GetMapping("/list/following")
-    public ResponseEntity<Set<String>> getFollowingList(@RequestBody String followId) {
+    public ResponseEntity<Set<String>> getFollowingList(@RequestParam String followId) {
 
         return ResponseEntity.ok(userInfoService.getFollowingList(followId));
     }

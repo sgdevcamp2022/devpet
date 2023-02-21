@@ -117,18 +117,18 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
 
     // List<String> getFollowRecommendPostList(@Param("userId") String userId);
 
-    @Query("Match (u:UserInfo{userId: $userId1})-[:FOLLOW]->()-[f:FOLLOW]-()-[:POST]->(p:PostInfo)" +
-            "Match (n:PostInfo)<-[:RECOMMENDED]-(u)" +
-            "with n" +
-            "limit 6" +
-            "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo)" +
+    @Query("Match (u:UserInfo{userId: $userId1})-[:FOLLOW]->()-[f:FOLLOW]-()-[:POST]->(p:PostInfo) " +
+            "Match (n:PostInfo)<-[:RECOMMENDED]-(u) " +
+            "with n " +
+            "limit 6 " +
+            "MATCH (p)-[:TAGD]->(:Tag)<-[:TAGD]-(n:PostInfo) " +
             "return DISTINCT p.postId")
     List<String> getFollowingRecommendPostList(String userId);
 
-    @Query("match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[]->(p:PostInfo)" +
+    @Query("match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[]->(p:PostInfo) " +
 
-            "WITH datetime() AS now, datetime(p.createdAt) AS date , p" +
-            "where duration.inSeconds(date, now).hours < 10" +
+            "WITH datetime() AS now, datetime(p.createdAt) AS date , p " +
+            "where duration.inSeconds(date, now).hours < 10 " +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
 

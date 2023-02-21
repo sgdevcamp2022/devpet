@@ -106,7 +106,7 @@ public class ProfileService {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
         List<String> followerUserIds = new ArrayList<>(userInfoService.getFollowerList(
-                FollowRequest.builder().follower(profile.getUsername()).build()
+                profile.getUsername()
         ));
         List<Profile> result = profileRepository.findByUsernameIn(followerUserIds);
         return result;
@@ -117,7 +117,7 @@ public class ProfileService {
         Profile profile = profileRepository.findById(profileId).orElseThrow(NullPointerException::new);
 
         List<String> followUsernames = new ArrayList<>(userInfoService.getFollowingList(
-                FollowRequest.builder().follower(profile.getUsername()).build()
+                profile.getUsername()
         ));
         List<Profile> result = profileRepository.findByUsernameIn(followUsernames);
         return result;
