@@ -1,6 +1,8 @@
 package com.example.petmily.model.data.post.remote;
 
 
+import com.example.petmily.model.data.post.Entity.UserId;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -11,8 +13,11 @@ import retrofit2.http.POST;
 
 public interface API_Interface {
 
-    @POST
-    Call<?> actionResult(@Body Action action);
+    @POST("feed")
+    Call<List<String>> actionResult(@Body List<Action> action);
+
+    @GET("feed")
+    Call<List<String>> getSearch(@Body UserId userId);
 
 
 
@@ -47,7 +52,7 @@ public interface API_Interface {
             @Query("category") Integer category
     );
 
-    @GET("feads/myfeads")
+    @GET("feads/my-feed")
     Call<List<Post>> getMyfeads(
             @Query("latitude") Double latitude,
             @Query("longitude") Double longitude,

@@ -53,10 +53,14 @@ public class Adapter_PostGrid extends RecyclerView.Adapter<Adapter_PostGrid.Hold
     @Override
     public void onBindViewHolder(@NonNull Adapter_PostGrid.Holder holder, int position) {
         PostGrid post = list.get(position);
+
         Glide.with(context)
                 .load(post.getUri())
                 .into(holder.postListBinding.postImage);
+
+
         holder.postListBinding.setPostGrid(post);
+        holder.postListBinding.postImage.setClipToOutline(true);
 
     }
 
