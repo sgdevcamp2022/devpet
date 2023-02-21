@@ -26,23 +26,25 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.annotations.SerializedName;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MakeViewModel extends AndroidViewModel {
 
-    final String URL =  "http://10.0.2.2:1367/api/app/";
+    final String URL =  "http://121.187.22.37:5000/api/app/";
     private MakeCallback makeCallback;
 
     private API_Interface makeInterface;
@@ -51,10 +53,6 @@ public class MakeViewModel extends AndroidViewModel {
 
     private Call<?> restApi;
 
-
-
-
-    
     private MutableLiveData<List<Make>> userTagList;
     public MutableLiveData<List<Make>> getUserTagList() {
         if (userTagList == null) {
@@ -77,9 +75,9 @@ public class MakeViewModel extends AndroidViewModel {
     private List<Make> hashTag;
     private List<String> imageUri;
 
-    private String email;
+    private String userId;
     private String getTime;
-
+    private String token;
     
     public MakeViewModel(@NonNull Application application) {
         super(application);
@@ -94,11 +92,24 @@ public class MakeViewModel extends AndroidViewModel {
         userTag = new ArrayList<Make>();
         imageUri = new ArrayList<String>();
 
+        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        token = sharedPreferences.getString("token", "");
+
+        OkHttpClient.Builder client = new OkHttpClient().newBuilder();
+        client
+                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+
+        client.addInterceptor(new CustomInterceptor());
+
+        OkHttpClient httpClient = client.build();
         makeCallback = new MakeCallback(context);
         Gson gson = new GsonBuilder().setLenient().create();
         retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(httpClient)
                 .build();
         makeInterface = retrofit.create(API_Interface.class);
     }
@@ -118,18 +129,19 @@ public class MakeViewModel extends AndroidViewModel {
         {
             hashTagList.add(hashTag.get(i).getMake());
         }
-        Location location = new Location(category, new Coord(latitude, longitude));
+        Location location = new Location(1, "이름", "주소",category, new Coord(latitude, longitude));
 
         List<String> imageList = new ArrayList<String>();
         for(int i = 0; i < imageUri.size(); i++)
         {
-            imageList.add("post/"+email+"/"+getTime+(i+"")+".jpg");
+            imageList.add("post/"+userId+"/"+getTime+(i+"")+".jpg");
             //imageList.add("dog2.png");
         }
 
 
         Post post = new Post(content, category, location, userTagList, hashTagList, imageList, 0);
 
+        Log.e("메이크 통신 리퀘스트 : ", post.toString());
         restApi = makeInterface.createPost(post);
         restApi.enqueue(makeCallback);
 
@@ -138,7 +150,7 @@ public class MakeViewModel extends AndroidViewModel {
     public void addImageUri(List<Uri> imageUri)
     {
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
-        email = sharedPreferences.getString("email", "");
+        userId = sharedPreferences.getString("userId", "");
 
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -150,19 +162,19 @@ public class MakeViewModel extends AndroidViewModel {
 
         for(int i = 0; i < imageUri.size(); i++)
         {
-            UploadTask uploadTask = storageReference.child("post/"+email+"/"+getTime+(i+"")+".jpg").putFile(imageUri.get(i));
+            UploadTask uploadTask = storageReference.child("post/"+userId+"/"+getTime+(i+"")+".jpg").putFile(imageUri.get(i));
 
             //UploadTask uploadTask = storageReference.child("dog2.png").putFile(imageUri.get(i));
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.e("실패 메시지 : ", "");
+                    Log.e("스토리지 저장 실패 : ", e.toString());
                     e.printStackTrace();
                 }
             }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    Log.e("주소 스트링으로 출력 : ", taskSnapshot.getMetadata().getPath());
+                    Log.e("스토리지 저장 성공 : ", taskSnapshot.getMetadata().getPath());
                 }
             });
         }
@@ -225,22 +237,21 @@ public class MakeViewModel extends AndroidViewModel {
 
         @Override
         public void onResponse(retrofit2.Call<T> call, retrofit2.Response<T> response) {
-
+            Request re = response.raw().request();
+            Log.e("리퀘스트 : ", re.toString());
             Gson gson = new Gson();
-            int responseCode = response.code();//네트워크 탐지할 때 사용 코드
+            int responseCode = response.code();
             T body = response.body();
 
 
             try {
-                Log.e("메이크 통신 성공 : ", response.errorBody().string()+"");
+                Log.e("메이크 통신 메시지 : ", response.errorBody().string()+"");
             } catch (IOException e) {
                 e.printStackTrace();
             }
             if(responseCode != 200)
             {
-
-
-
+                
             }
         }
 
@@ -251,7 +262,23 @@ public class MakeViewModel extends AndroidViewModel {
         }
     }
 
+    public class CustomInterceptor implements okhttp3.Interceptor, HttpLoggingInterceptor.Logger {
+        @Override
+        public void log(String message) {
+            android.util.Log.e("MyGitHubData :", message + "");
+        }
 
+
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request original = chain.request();
+            Request request = original.newBuilder()
+                    .header("Authorization", token)
+                    .build();
+
+            return chain.proceed(request);
+        }
+    }
 
 
 }

@@ -35,7 +35,7 @@
         <activity android:name=".view.Activity_Login"/>
         <activity android:name=".view.Activity_Join"/>
         <activity android:name=".view.Activity_Chat_Room"/>
-        <service android:name=".viewModel.service.ChatService" />
+
         <activity android:name=".view.Activity_MakeProfile" />
         <activity android:name=".view.Activity_PetAppend"/>
         <activity android:name=".view.Activity_PostFull"/>
@@ -49,10 +49,17 @@
             </intent-filter>
         </service>
 
-
+        <service android:name=".viewModel.service.ChatService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
         <service android:name=".viewModel.service.UndeadService"/>
-        <receiver android:name=".viewModel.service.AlarmReceiver"/>
-
+        <receiver android:name=".viewModel.service.AlarmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="ACTION.RESTART.PersistentService"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 
@@ -64,4 +71,13 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+
+
+
 </manifest>

@@ -10,31 +10,31 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class RecommendPostRedisRepository implements RedisSetRepository<Long,Long>{
+public class RecommendPostRedisRepository implements RedisSetRepository<String,Long>{
     public static final String KEY_GENERATOR = "recommend_post";
     private final SetOperations<String,String> feedIdListOperation;
     public RecommendPostRedisRepository(StringRedisTemplate stringRedisTemplate){
         this.feedIdListOperation = stringRedisTemplate.opsForSet();
     }
-    public void save(Long userId,Long feedId)
+    public void save(String username,Long feedId)
     {
-        feedIdListOperation.add(keyGenerator(userId),feedId.toString());
+        feedIdListOperation.add(keyGenerator(username),feedId.toString());
     }
-    public void saveAll(Long userId, Collection<Long> feedIds)
+    public void saveAll(String username, Collection<Long> feedIds)
     {
-        feedIdListOperation.union(keyGenerator(userId),feedIds.stream().map(Object::toString).collect(Collectors.toList()));
+        feedIdListOperation.union(keyGenerator(username),feedIds.stream().map(Object::toString).collect(Collectors.toList()));
     }
 
-    public List<Long> findById(Long userId, int count)
+    public List<Long> findById(String username, int count)
     {
-        List<String> result = feedIdListOperation.pop(keyGenerator(userId),count);
+        List<String> result = feedIdListOperation.pop(keyGenerator(username),count);
         if (result==null)
             return new ArrayList<>();
         return result.stream().map(Long::parseLong).collect(Collectors.toList());
     }
 
-    public String keyGenerator(Long userId)
+    public String keyGenerator(String username)
     {
-        return String.format("%s_%s",userId,KEY_GENERATOR);
+        return String.format("%s_%s",username,KEY_GENERATOR);
     }
 }

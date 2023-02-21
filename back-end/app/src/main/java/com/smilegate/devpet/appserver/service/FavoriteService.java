@@ -42,7 +42,7 @@ public class FavoriteService {
      */
     public boolean setFeedFavorite(long feedId, FavoriteRequest favoriteRequest, UserInfo userInfo)
     {
-        favoriteRedisRepository.save(feedId, userInfo.getUserId(),favoriteRequest.getIsFavorite());
+        favoriteRedisRepository.save(feedId, userInfo.getUsername(),favoriteRequest.getIsFavorite());
         return true;
     }
     /**
@@ -54,8 +54,8 @@ public class FavoriteService {
         List<Favorite> favoriteList = favoriteRepository.findAllByPostIdAndFavorite(feedId,true);
         if (favoriteList==null || favoriteList.isEmpty())
             return;
-        for(Long userId : favoriteList.stream().map(Favorite::getUserId).collect(Collectors.toList()))
-            newPostRedisRepository.save(userId,feedId);
+//        for(Long userId : favoriteList.stream().map(Favorite::getUserId).collect(Collectors.toList()))\
+//            newPostRedisRepository.save(username,feedId);
     }
 
     /**
@@ -69,7 +69,7 @@ public class FavoriteService {
         List<Favorite> favoriteStream = favoriteList.stream().filter(item->item.getFavoriteId()==null).collect(Collectors.toList());
 
         // 설정할 아이디의 마지막 번호를 가져옵니다.
-        AtomicLong lastSeq = new AtomicLong(favoriteSequenceGeneratorService.longSequenceBulkGenerate(Feed.SEQUENCE_NAME, (int) favoriteStream.size()));
+        AtomicLong lastSeq = new AtomicLong(favoriteSequenceGeneratorService.longSequenceBulkGenerate(Favorite.SEQUENCE_NAME, (int) favoriteStream.size()));
 
         // 각 정보별로 id를 설정합니다.
         favoriteStream.forEach(item->{
@@ -84,7 +84,7 @@ public class FavoriteService {
                 .filter(Favorite::isFavorite)
                 .map(item->LikePostDto.builder()
                         .postId(item.getPostId().toString())
-                        .userId(item.getUserId().toString())
+                        .userId(item.getUsername().toString())
 //                        .isFavorite(item.isFavorite())
                         .build())
                 .collect(Collectors.toList());
@@ -92,13 +92,15 @@ public class FavoriteService {
                 .filter(item->!item.isFavorite())
                 .map(item->LikePostDto.builder()
                         .postId(item.getPostId().toString())
-                        .userId(item.getUserId().toString())
+                        .userId(item.getUsername().toString())
 //                        .isFavorite(item.isFavorite())
                         .build())
                 .collect(Collectors.toList());
 
-        postInfoApi.likePost(likes);
-        postInfoApi.dislikePost(dislikes);
+        if (!likes.isEmpty())
+            postInfoApi.likePost(likes);
+        if (!dislikes.isEmpty())
+            postInfoApi.dislikePost(dislikes);
 //        kafkaProducerServi8ce.feedFavoriteSend(favoriteList);
         return result;
     }
