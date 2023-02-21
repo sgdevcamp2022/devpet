@@ -3,7 +3,10 @@ package com.example.petmily.view;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,8 +32,10 @@ import com.example.petmily.databinding.FragmentHomeBinding;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
 import com.example.petmily.model.data.post.remote.Post;
+import com.example.petmily.model.data.profile.remote.Profile;
 import com.example.petmily.viewModel.GpsTracker;
 import com.example.petmily.viewModel.PostViewModel;
+import com.example.petmily.viewModel.ProfileViewModel;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.naver.maps.geometry.LatLng;
@@ -53,7 +58,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Fragment_Home extends Fragment implements OnMapReadyCallback {
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     private FragmentHomeBinding binding;
     private MapView mapView;
@@ -68,12 +72,16 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     private LinearLayout half;
 
     private PostViewModel postViewModel;
+    private ProfileViewModel profileViewModel;
 
     private LinearLayoutManager linearLayoutManager;
 
     private GpsTracker gpsTracker;
+    private SlidingUpPanelLayout sliding;
     double latitude;
     double longitude;
+    private String nickname;
+    private String about;
 
     Context context;
 
@@ -108,6 +116,8 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.init();
+        profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
+        profileViewModel.init();
 
         halfView = binding.postHalfList;
         grid = binding.postGridList;
@@ -140,7 +150,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
 
 
-        SlidingUpPanelLayout sliding = binding.slidingLayout;
+        sliding = binding.slidingLayout;
         sliding.setClipToOutline(true);
         sliding.setTouchEnabled(true);
         sliding.setAnchorPoint(0.4F);
@@ -229,21 +239,58 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         };
         postViewModel.getLocalName().observe(getViewLifecycleOwner(), localNameObserver);
 
-        final Observer<Boolean> eventPost = new Observer<Boolean>() {
+        final Observer<List<String>> userIdLivaDataObserver = new Observer<List<String>>() {
             @Override
-            public void onChanged(@Nullable final Boolean aBoolean) {
-                if(!aBoolean) {
-
-                }
-                else
+            public void onChanged(@Nullable final List<String> userIdList) {
+                for(int i = 0; i < userIdList.size(); i++)
                 {
-                    postViewModel.postHalf();
-                    postViewModel.postGrid();
+                    profileViewModel.profileImport(userIdList.get(i));
                 }
-
+                postViewModel.postHalf(null);
+                postViewModel.postGrid(null);
+//                    postViewModel.postHalf();
+//                    postViewModel.postGrid();
             }
         };
-        postViewModel.getPostEvent().observe(this, eventPost);
+        postViewModel.getUserIdLiveData().observe(getViewLifecycleOwner(), userIdLivaDataObserver);
+
+//        final Observer<Profile> profileObserver  = new Observer<Profile>() {
+//            @Override
+//            public void onChanged(@Nullable final Profile profile) {
+//
+//                if(profile != null)
+//                {
+////                    binding.localname.setText(profile.getNickname());
+////                    binding.about.setText(profile.getAbout());
+////                    birth = profile.getBirth();
+//                }
+//                else
+//                {
+//                    Intent intent = new Intent(context, Activity_MakeProfile.class);
+//                    startActivity(intent);
+//                    Log.e("프로필 정보가 없어 프로필 화면으로 이동 : ", profile.getNickname());
+//
+//                }
+////                Glide.with(context)
+////                        .load(profile.getImageUri())
+////                        .into(binding.profileImage);
+//            }
+//        };
+//        profileViewModel.getProfile().observe(getViewLifecycleOwner(), profileObserver);
+
+
+
+
+        final Observer<Integer> markerPositionObserver  = new Observer<Integer>() {
+            @Override
+            public void onChanged(@Nullable final Integer position) {
+                sliding.setPanelState(SlidingUpPanelLayout.PanelState.ANCHORED);
+                linearLayoutManager = (LinearLayoutManager)halfView.getLayoutManager();
+                if(linearLayoutManager != null)
+                    linearLayoutManager.scrollToPosition(position);
+            }
+        };
+        postViewModel.getMarkerPosition().observe(getViewLifecycleOwner(), markerPositionObserver);
 
         halfView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
@@ -256,16 +303,10 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             }
         });
 
-
         postViewModel.postImport();
 
         grid.setVisibility(View.INVISIBLE);
     }
-
-
-
-
-
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap)
@@ -292,6 +333,20 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onPermissionGranted() {
                 Log.e("퍼미션 동의 : ", "true");
+                Intent i = new Intent();
+                String packageName = context.getPackageName();
+                PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+
+                if (pm.isIgnoringBatteryOptimizations(packageName))
+                {
+                    //i.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                }
+                else {
+                    i.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                    i.setData(Uri.parse("package:" + packageName));
+                    startActivity(i);
+                }
+
             }
 
             @Override
@@ -301,8 +356,13 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         };
         TedPermission.create()
                 .setPermissionListener(permissionlistener)
-                .setDeniedMessage("서비스를 사용하기 위해서는 위치 권한을 등록해야 합니다.")
-                .setPermissions(Manifest.permission.ACCESS_FINE_LOCATION)
+                .setDeniedMessage("서비스를 사용하기 위해서는 권한을 등록해야 합니다.")
+                .setDeniedCloseButtonText("닫기")
+                .setGotoSettingButtonText("설정")
+                .setPermissions(
+                        Manifest.permission.POST_NOTIFICATIONS,
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                        )
                 .check();
     }
 

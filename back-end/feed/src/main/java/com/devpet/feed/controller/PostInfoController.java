@@ -52,15 +52,14 @@ public class PostInfoController {
      * @return
      * @throws Exception
      */
-    @PostMapping("/dislike")
+    @PutMapping("/dislike")
     public ResponseEntity<?> dislikePost(@RequestBody List<LikePostDto> likePostDto) throws Exception {
         return postInfoService.dislikePostInfo(likePostDto);
     }
 
     @GetMapping("/comment")
-    public ResponseEntity<?> getCommentPost(@RequestBody Map<String, String> userId) {
-        String user = userId.get("userId");
-        return postInfoService.getCommentPost(user);
+    public ResponseEntity<?> getCommentPost(@RequestParam String userId) {
+        return postInfoService.getCommentPost(userId);
     }
 
     @PostMapping("/comment")

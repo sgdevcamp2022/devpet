@@ -35,7 +35,7 @@ public class Feed extends BaseModel implements Serializable {
     @Field
     private ArrayList<String> imageUrl;
     @Field
-    private Long userId;
+    private Long profileId;
     @Field
     private Set<Tag> hashTags;
     @Transient
@@ -53,15 +53,15 @@ public class Feed extends BaseModel implements Serializable {
         this.hashTags = hashTags;
     }
 
-    public Feed(FeedRequest feedRequest, UserInfo userInfo)
+    public Feed(FeedRequest feedRequest, Long profileId)
     {
-        setFeedData(feedRequest,userInfo);
+        setFeedData(feedRequest,profileId);
     }
 
-    public void setFeedData(FeedRequest feedRequest,UserInfo userInfo)
+    public void setFeedData(FeedRequest feedRequest,Long profileId)
     {
         this.setFeedData(feedRequest);
-        this.setUserId(userInfo.getUserId());
+        this.setProfileId(profileId);
     }
     public void setFeedData(FeedRequest feedRequest)
     {

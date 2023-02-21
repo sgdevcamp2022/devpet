@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -17,11 +18,11 @@ public interface PostInfoApi {
 
     // 좋아요
     @PostMapping("/postinfo/like")
-    public List<PostInfoDto> likePost(List<LikePostDto> likePostDto);
+    public String likePost(List<LikePostDto> likePostDto);
 
     // 좋아요 취소
-    @PatchMapping("/postinfo/like")
-    public List<PostInfoDto> dislikePost(List<LikePostDto> likePostDto);
+    @PutMapping("/postinfo/dislike")
+    public String dislikePost(List<LikePostDto> likePostDto);
 
     // 코멘트가를 달은 내 게시글 가져오기
     @GetMapping("/postinfo/comment")

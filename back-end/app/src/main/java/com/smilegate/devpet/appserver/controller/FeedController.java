@@ -4,6 +4,7 @@ import com.smilegate.devpet.appserver.model.*;
 import com.smilegate.devpet.appserver.service.CommentService;
 import com.smilegate.devpet.appserver.service.FavoriteService;
 import com.smilegate.devpet.appserver.service.FeedService;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.Circle;
 import org.springframework.data.geo.Point;
@@ -31,8 +32,8 @@ public class FeedController {
     }
 
     @PutMapping("/{feedId}")
-    public long putFeed(@PathVariable("feedId") long feedId, @RequestBody FeedRequest feedRequest) {
-        Feed feed = feedService.putFeed(feedRequest, feedId);
+    public long putFeed(@PathVariable("feedId") long feedId, @RequestBody FeedRequest feedRequest, UserInfo userInfo) {
+        Feed feed = feedService.putFeed(feedRequest, feedId, userInfo);
         return feed.getFeedId();
     }
 

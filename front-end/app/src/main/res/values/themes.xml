@@ -11,6 +11,10 @@
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:navigationBarColor">#FDFDFD</item>
+        <item name="android:datePickerStyle">@style/CustomDatePicker</item>
         <!-- Customize your theme here. -->
+    </style>
+    <style name="CustomDatePicker" parent="android:Widget.Material.DatePicker">
+        <item name="android:datePickerMode">spinner</item>
     </style>
 </resources>

@@ -16,29 +16,38 @@ import java.util.stream.Collectors;
 @Repository
 public class FavoriteRedisRepository{
     public static final String KEY_GENERATOR = "favorite";
-    public final HashOperations<String,Long,Boolean> favoriteHashOperation;
+//    public final HashOperations<String,Long,Boolean> favoriteHashOperation;
+    public final HashOperations<String,String,Boolean> favoriteHashOperation;
 
     public FavoriteRedisRepository(RedisTemplate<String,byte[]> redisTemplate)
     {
-        redisTemplate.setHashKeySerializer(new GenericToStringSerializer<>(Long.class));
+//        redisTemplate.setHashKeySerializer(new GenericToStringSerializer<>(Long.class));
+        redisTemplate.setHashKeySerializer(new GenericToStringSerializer<>(String.class));
         redisTemplate.setHashValueSerializer(new GenericToStringSerializer<>(Boolean.class));
         this.favoriteHashOperation = redisTemplate.opsForHash();
     }
 
-    public void save(Long postId,Long userId,Boolean isFavorite)
+//    public void save(Long postId,Long userId,Boolean isFavorite)
+//    {
+//        if(favoriteHashOperation.get(keyGenerator(postId),userId)!=null)
+//            favoriteHashOperation.delete(keyGenerator(postId),userId);
+//        else
+//            favoriteHashOperation.put(keyGenerator(postId),userId,isFavorite);
+//    }
+    public void save(Long postId,String username,Boolean isFavorite)
     {
-        if(favoriteHashOperation.get(keyGenerator(postId),userId)!=null)
-            favoriteHashOperation.delete(keyGenerator(postId),userId);
+        if(favoriteHashOperation.get(keyGenerator(postId),username)!=null)
+            favoriteHashOperation.delete(keyGenerator(postId),username);
         else
-            favoriteHashOperation.put(keyGenerator(postId),userId,isFavorite);
+            favoriteHashOperation.put(keyGenerator(postId),username,isFavorite);
     }
-    public void saveAll(Long postId, Map<Long,Boolean> dataMap)
+//    public void saveAll(Long postId, Map<Long,Boolean> dataMap)
+//    {
+//        favoriteHashOperation.putAll(keyGenerator(postId),dataMap);
+//    }
+    public Map<String,Boolean> findAllById(Long postId)
     {
-        favoriteHashOperation.putAll(keyGenerator(postId),dataMap);
-    }
-    public Map<Long,Boolean> findAllById(Long postId)
-    {
-        Map<Long,Boolean> result = favoriteHashOperation.entries(keyGenerator(postId));
+        Map<String,Boolean> result = favoriteHashOperation.entries(keyGenerator(postId));
         return result;
     }
     public String keyGenerator(Long postId)

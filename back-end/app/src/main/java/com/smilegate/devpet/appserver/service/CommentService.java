@@ -46,13 +46,14 @@ public class CommentService {
         commentRepository.save(comment);
 
         // 코멘트를 작성한 사용자 피드 캐시에 저장합니다.
-        newPostRedisRepository.save(userInfo.getUserId(), comment.getPostId());
+        newPostRedisRepository.save(userInfo.getUsername(), comment.getPostId());
 
         // 게시글 작성자에게 피드 캐시에 저장.
         feedRepository.findById(feedId).ifPresent((feed)->{
             // 작성자가 자기 글에 댓글을 단 경우 알람이 가지 않음...?
+            Profile postUserProfile = profileService.getProfile(feed.getProfileId());
 //            if (!Objects.equals(commentRequest.getProfileId(), profileService.getProfileByUserId(feed.getUserId()).getProfileId()))
-                newPostRedisRepository.save(feed.getUserId(),feed.getFeedId());
+                newPostRedisRepository.save(postUserProfile.getUsername(),feed.getFeedId());
         });
         // 상위 댓글 작성자가 있다면 상위 댓글 작성자의 피드 캐시에 저장.
         if (commentRequest.getParentCommentId()!=null)
@@ -60,7 +61,7 @@ public class CommentService {
                 // 댓글 작성자와 대댓글 작성자가 같은 경우 피드 캐시에 추가하지 않음.
                 if (parentComment.getProfileId() != commentRequest.getProfileId())
                     newPostRedisRepository.save(
-                            profileService.getProfile(parentComment.getProfileId()).getUserId(),comment.getPostId()
+                            profileService.getProfile(parentComment.getProfileId()).getUsername(),comment.getPostId()
                     );
             });
 

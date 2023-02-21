@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Optional;
 @Repository
 public interface ProfileRepository extends MongoRepository<Profile,Long> {
-    public Optional<Profile> findByUserId(Long userId);
-    public List<Profile> findByUserIdIn(List<Long> userIds);
+    public Optional<Profile> findByUsername(String username);
+    public List<Profile> findByUsernameIn(List<String> usernames);
 }
