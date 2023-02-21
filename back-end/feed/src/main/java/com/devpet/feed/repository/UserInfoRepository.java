@@ -19,7 +19,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "MATCH (m)<-[F:FOLLOW]-(n)"+
             "DELETE F;" )
     UserInfo deleteFollowById(String followedUser, String followUser);
-
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
     Optional<UserInfo> findNodeById (@Param("userId") String userId);
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
@@ -37,8 +36,10 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "LIMIT 6 " +
             "match (u)-[r]->(p) " +
             "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
-            "return DISTINCT n.postId " +
-            "order by n.createdAt DESC")
+            "with n" +
+            "order by n.createdAt DESC"+
+            "return DISTINCT n.postId "
+            )
     Set<String> getPostList(@Param("userId") String userId);
 
 
