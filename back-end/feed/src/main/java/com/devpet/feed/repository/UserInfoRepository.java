@@ -16,7 +16,8 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
 
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
     Optional<UserInfo> findNodeById (@Param("userId") String userId);
-
+    @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
+    UserInfo findNodeById2(String userId);
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +
             "MATCH (n)-[l:LIKE]->(m) "+
@@ -180,4 +181,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 24 " +
             "return DISTINCT p.postId as postId ")
     Set<String> getRecommendedFollowPostList(@Param("userId") String userId);
+
+
 }

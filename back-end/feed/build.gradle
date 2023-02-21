@@ -22,7 +22,7 @@ ext {
     set('springCloudVersion', "2021.0.5")
 }
 dependencies {
-//    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -30,7 +30,7 @@ dependencies {
 
 //    implementation 'org.springframework.boot:spring-data-neo4j'
 
-    implementation 'org.neo4j.driver:neo4j-java-driver:4.4.0'
+//    implementation 'org.neo4j.driver:neo4j-java-driver:4.4.0'
 //    implementation 'org.neo4j:neo4j-cypher-dsl:2023.0.0'
     implementation 'com.google.code.gson:gson'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
