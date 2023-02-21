@@ -23,6 +23,11 @@ zuul:
 #    # 수동 경로 매핑  http://localhost:5555/srve2/v1/~~
 #    service1: /srve1/**
 #    service2: /srve2/**
+
+ribbon:
+  ReadTimeout: 60000
+  connection-timeout: 3000
+
 management:
   endpoint:
     routes:

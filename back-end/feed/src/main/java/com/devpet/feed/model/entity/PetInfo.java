@@ -17,8 +17,8 @@ import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 @NoArgsConstructor
 public class PetInfo {
 
-    @Id @GeneratedValue(UUIDStringGenerator.class)
-    private String petId;
+    @Id
+    private Long petId;
 
     @Property
     private String petName;
@@ -30,16 +30,17 @@ public class PetInfo {
     private String petSpecies;
 
     @Builder
-    public PetInfo(String petName, String petBirth, String petSpecies) {
-
+    public PetInfo(Long petId, String petName, String petBirth, String petSpecies) {
+        this.petId = petId;
         this.petName = petName;
         this.petBirth = petBirth;
         this.petSpecies = petSpecies;
     }
     public PetInfo(PetInfoDto dto)
     {
-        if (dto.getPetId()!=null)
-            this.petId = dto.getPetId();
+//        if (dto.getPetId()!=null)
+//            this.petId = dto.getPetId();
+        this.petId = dto.getPetId();
         this.petName = dto.getPetName();
         this.petBirth = dto.getPetBirth();
         this.petSpecies = dto.getPetSpecies();

@@ -59,60 +59,84 @@ public class UserInfoController {
         return userInfoDto;
     }
 
+    /*
+    * 팔로우 취소
+    * followDto 의 follower 필드가 사용자 본인
+    * */
     @PostMapping("/follow/cancel")
     public void cancelFollow(@RequestBody FollowDto followDto) {
 
         userInfoService.cancelFollow(followDto);
     }
 
+    /*
+     * 팔로워 수 전달
+     * followDto 의 follower 필드가 사용자 본인
+     * */
     @GetMapping("/count/follower")
     public ResponseEntity<Long> countFollower(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.countFollower(followDto.getFollower()));
     }
 
+    /*
+     * 팔로잉 수 전달
+     * followDto 의 follower 필드가 사용자 본인
+     * */
     @GetMapping("/count/following")
     public ResponseEntity<Long> countFollowing(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.countFollowing(followDto.getFollower()));
     }
 
+    /*
+     * 팔로워 리스트 전달(사용자 본인을 팔로우 하고 있는 다른 사용자들)
+     * followDto 의 follower 필드가 사용자 본인
+     * */
     @GetMapping("/list/follower")
     public ResponseEntity<Set<String>> getFollowerList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getFollowerList(followDto.getFollower()));
     }
-
+    /*
+     * 팔로잉 리스트 전달(사용자 본인이 팔로우 하고 있는 다른 사용자들)
+     * followDto 의 follower 필드가 사용자 본인
+     * */
     @GetMapping("/list/following")
     public ResponseEntity<Set<String>> getFollowingList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getFollowingList(followDto.getFollower()));
     }
 
+    // 내가 팔로우 한 유저들이 작성한 게시글들 가져오기
     @GetMapping("/list/follow/post")
     public ResponseEntity<Set<String>> getFollowPostList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getFollowPostList(followDto.getFollower()));
     }
 
+    // 내가 좋아요를 누른 게시글의 tag 에 관련된 다른 게시글들 불러오기
     @GetMapping("/list/like/post")
     public ResponseEntity<Set<String>> getLikePostList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getLikePostList(followDto.getFollower()));
     }
 
+    // 내가 댓글을 쓴 게시글의 tag에 관련된 다른 게시글들 불러오기
     @GetMapping("/list/comment/post")
     public ResponseEntity<Set<String>> getCommentPostList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getCommentPostList(followDto.getFollower()));
     }
 
+    // 내가 팔로우 한 유저들의 recommend 관계가 있는 게시글의 tag에 관련된 게시글들 불러오기
     @GetMapping("/list/recommend/post")
     public ResponseEntity<Set<String>> getFollowRecommendPostList(@RequestBody FollowDto followDto) {
 
         return ResponseEntity.ok(userInfoService.getFollowRecommendPostList(followDto.getFollower()));
     }
 
+    // 내가 키우는 펫과 관련된 태그의 게시물
     @GetMapping("/list/pet/post")
     public ResponseEntity<Set<String>> getPetPostList(@RequestBody FollowDto followDto) {
 
@@ -141,24 +165,16 @@ public class UserInfoController {
         return ResponseEntity.ok(userInfoService.getFollowUserPost(userId.get("userId")));
     }
 
-//    @GetMapping("/list/follow/comment/post")
-//    public ResponseEntity<Set<String>> getFollowingCommentPostList(@RequestBody FollowDto followDto){
-//        return ResponseEntity.ok(userInfoService.getFollowingCommentPostList(followDto.getFollower()));
-//    }
-
+    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
     @GetMapping("/feed1/list/post")
     public ResponseEntity<Set<String>> getPetLikeCommentPostList(@RequestBody FollowDto followDto){
         return ResponseEntity.ok(userInfoService.getPetLikeCommentPostList(followDto.getFollower()));
     }
 
+    // 유저가 알 수 있는 사람, 행동 기반 추천 , 팔로우한 유저의 행동 기반 추천(하늘색 부분)
     @GetMapping("/feed2/list/post")
     public ResponseEntity<Set<String>> getRecommendedFollowPostList(@RequestBody FollowDto followDto){
         return ResponseEntity.ok(userInfoService.getRecommendedFollowPostList(followDto.getFollower()));
     }
 
-//    @DeleteMapping("/comment")
-//    public void deleteComment(@RequestBody FollowDto followDto){
-//
-//        return ResponseEntity.ok(userInfoService.getRecommendedFollowPostList(followDto.getFollower()));
-//    }
 }
