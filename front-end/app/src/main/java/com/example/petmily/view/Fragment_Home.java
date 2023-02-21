@@ -82,6 +82,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     double longitude;
     private String nickname;
     private String about;
+    private long time;
 
     Context context;
 
@@ -136,17 +137,17 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
 
         //테스트 코드
-        place = binding.placeList;
-        place.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-
-        ArrayList<Place> test = new ArrayList<Place>();
-        test.add(new Place("장소1"));
-        test.add(new Place("장소2"));
-        test.add(new Place("장소3"));
-        test.add(new Place("장소4"));
-        test.add(new Place("장소5"));
-        Adapter_Place adapterPlace = new Adapter_Place(test);
-        place.setAdapter(adapterPlace);
+//        place = binding.placeList;
+//        place.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+//
+//        ArrayList<Place> test = new ArrayList<Place>();
+//        test.add(new Place("장소1"));
+//        test.add(new Place("장소2"));
+//        test.add(new Place("장소3"));
+//        test.add(new Place("장소4"));
+//        test.add(new Place("장소5"));
+//        Adapter_Place adapterPlace = new Adapter_Place(test);
+//        place.setAdapter(adapterPlace);
 
 
 
@@ -246,13 +247,24 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 {
                     profileViewModel.profileImport(userIdList.get(i));
                 }
-                postViewModel.postHalf(null);
-                postViewModel.postGrid(null);
 //                    postViewModel.postHalf();
 //                    postViewModel.postGrid();
             }
         };
         postViewModel.getUserIdLiveData().observe(getViewLifecycleOwner(), userIdLivaDataObserver);
+
+        final Observer<Boolean> eventPost = new Observer<Boolean>() {
+            @Override
+            public void onChanged(@Nullable final Boolean aBoolean) {
+                if(aBoolean)
+                {
+//                    postViewModel.postHalf(null);
+//                    postViewModel.postGrid(null);
+                }
+            }
+        };
+        postViewModel.getPostEvent().observe(getViewLifecycleOwner(), eventPost);
+
 
 //        final Observer<Profile> profileObserver  = new Observer<Profile>() {
 //            @Override
@@ -296,6 +308,20 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
                 postViewModel.moveMap(linearLayoutManager.findFirstVisibleItemPosition());
+                postViewModel.actionAdd(time, linearLayoutManager.findFirstVisibleItemPosition());
+                time  = System.currentTimeMillis();
+            }
+
+            @Override
+            public void onChildViewDetachedFromWindow(@NonNull View view) {
+            }
+        });
+
+        grid.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+            @Override
+            public void onChildViewAttachedToWindow(@NonNull View view) {
+                postViewModel.actionAdd(time, linearLayoutManager.findFirstVisibleItemPosition());
+                time  = System.currentTimeMillis();
             }
 
             @Override
@@ -305,7 +331,9 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
         postViewModel.postImport();
 
+
         grid.setVisibility(View.INVISIBLE);
+        time  = System.currentTimeMillis();
     }
 
     @Override
@@ -462,5 +490,10 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         }
     }
 
-
+    @Override
+    public void onDestroy()
+    {
+        postViewModel.postAction();
+        super.onDestroy();
+    }
 }

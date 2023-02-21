@@ -70,6 +70,7 @@ public class Fragment_Profile extends Fragment {
 
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.init();
+        postViewModel.postMy();
 
 
 
@@ -122,7 +123,7 @@ public class Fragment_Profile extends Fragment {
                 {
                     Intent intent = new Intent(context, Activity_MakeProfile.class);
                     startActivity(intent);
-                    Log.e("프로필 정보가 없어 프로필 화면으로 이동 : ", profile.getNickname());
+                    Log.e("프로필 정보가 없어 프로필 화면으로 이동 : ", "null");
 
                 }
 //                Glide.with(context)
@@ -152,6 +153,7 @@ public class Fragment_Profile extends Fragment {
         profileViewModel.getFollower().observe(getViewLifecycleOwner(), followerObserver);
 
         profileViewModel.profileMyImport();
+        postViewModel.postGrid(null);
 
     }
 
