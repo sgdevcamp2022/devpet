@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class GlobalApplication extends Application {
     public Retrofit retrofit;
-    public String API_URL = "https://121.187.37.22:5555/api/";
+    public String API_URL = "https://121.187.22.37:5000/api/";
     public Gson gson;
     public OkHttpClient client;
 

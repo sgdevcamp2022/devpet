@@ -51,8 +51,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileViewModel extends AndroidViewModel {
 
-    final String URL = "http://121.187.22.37:5555/api/app/";
-    final String CHATURL = "http://121.187.22.37:5555/api/chat/";
+    final String URL = "http://121.187.22.37:5000/api/app/";
+    final String CHATURL = "http://121.187.22.37:5000/api/chat/";
 
     private FirebaseStorage firebaseStorage;
     private StorageReference storageRef;
@@ -139,26 +139,6 @@ public class ProfileViewModel extends AndroidViewModel {
         //db = ProfileDatabase.getInstance(context);
         profileCallback = new ProfileCallback(context);
 
-
-
-
-//
-//        val client = OkHttpClient.Builder()
-//                .readTimeout(10, TimeUnit.SECONDS)
-//                .connectTimeout(5, TimeUnit.SECONDS)
-//                .addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-//                .build()
-//        retrofit = Retrofit.Builder().baseUrl(API_URL).client(client).addConverterFactory(GsonConverterFactory.create(gson)).build()
-//
-
-
-
-
-
-
-
-
-
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         client
                 .readTimeout(10, TimeUnit.SECONDS)
@@ -183,12 +163,7 @@ public class ProfileViewModel extends AndroidViewModel {
                 .build();
 
         chatRoomInterface = retrofit.create(API_Interface.class);
-
     }
-
-
-
-
 
     public class CustomInterceptor implements okhttp3.Interceptor, HttpLoggingInterceptor.Logger {
         @Override
@@ -212,39 +187,12 @@ public class ProfileViewModel extends AndroidViewModel {
     {
         restApi = profileInterface.getMyProfile();
         restApi.enqueue(profileCallback);
-
-
-
-        //테스트 코드
-//        Profile p = new Profile("", "닉네임", "소개", "생일", pets);
-//        profile.setValue(p);
-//
-//        List<Profile> test =  new ArrayList<Profile>();
-//        test.add(p);
-//        SuccessFollow successFollow = new SuccessFollow("", true,test);
-//        followList.setValue(successFollow);
-//
-//        SuccessFollower successFollower = new SuccessFollower("", true,test);
-//        followerList.setValue(successFollower);
     }
 
     public void profileImport(String userId)
     {
         restApi = profileInterface.getProfile(userId);
         restApi.enqueue(profileCallback);
-
-
-//        //테스트 코드
-//        Profile p = new Profile("", "닉네임", "소개", "생일", pets);
-//        profile.setValue(p);
-//
-//        List<Profile> test =  new ArrayList<Profile>();
-//        test.add(p);
-//        SuccessFollow successFollow = new SuccessFollow("", true,test);
-//        followList.setValue(successFollow);
-//
-//        SuccessFollower successFollower = new SuccessFollower("", true,test);
-//        followerList.setValue(successFollower);
 
     }
     public void petAppend(String imageUri, String name, String division, String birth, String about)
@@ -279,25 +227,6 @@ public class ProfileViewModel extends AndroidViewModel {
 
         restApi =  chatRoomInterface.createRoom(list);
         restApi.enqueue(profileCallback);
-
-        //list.add("1");//내 이메일
-        //list.add("2");//상대 이메일
-//        Call<ChatRoomMake> testCallback = chatRoomInterface.createRoom(list);
-//        testCallback.enqueue(new retrofit2.Callback<ChatRoomMake>(){
-//
-//            @Override
-//            public void onResponse(Call<ChatRoomMake> call, Response<ChatRoomMake> response) {
-//
-//                ChatRoomMake result = response.body();
-//                roomIdLive.setValue(result.getRoomId());
-//
-//            }
-//            @Override
-//            public void onFailure(Call<ChatRoomMake> call, Throwable t) {
-//                Log.e("방 생성 실패 : ",t.getMessage());
-//            }
-//        });
-
     }
 
 

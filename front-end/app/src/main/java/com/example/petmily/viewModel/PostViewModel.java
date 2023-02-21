@@ -2,6 +2,7 @@ package com.example.petmily.viewModel;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
@@ -47,24 +48,30 @@ import com.naver.maps.map.util.MarkerIcons;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Queue;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
 
 public class PostViewModel extends AndroidViewModel {
+    final String URL = "http://121.187.22.37:5000/api/app/";
 
-    final String URL = "https://121.187.37.22:5555/api/app/";
+    final int POST_NUM = 10;
 
     FirebaseStorage storage;
     StorageReference storageReference;
 
     private PostCallback postCallback;
-    private List<Post> postList;
     private PostDatabase db;
 
     private API_Interface postInterface;
@@ -145,6 +152,14 @@ public class PostViewModel extends AndroidViewModel {
         return localName;
     }
 
+    private MutableLiveData<List<String>> userIdLiveData;
+    public MutableLiveData<List<String>> getUserIdLiveData() {
+        if (userIdLiveData == null) {
+            userIdLiveData = new MutableLiveData<List<String>>();
+        }
+        return userIdLiveData;
+    }
+
     private SingleLiveEvent<Boolean> postEvent;
     public SingleLiveEvent<Boolean> getPostEvent()
     {
@@ -161,9 +176,6 @@ public class PostViewModel extends AndroidViewModel {
         return markerPosition;
     }
 
-
-    int like;
-
     private List<Comment> comments;
     private List<PostHalf> halfList;
     private List<PostGrid> gridList;
@@ -171,9 +183,14 @@ public class PostViewModel extends AndroidViewModel {
     private List<Uri> uriList;
     private List<Uri> viewpagerList;
     private List<PostSQL> postSQL;
+    private List<Post> postList;
+    private List<String> userIdList;
+
 
     private double latitude;
     private double longitude;
+    private String token;
+    private String userId;
 
 
 
@@ -186,69 +203,62 @@ public class PostViewModel extends AndroidViewModel {
     public void init()
     {
         db  = PostDatabase.getInstance(context);
-        uriList = new ArrayList<>();
-        viewpagerList = new ArrayList<>();
+        uriList = new ArrayList<Uri>();
+        viewpagerList = new ArrayList<Uri>();
+        userIdList = new ArrayList<String>();
+
+
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        token = sharedPreferences.getString("token", "");
+        userId = sharedPreferences.getString("userId", "");
 
         markers = new ArrayList<Marker>();
-        Gson gson = new GsonBuilder().setLenient().create();
-        retrofit = new Retrofit.Builder()
-                .baseUrl(URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        postInterface = retrofit.create(API_Interface.class);
-        postCallback = new PostCallback(context);
+
 
         storage = FirebaseStorage.getInstance();
         storageReference = storage.getReference();
-        //postImport();
-        //postHalf();
-        //postGrid();
-
-
 
         postSQL = db.postDao().getPost();
+
+
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client
+                .readTimeout(10, TimeUnit.SECONDS)
+                .connectTimeout(5, TimeUnit.SECONDS)
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY));
+
+        client.addInterceptor(new CustomInterceptor());
+        Gson gson = new GsonBuilder().setLenient().create();
+        OkHttpClient httpClient = client.build();
+        retrofit = new Retrofit.Builder()
+                .baseUrl(URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(httpClient)
+                .build();
+
+        postInterface = retrofit.create(API_Interface.class);
+        postCallback = new PostCallback(context);
 
         if(postSQL != null)
         {
             List<Post> postList = new ArrayList<Post>();
             for(int i = 0; i < postSQL.size(); i++)
             {
-//                String postId = postSQL.get(i).getPostId();
-//                Profile profile = postSQL.get(i).getProfile();
-//                Location location = postSQL.get(i).getLocation();
-//                List<String> imageUrl = postSQL.get(i).getImageUrl();
-//                int like = postSQL.get(i).getLike();
-//                boolean likeCheck = postSQL.get(i).isLikeCheck();
-//                String content = postSQL.get(i).getContent();
-//                List<String> hashTag = postSQL.get(i).getHashTag();
-//                List<Comment> comments = postSQL.get(i).getComments();
-
                 String createdAt = postSQL.get(i).getCreatedAt();
-
                 String updatedAt = postSQL.get(i).getUpdatedAt();
-
                 int feedId = postSQL.get(i).getFeedId();
-
                 String content = postSQL.get(i).getContent();
-
                 Location location = postSQL.get(i).getLocation();
-
                 List<Integer> tagUsers = postSQL.get(i).getTagUsers();
-
                 int groupId = 0;//null
-
                 List<String> imageUrl = postSQL.get(i).getImageUrl();
-
                 int userId = postSQL.get(i).getUserId();
-
+                userIdList.add(userId+"");
                 HashTags hashTag = postSQL.get(i).getHashTag();
-
                 String comments = postSQL.get(i).getComments();
-
                 boolean favorite = postSQL.get(i).isFavorite();
-
                 boolean used = postSQL.get(i).isUsed();
-
                 postList.add(new Post(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
             }
             this.postList = postList;
@@ -257,106 +267,50 @@ public class PostViewModel extends AndroidViewModel {
         {
             postSQL = new ArrayList<PostSQL>();
         }
-
-
-
-
-
-
     }
-    //rest통신으로 포스트 불러오기 구현 x
     public void postImport()
     {
-
         //테스트용 코드
+//        List<String> imageUrl1 = new ArrayList<>();
+//        imageUrl1.add("dog2.png");
         postList = new ArrayList<Post>();
-        List<String> imageUrl1 = new ArrayList<>();
-        imageUrl1.add("dog2.png");
         GpsTracker gpsTracker = new GpsTracker(context);
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
-//        restApi = postInterface.getPost(latitude, longitude, 3000, "word", 0, 10, 2);
-//        restApi.enqueue(postCallback);
+        restApi = postInterface.getPost(latitude, longitude, 3000, "word", postList.size(), postList.size()+POST_NUM, 0);
+        restApi.enqueue(postCallback);
 
 
-        for(int i = 0; i < 10; i++)
-        {
-            Coord coord = new Coord(latitude+0.0001*i, longitude+0.0001*i);
-            Location location = new Location(2, "name", "address", 2, coord);
-            List<Integer> list = new ArrayList<Integer>();
-            Post post = new Post("createdAt", "updatedAt", 1, "content", location, list,
-                    0, imageUrl1, 1, new HashTags("해시태그"), "comments", true, true);
-
-            postList.add(post);
-        }
-        final int[] count = {0};
-        for(int i = 0; i < 10; i++)
-        {
-            for(int j = 0; j < postList.get(i).getImageUrl().size(); j++)
-            {
-                String uri = postList.get(i).getImageUrl().get(j);
-                storageReference.child(uri).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                    @Override
-                    public void onSuccess(Uri uri) {
-                        uriList.add(uri);
-
-                        count[0]++;
-                        if(count[0] == 10)
-                        {
-                            postEvent.setValue(true);
-                        }
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        //Log.e("파일 불러오기 실패 : ", e.getMessage());
-                        count[0]++;
-                        if(count[0] == 10)
-                        {
-                            postEvent.setValue(true);
-                        }
-                    }
-                });
-            }
-        }
-
-
-
+//        for(int i = 0; i < 10; i++)
+//        {
+//            Coord coord = new Coord(latitude+0.0001*i, longitude+0.0001*i);
+//            Location location = new Location(2, "name", "address", 2, coord);
+//            List<Integer> list = new ArrayList<Integer>();
+//            Post post = new Post("createdAt", "updatedAt", 1, "content", location, list,
+//                    0, imageUrl1, 1, new HashTags("해시태그"), "comments", true, true);
+//
+//            postList.add(post);
+//        }
         List<PostSQL> postSQLList = new ArrayList<PostSQL>();
         for(int i = 0; i < postList.size(); i++)
         {
             String createdAt = postList.get(i).getCreatedAt();
-
             String updatedAt = postList.get(i).getUpdatedAt();
-
             int feedId = postList.get(i).getFeedId();
-
             String content = postList.get(i).getContent();
-
             Location location = postList.get(i).getLocation();
-
             List<Integer> tagUsers = postList.get(i).getTagUsers();
-
             int groupId = 0;//null
-
             List<String> imageUrl = postList.get(i).getImageUrl();
-
             int userId = postList.get(i).getUserId();
-
             HashTags hashTag = postList.get(i).getHashTag();
-
             String comments = postList.get(i).getComments();
-
             boolean favorite = postList.get(i).isFavorite();
-
             boolean used = postList.get(i).isUsed();
-
             postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
         }
         postSQL = postSQLList;
         db.postDao().insertPost(postSQL);
-
-
     }
     public void setMarker()
     {
@@ -382,28 +336,28 @@ public class PostViewModel extends AndroidViewModel {
         markerList.setValue(markers);
     }
 
-    public void postHalf()
+    public void postHalf(Profile profile)
     {
         halfList = new ArrayList<>();
         for(int i = 0; i < postList.size(); i++)
         {
             Coord coord = postList.get(i).getLocation().getCoord();
             String placename = "닉네임";
-            //String placename = postList.get(i).getProfile().getNickname();//일단 닉네임으로 진행
+            //String placename = profile.getNickname();//일단 닉네임으로 진행
             String imageUrl = postList.get(i).getImageUrl().get(0);//첫 이미지만 가지고옴
             halfList.add(new PostHalf(coord, placename, uriList.get(i)));
         }
         getCurrentAddress(latitude, longitude);
         postHalf.setValue(halfList);
     }
-    public void postGrid()
+    public void postGrid(Profile profile)
     {
         gridList = new ArrayList<>();
         postGrid.setValue(gridList);
         for(int i = 0; i < postList.size(); i++)
         {
-            //String nickname = postList.get(i).getProfile().getNickname();
-            String nickname = "닉네임";
+            //String nickname = profile.getNickname();
+            String nickname = "이름";
             String content = postList.get(i).getContent();
             String imageUrl = postList.get(i).getImageUrl().get(0);
             String time = "1시간 전";
@@ -417,51 +371,43 @@ public class PostViewModel extends AndroidViewModel {
         List<PostFull> list = new ArrayList<>();
         for(int i = 0; i < postList.size(); i++)
         {
-            String createdAt = postSQL.get(i).getCreatedAt();
-
-            String updatedAt = postSQL.get(i).getUpdatedAt();
-
-            int feedId = postSQL.get(i).getFeedId();
-
-            String content = postSQL.get(i).getContent();
-
-            Location location = postSQL.get(i).getLocation();
-
-            List<Integer> tagUsers = postSQL.get(i).getTagUsers();
-
+            String createdAt = postList.get(i).getCreatedAt();
+            String updatedAt = postList.get(i).getUpdatedAt();
+            int feedId = postList.get(i).getFeedId();
+            String content = postList.get(i).getContent();
+            Location location = postList.get(i).getLocation();
+            List<Integer> tagUsers = postList.get(i).getTagUsers();
             int groupId = 0;//null
-
-            List<String> imageUrl = postSQL.get(i).getImageUrl();
-
-            int userId = postSQL.get(i).getUserId();
-
-            HashTags hashTag = postSQL.get(i).getHashTag();
-
-            String comments = postSQL.get(i).getComments();
-
-            boolean favorite = postSQL.get(i).isFavorite();
-
-            boolean used = postSQL.get(i).isUsed();
-
+            List<String> imageUrl = postList.get(i).getImageUrl();
+            int userId = postList.get(i).getUserId();
+            HashTags hashTag = postList.get(i).getHashTag();
+            String comments = postList.get(i).getComments();
+            boolean favorite = postList.get(i).isFavorite();
+            boolean used = postList.get(i).isUsed();
             list.add(new PostFull(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, uriList, userId, hashTag, comments, favorite, used));
             postFull.setValue(list);
-
 //            for(int j = 0; j < imageUrl.size(); j++)
 //            {
 //                storageReference.child(imageUrl.get(j)).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
 //                    @Override
 //                    public void onSuccess(Uri uri) {
-//                        list.add(new Post(postId, profile, location, imageUrl, like, likeCheck, content ,hashTag, comments));
+//                        list.add(new PostFull(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, uriList, userId, hashTag, comments, favorite, used));
 //                        postFull.setValue(list);
 //                    }
 //                }).addOnFailureListener(new OnFailureListener() {
 //                    @Override
 //                    public void onFailure(@NonNull Exception e) {
-//                        //Log.e("파일 불러오기 실패 : ", e.getMessage());
+//                        
 //                    }
 //                });
 //            }
         }
+    }
+
+    public void postAction(long oldTime)
+    {
+        long newTime = System.currentTimeMillis();
+
     }
 
     public void moveMap(int position)
@@ -476,17 +422,11 @@ public class PostViewModel extends AndroidViewModel {
             markerList.setValue(markers);
         }
     }
-
-
     public String getCurrentAddress( double latitude, double longitude) {
-
         //지오코더... GPS를 주소로 변환
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
-
         List<Address> addresses;
-
         try {
-
             addresses = geocoder.getFromLocation(
                     latitude,
                     longitude,
@@ -500,11 +440,8 @@ public class PostViewModel extends AndroidViewModel {
         }
         if (addresses == null || addresses.size() == 0) {
             return "주소 미발견";
-
         }
         Address address = addresses.get(0);
-        //Log.e("주소 테스트 : ", address.getLocality());
-
         if(address.getThoroughfare() != null)//동
         {
             localName.setValue(address.getThoroughfare());
@@ -518,14 +455,8 @@ public class PostViewModel extends AndroidViewModel {
         {
             localName.setValue(address.getFeatureName());
         }
-
-
         return address.getAddressLine(0).toString()+"\n";
     }
-
-
-
-
     public class PostCallback<T> implements retrofit2.Callback<T> {
 
         final int SUCCESS               = 200;
@@ -538,7 +469,6 @@ public class PostViewModel extends AndroidViewModel {
         final int INTERNAL_SERVER_ERROR = 500;
 
 
-
         Context context;
 
         public PostCallback(Context context) {
@@ -547,8 +477,6 @@ public class PostViewModel extends AndroidViewModel {
 
         @Override
         public void onResponse(retrofit2.Call<T> call, retrofit2.Response<T> response) {
-
-            Gson gson = new Gson();
             int responseCode = response.code();//네트워크 탐지할 때 사용 코드
             T body = response.body();
 
@@ -560,63 +488,81 @@ public class PostViewModel extends AndroidViewModel {
                     for(int i = 0; i < posts.size(); i++)
                     {
                         postList.add(posts.get(i));
-
                     }
-
                     List<PostSQL> postSQLList = new ArrayList<PostSQL>();
                     for(int i = 0; i < postList.size(); i++)
                     {
                         String createdAt = postList.get(i).getCreatedAt();
-
                         String updatedAt = postList.get(i).getUpdatedAt();
-
                         int feedId = postList.get(i).getFeedId();
-
                         String content = postList.get(i).getContent();
-
                         Location location = postList.get(i).getLocation();
-
                         List<Integer> tagUsers = postList.get(i).getTagUsers();
-
                         int groupId = 0;//null
-
                         List<String> imageUrl = postList.get(i).getImageUrl();
-
                         int userId = postList.get(i).getUserId();
-
+                        userIdList.add(userId+"");
                         HashTags hashTag = postList.get(i).getHashTag();
-
                         String comments = postList.get(i).getComments();
-
                         boolean favorite = postList.get(i).isFavorite();
-
                         boolean used = postList.get(i).isUsed();
-
                         postSQL.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
                     }
                     postSQL = postSQLList;
                     db.postDao().insertPost(postSQL);
-
-                    postHalf();
-                    postGrid();
+                    //비동기 처리를 위한 큐 생성
+                    Queue<Integer> queue = new LinkedList<>();
+                    for(int i = 0; i < 10; i++)
+                    {
+                        for(int j = 0; j < postList.get(i).getImageUrl().size(); j++)
+                        {
+                            String uri = postList.get(i).getImageUrl().get(j);
+                            storageReference.child(uri).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                @Override
+                                public void onSuccess(Uri uri) {
+                                    uriList.add(uri);
+                                    queue.add(0);
+                                    if(queue.size() == 10)
+                                    {
+                                        userIdLiveData.setValue(userIdList);
+                                        //postEvent.setValue(true);
+                                    }
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("스토리지 이미지 불러오기 실패 : ", e.getMessage());
+                                    queue.add(0);
+                                    if(queue.size() == 10)
+                                    {
+                                        userIdLiveData.setValue(userIdList);
+                                        //postEvent.setValue(true);
+                                    }
+                                }
+                            });
+                        }
+                    }
                 }
+
             }
             else
             {
-                Log.e("프로필 통신 에러 : ", responseCode+"");
+                Log.e("포스트 통신 에러 : ", responseCode+"");
                 try {
-                    Log.e("프로필 통신 에러 : ", response.errorBody().string());
+                    Log.e("포스트 통신 에러 : ", response.errorBody().string());
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
+
         }
         @Override
         public void onFailure(retrofit2.Call<T> call, Throwable t) {
+            Log.e("포스트 통신 실패 에러 : ", t.toString());
+            t.printStackTrace();
+
         }
     }
-
-
 
     public class SingleLiveEvent<T> extends MutableLiveData<T> {
 
@@ -656,8 +602,21 @@ public class PostViewModel extends AndroidViewModel {
             setValue(null);
         }
     }
+    public class CustomInterceptor implements okhttp3.Interceptor, HttpLoggingInterceptor.Logger {
+        @Override
+        public void log(String message) {
+            android.util.Log.e("MyGitHubData :", message + "");
+        }
 
 
+        @Override
+        public okhttp3.Response intercept(Chain chain) throws IOException {
+            Request original = chain.request();
+            Request request = original.newBuilder()
+                    .header("Authorization", token)
+                    .build();
 
-
+            return chain.proceed(request);
+        }
+    }
 }

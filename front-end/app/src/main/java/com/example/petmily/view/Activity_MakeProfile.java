@@ -117,6 +117,8 @@ public class Activity_MakeProfile extends AppCompatActivity {
 
                 String nickname = binding.nickname.getText().toString();
                 profileViewModel.profileSave(imageUri, nickname, about, birth);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
             }
         });
         initObserver();
@@ -133,35 +135,6 @@ public class Activity_MakeProfile extends AppCompatActivity {
         };
         profileViewModel.getPetList().observe(this, petListObserver);
     }
-
-
-    @NonNull
-    public Dialog onCreateDialog() {
-     
- 
-
-//        @Override
-//        public void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-//            SimpleDateFormat old_sdf = new SimpleDateFormat("yyyyMdd");
-//            SimpleDateFormat new_sdf = new SimpleDateFormat("yyyy-MM-dd");
-//            String add = i+""+i1+""+i2;
-//            try {
-//                Date date = old_sdf.parse(add);
-//                binding.time.setText(new_sdf.format(date));
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
-////                binding.year.setText(i+"");
-////                binding.month.setText((i1+1)+"");
-////                binding.day.setText(i2+"");
-//        }, year, month, day);
-//        return null;
-//    }
-
-        return null;
-    }
-
-
 
     public ActivityResultLauncher<Intent> mStartForResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),

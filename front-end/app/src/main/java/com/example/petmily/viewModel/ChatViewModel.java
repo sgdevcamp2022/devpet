@@ -37,8 +37,7 @@ import ua.naiksoftware.stomp.StompClient;
 
 public class ChatViewModel extends AndroidViewModel{
 
-    final private String URL = "https://121.187.37.22:5555/api/chat/";
-    //final private String URL = "10.0.2.2:4444";
+    final private String URL = "https://121.187.22.37:5000/api/chat/";
 
     boolean isUnexpectedClosed;
     private String TAG = "테스트 :\t";

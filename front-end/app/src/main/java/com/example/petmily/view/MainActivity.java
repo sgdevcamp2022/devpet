@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkToken()
     {
-        //authenticationViewModel.accessTokenCheck();
+        authenticationViewModel.accessTokenCheck();
         initView();
     }
     public void initView() {
@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         actionBar.setDisplayShowCustomEnabled(true);
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setDisplayHomeAsUpEnabled(false);
-
 
         binding.make.setOnClickListener(new View.OnClickListener() {
             @Override

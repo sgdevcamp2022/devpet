@@ -151,7 +151,7 @@ public class Fragment_Profile extends Fragment {
         };
         profileViewModel.getFollower().observe(getViewLifecycleOwner(), followerObserver);
 
-        profileViewModel.profileImport("12");
+        profileViewModel.profileMyImport();
 
     }
 
