@@ -1,5 +1,6 @@
 package com.devpet.feed.repository;
 
+import com.devpet.feed.model.entity.PetInfo;
 import com.devpet.feed.model.entity.UserInfo;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
@@ -97,7 +98,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
 
     /*
      * 내가 팔로우 한 유저들의 recommend 관계가 있는 게시글의 tag에 관련된 게시글들 불러오기
-     * (시간순으로 정렬 과 개수 조정 필요)
      * */
     @Query("Match(u:UserInfo{userId: $userId})-[:FOLLOW]->()-[r:RECOMMENDED]->(p:PostInfo) " +
             "with r, p " +
@@ -133,23 +133,9 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 10 " +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
-
-//    // 내가 팔로우한 유저가 댓글 단 경우(이벤트)
-//    @Query("match (u:UserInfo{userId: $userId})-[:FOLLOW]->()-[:COMMENT]->(:PostInfo)-[:TAGD]->(t:Tag)<-[:TAGD]-(p:PostInfo) " +
-//            "WITH p, datetime() AS now, p.createdAt AS date " +
-//            "order by p.createdAt DESC " +
-//            "where duration.inSeconds(date, now).hours < 8 " +
-//            "return DISTINCT p.postId ")
-//    Set<String> getFollowingCommentPostList(@Param("userId") String userId);
-
-    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물 + 팔로우한 유저가 작성한 게시물(주황색 부분)
-    @Query("match (u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[:POST]->(p1:PostInfo) " +
-            "WITH p1, datetime() AS now, datetime(p1.createdAt) AS date " +
-            "where duration.inSeconds(date, now).hours < 24 " +
-            "return p1.postId as postId " +
-            "union " +
-            "match (u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
-            "WITH p, datetime() AS now, datetime(p.createdAt) AS date " +
+    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
+    @Query("match (u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
+            "WITH p, datetime() AS now, p.createdAt AS date " +
             "where duration.inSeconds(date, now).hours < 24 " +
             "return p.postId as postId " +
             "union " +
