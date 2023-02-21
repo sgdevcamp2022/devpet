@@ -22,7 +22,8 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
 
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
     Optional<UserInfo> findNodeById (@Param("userId") String userId);
-
+    @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
+    UserInfo findNodeById2(String userId);
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +
             "MATCH (n)-[l:LIKE]->(m) "+
@@ -38,8 +39,8 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
             "return DISTINCT n.postId " +
             "order by n.createdAt DESC")
-
     Set<String> getPostList(@Param("userId") String userId);
+
 
     @Query("match(u:UserInfo{userId : $userId})" + "DETACH DELETE u")
     void deleteUser(@Param("userId") String userId);
@@ -180,6 +181,5 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return DISTINCT p.postId as postId ")
     Set<String> getRecommendedFollowPostList(@Param("userId") String userId);
 
-    @Query("match(f1:UserInfo {userId : $follower})-[r:FOLLOW]->(f2:UserInfo{userId: $following}) " + "delete r")
-    void deleteComment(@Param("follower") String follower, @Param("following") String following);
 }
+
