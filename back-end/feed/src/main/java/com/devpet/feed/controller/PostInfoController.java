@@ -52,7 +52,7 @@ public class PostInfoController {
      * @return
      * @throws Exception
      */
-    @PatchMapping("/like")
+    @PostMapping("/dislike")
     public ResponseEntity<?> dislikePost(@RequestBody List<LikePostDto> likePostDto) throws Exception {
         return postInfoService.dislikePostInfo(likePostDto);
     }
