@@ -13,6 +13,5 @@
 - BE 스택
   - Spring MVC
   - Spring Security
-  - Spring Web Socket
   - Spring-security-oauth2
   - Spring-security-jwt
