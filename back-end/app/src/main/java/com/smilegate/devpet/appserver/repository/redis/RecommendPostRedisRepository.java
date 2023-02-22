@@ -11,33 +11,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class RecommendPostRedisRepository implements RedisSetRepository<String,Long>{
+public class RecommendPostRedisRepository implements RedisSetRepository<String,Long> {
     public static final String KEY_GENERATOR = "recommend_post";
-    private final SetOperations<String,String> feedIdListOperation;
-    public RecommendPostRedisRepository(StringRedisTemplate stringRedisTemplate){
+    private final SetOperations<String, String> feedIdListOperation;
+
+    public RecommendPostRedisRepository(StringRedisTemplate stringRedisTemplate) {
         this.feedIdListOperation = stringRedisTemplate.opsForSet();
     }
-    public void save(String username,Long feedId)
-    {
-        feedIdListOperation.add(keyGenerator(username),feedId.toString());
-    }
-    public void saveAll(String username, Collection<Long> feedIds)
-    {
-        if( feedIds==null || feedIds.isEmpty())
-            return;
-        feedIdListOperation.add(keyGenerator(username),feedIds.stream().map(Object::toString).collect(Collectors.toList()).toArray(new String[feedIds.size()]));
+
+    public void save(String username, Long feedId) {
+        feedIdListOperation.add(keyGenerator(username), feedId.toString());
     }
 
-    public List<Long> findById(String username, int count)
-    {
-        List<String> result = feedIdListOperation.pop(keyGenerator(username),count);
-        if (result==null)
+    public void saveAll(String username, Collection<Long> feedIds) {
+        if (feedIds == null || feedIds.isEmpty())
+            return;
+        feedIdListOperation.add(keyGenerator(username), feedIds.stream().map(Object::toString).collect(Collectors.toList()).toArray(new String[feedIds.size()]));
+    }
+
+    public List<Long> findById(String username, int count) {
+        List<String> result = feedIdListOperation.pop(keyGenerator(username), count);
+        if (result == null)
             return new ArrayList<>();
         return result.stream().map(Long::parseLong).collect(Collectors.toList());
     }
-
-    public String keyGenerator(String username)
+    public Long count(String username)
     {
-        return String.format("%s_%s",username,KEY_GENERATOR);
+        return feedIdListOperation.size(keyGenerator(username));
     }
+    public String keyGenerator(String username) {
+        return String.format("%s_%s", username, KEY_GENERATOR);
+    }
+
+
 }
