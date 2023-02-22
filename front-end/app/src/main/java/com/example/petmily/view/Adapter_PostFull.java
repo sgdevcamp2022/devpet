@@ -2,12 +2,16 @@ package com.example.petmily.view;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +21,7 @@ import com.example.petmily.databinding.PostListGridBinding;
 import com.example.petmily.model.data.post.PostFull;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.remote.Post;
+import com.example.petmily.viewModel.PostViewModel;
 
 import java.util.List;
 
@@ -46,6 +51,14 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
     public void onBindViewHolder(@NonNull Adapter_PostFull.Holder holder, int position) {
         PostFull post = list.get(position);
 
+        if(post.isFavorite())
+        {
+            holder.postListBinding.like.setImageResource(R.drawable.heart_touch);
+        }
+        else
+        {
+            holder.postListBinding.like.setImageResource(R.drawable.heart);
+        }
         holder.postListBinding.profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -54,9 +67,33 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
                 context.startActivity(intent);
             }
         });
+        holder.postListBinding.like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!post.isFavorite())
+                {
+                    holder.postListBinding.like.setImageResource(R.drawable.heart_touch);
+
+                }
+                else
+                {
+                    holder.postListBinding.like.setImageResource(R.drawable.heart);
+                }
+
+            }
+        });
+        holder.postListBinding.comments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PostViewModel postViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(PostViewModel.class);
+            }
+        });
+
         Glide.with(context)
-                .load(post.getImageUrl().get(0))
+                .load(post.getImageUrl().get(position))
                 .into(holder.postListBinding.postImage);
+
+
         holder.postListBinding.setPost(post);
 
     }

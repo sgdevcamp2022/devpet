@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GroupInfoRepository extends Neo4jRepository<GroupInfo, String> {
     @Query("MATCH (m:GroupInfo {groupName: $groupName}) " +
-            "MATCH (n:UserInfo{userId: $memberName})"+
+            "MATCH (n:UserInfo{userId: $memberName}) "+
             "MATCH (m)<-[F:Joined ]-(n)"+
             "DELETE F;" )
     GroupInfo leaveGroup(String groupName, String memberName);

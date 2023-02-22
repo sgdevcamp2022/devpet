@@ -20,7 +20,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "MATCH (m)<-[F:FOLLOW]-(n)"+
             "DELETE F;" )
     UserInfo deleteFollowById(String followedUser, String followUser);
-
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
     Optional<UserInfo> findNodeById (@Param("userId") String userId);
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
@@ -37,7 +36,10 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "LIMIT 6 " +
             "match (u)-[r]->(p) " +
             "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
-            "return DISTINCT n.postId ")
+            "with n " +
+            "order by n.createdAt DESC "+
+            "return DISTINCT n.postId LIMIT 20"
+            )
     Set<String> getPostList(@Param("userId") String userId);
 
 
@@ -131,9 +133,15 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "where duration.inSeconds(date, now).hours < 10 " +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
-    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물(주황색 부분)
-    @Query("match (u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
-            "WITH p, datetime() AS now, p.createdAt AS date " +
+
+    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물 + 팔로우한 유저가 작성한 게시물(주황색 부분)
+    @Query("match (u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[:POST]->(p1:PostInfo) " +
+            "WITH p1, datetime() AS now, datetime(p1.createdAt) AS date " +
+            "where duration.inSeconds(date, now).hours < 24 " +
+            "return p1.postId as postId " +
+            "union " +
+            "match (u:UserInfo{userId: $userId})-[:PET]->()-[:TAGD]->(:Tag)<-[:TAGD]-(p:PostInfo) " +
+            "WITH p, datetime() AS now, datetime(p.createdAt) AS date " +
             "where duration.inSeconds(date, now).hours < 24 " +
             "return p.postId as postId " +
             "union " +
@@ -148,7 +156,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return n2.postId as postId ")
     Set<String> getPetLikeCommentPostList(@Param("userId") String userId);
 
-    // 유저가 알 수 있는 사람, 행동 기반 추천 , 팔로우한 유저의 행동 기반 추천(하늘색 부분)
     @Query("Match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[r1:RECOMMENDED]->(p1:PostInfo) " +
             "with r1, p1 " +
             "ORDER BY r1.score DESC " +
