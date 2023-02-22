@@ -2,6 +2,7 @@ package com.devpet.feed.repository;
 
 
 import com.devpet.feed.model.dto.LikePostDto;
+import com.devpet.feed.model.dto.PetInfoDto;
 import org.neo4j.driver.*;
 import org.neo4j.driver.exceptions.Neo4jException;
 import org.springframework.beans.factory.annotation.Value;
@@ -123,6 +124,72 @@ public class Neo4jRepo implements AutoCloseable {
 //    }
 
 
+    public void savePetAll(List<PetInfoDto> petList) {
+        StringBuilder queryString = new StringBuilder();
+        StringBuilder mergeString = new StringBuilder();
+        StringBuilder tagString = new StringBuilder();
+        StringBuilder createString = new StringBuilder();
+        long count = 0;
+        long petCount = 0;
+        for (int i = 0; i < petList.size(); i++) {
+            queryString.append("match (user")
+                    .append(i)
+                    .append(":UserInfo {userId:\"")
+                    .append(petList.get(i).getUserId())
+                    .append("\"})\n");
+            createString.append("merge (pet")
+                    .append(i)
+                    .append(":PetInfo {petId: ")
+                    .append(petList.get(i).getPetId())
+                    .append(", petName: \"")
+                    .append(petList.get(i).getPetName())
+                    .append("\", petBirth: \"")
+                    .append(petList.get(i).getPetBirth())
+                    .append("\", petSpecies: \"")
+                    .append(petList.get(i).getPetSpecies())
+                    .append("\"})\n");
+            mergeString.append("merge (user")
+                    .append(i)
+                    .append(")-[:PET]-> (pet")
+                    .append(i)
+                    .append(")\n");
+            for(int j = 0; j < petList.get(i).getTags().size(); j++) {
+                tagString.append("merge (tag")
+                        .append(count)
+                        .append(":Tag {tagName:\"")
+                        .append(petList.get(i).getTags().get(j).getTagName())
+                        .append("\"})\n")
+
+                        .append("merge (pet")
+                        .append(petCount)
+                        .append(")-[:TAGD]->(tag")
+                        .append(count)
+                        .append(")\n");
+                count += 1;
+            }
+            petCount += 1;
+        }
+        queryString.append(createString);
+        queryString.append(mergeString);
+        queryString.append(tagString);
+        Query query = new Query(
+                queryString.toString()
+        );
+
+        try (var session = driver.session(SessionConfig.forDatabase("feed"))) {
+//            session.writeTransaction(tx -> {
+//                List<Record> result =
+//                        tx.run(query).list();
+//                return result;
+            session.writeTransaction(tx -> {
+                return tx.run(query);
+            });
+
+        } catch (Neo4jException ex) {
+            LOGGER.log(Level.SEVERE, query + " raised an exception", ex);
+            throw ex;
+        }
+    }
 
 }
 

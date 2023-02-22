@@ -18,7 +18,7 @@ public class PetInfoDto {
     private String petBirth;
     private String petSpecies;
 
-    private Set<Tag> tags;
+    private List<Tag> tags;
 
     public PetInfoDto(PetInfo petInfo) {
         this.petId = petInfo.getPetId();

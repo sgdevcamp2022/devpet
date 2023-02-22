@@ -2,6 +2,7 @@ package com.devpet.feed.controller;
 
 import com.devpet.feed.model.dto.PetInfoDto;
 import com.devpet.feed.model.entity.PetInfo;
+import com.devpet.feed.repository.Neo4jRepo;
 import com.devpet.feed.service.PetService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,23 +17,22 @@ import java.util.List;
 public class PetController {
 
     private final PetService petService;
+    private final Neo4jRepo neo4jRepo;
 
     // 펫 저장
     @PostMapping
-    public ResponseEntity<List<Long>> savePet(@RequestBody List<PetInfoDto> petList)  {
+    public void savePet(@RequestBody List<PetInfoDto> petList)  {
 
-        List<Long> petIdList = petService.savePet(petList);
-
-        return ResponseEntity.ok(petIdList);
+        petService.savePet(petList);
     }
 
-    // 펫 수정
-    @PutMapping
-    public ResponseEntity<String> putPet(@RequestBody List<PetInfoDto> petList) {
-
-        petService.putPet(petList);
-        return ResponseEntity.ok("수정 성공");
-    }
+//    // 펫 수정
+//    @PutMapping
+//    public ResponseEntity<String> putPet(@RequestBody List<PetInfoDto> petList) {
+//
+//        petService.putPet(petList);
+//        return ResponseEntity.ok("수정 성공");
+//    }
 
     // 펫 삭제
     @DeleteMapping
