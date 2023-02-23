@@ -468,8 +468,8 @@ public class PostViewModel extends AndroidViewModel {
     {
         ProfileSQL profileSQL = profileDatabase.profileDao().getProfile();
         String createdAt = formatTimeString(System.currentTimeMillis());
-        Result result = new Result(createdAt, "", 1, feedId,Integer.parseInt(userId),comment, true);
-        result.setNickname(profileSQL.getNickname());
+        Result result = new Result(createdAt, "", 1, feedId, Integer.parseInt(userId),comment, true);
+        //result.setNickname(profileSQL.getNickname());
         comments.add(result);
         commentList.setValue(comments);
 
