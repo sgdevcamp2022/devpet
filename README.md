@@ -64,15 +64,46 @@
  * AWS EC2
 <br>
 
- ### API Gateway<br>
+ ### API Gateway
  * Spring Cloud 2021-05
  * Spring Cloud Starter Netflix Zuul
 
- ### Service Discovery<br>
+ ### Service Discovery
  * Spring Cloud 2021-05
  * Spring Cloud Netflix Eureka
 
+## Directory
 
+```
+devpet
+├──  docs
+├──  backend
+|    ├── app
+|    ├── auth
+|    ├── chat
+|    ├── feed
+|    ├── api-gateway
+|    └── service-discovery
+|    
+|    
+|
+└── frontend/appsrc/main
+    ├── java/com/example/petmilly
+    |   ├── model
+    |   ├── view
+    |   └── viewModel
+    └── res
+        ├── anim
+        ├── drawable
+        ├── font
+        ├── menu
+        ├── values
+        |   ├── theme
+        |   ├── color
+        |   └── string
+        └── xml
+                   
+```
 ---
 
 ## 깃 규칙
