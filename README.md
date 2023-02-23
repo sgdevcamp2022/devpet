@@ -8,7 +8,7 @@
 |이름|김동훈|안재진|오세환|채현수|
 |:--|:-|:--|:--|:--|
 |구분|Back-End|Back-End|Back-End|Front-End|
-|역할|`chat 서버 구현` `neo4j 벌크 연산 처리` `feed 알고리즘 구현` `msa architechure 구축` `관계 서버 구축` `~테스트 서버 제공~`|`auth 서버 구현` `추천 로직 처리`, `feed 알고리즘 구현` |`app 서버 구현` `Devops`|`앱 구현`|
+|역할|`chat 서버 구현` `neo4j 벌크 연산 처리` `feed 알고리즘 구현` `msa architechure 구축` `관계 서버 구축` `테스트 서버 제공`|`auth 서버 구현` `추천 로직 처리`, `feed 알고리즘 구현` |`app 서버 구현` `Devops`|`앱 구현`|
 
 ---
 
