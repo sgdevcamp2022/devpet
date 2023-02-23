@@ -211,7 +211,7 @@ public class FeedService {
      * @param userInfo 사용자 정보
      * @return 조회된 게시글 정보
      */
-    public List<Feed> getFeedList(UserInfo userInfo)
+    public List<Feed> getFeedList(UserInfo userInfo,Integer start,Integer size)
     {
         // 피드 서버에서 사용자가 조회할 피드 리스트를 꺼내 옵니다.
         List<Long> feedIds = userInfoService.getFollowPostList(userInfo.getUsername()).stream().map(Long::parseLong).collect(Collectors.toList());
@@ -229,6 +229,13 @@ public class FeedService {
         {
             postIds.addAll(recommendPostRedisRepository.findById(userInfo.getUsername(), 20- postIds.size()));
         }
+        if (postIds.isEmpty())
+        {
+            if (start!=null&&size!=null)
+                return getFeedList(null,null,null, start, size);
+            return getFeedList(null,null,null,0,20);
+        }
+
         Set<Long> postIdSet = new HashSet<>(postIds);
         // db에서 현재 사용되고 있는 게시글 20개를 꺼내옵니다.
         return Streamable.of(feedRepository.findAllByFeedIdInAndIsUsedIsTrue(postIdSet)).stream().collect(Collectors.toList());

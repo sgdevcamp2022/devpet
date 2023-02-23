@@ -98,9 +98,9 @@ public class FeedController {
         return feedService.getMarkerFeedList(center,category,word,start,size);
     }
     @GetMapping("/recommend")
-    public List<Feed> getReccomendFeedList(UserInfo userInfo)
+    public List<Feed> getReccomendFeedList(UserInfo userInfo, @RequestParam("start") Integer start, @RequestParam("size") Integer size)
     {
-        return feedService.getFeedList(userInfo);
+        return feedService.getFeedList(userInfo,start,size);
     }
     @PostMapping("/{feedId}/comment")
     public long postComment(@PathVariable("feedId") long feedId, @RequestBody CommentRequest commentRequest, UserInfo userInfo) {

@@ -27,7 +27,6 @@ spring:
         max-active: 8
     port: 6379
     host: localhost
-    password: mypassword
   devtools:
     livereload:
       enabled: true
@@ -39,7 +38,7 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://ec2-54-199-113-36.ap-northeast-1.compute.amazonaws.com:8761/eureka/
 
 logging:
   level:

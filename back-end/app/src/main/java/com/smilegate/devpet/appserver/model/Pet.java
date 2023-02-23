@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.redis.core.RedisHash;
@@ -19,6 +20,8 @@ import java.util.Set;
 public class Pet extends BaseModel{
     @Transient
     public static final String SEQUENCE_NAME = "pet_sequence";
+
+    @Id
     private Long petId;
     private Long profileId;
     private String name;
