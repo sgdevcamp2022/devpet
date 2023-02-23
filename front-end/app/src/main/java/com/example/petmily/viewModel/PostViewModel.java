@@ -20,17 +20,20 @@ import androidx.room.Room;
 
 import com.example.petmily.R;
 import com.example.petmily.model.data.auth.local.AuthDatabase;
+import com.example.petmily.model.data.post.Entity.ActionValue;
 import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.Coord;
 import com.example.petmily.model.data.post.Entity.HashTags;
 import com.example.petmily.model.data.post.Entity.Location;
 import com.example.petmily.model.data.post.Entity.Profile;
+import com.example.petmily.model.data.post.Entity.UserId;
 import com.example.petmily.model.data.post.PostFull;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
 import com.example.petmily.model.data.post.local.PostDatabase;
 import com.example.petmily.model.data.post.local.PostSQL;
 import com.example.petmily.model.data.post.remote.API_Interface;
+import com.example.petmily.model.data.post.remote.Action;
 import com.example.petmily.model.data.post.remote.Post;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -47,7 +50,10 @@ import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.MarkerIcons;
 
 import java.io.IOException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -59,6 +65,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Field;
@@ -185,12 +193,15 @@ public class PostViewModel extends AndroidViewModel {
     private List<PostSQL> postSQL;
     private List<Post> postList;
     private List<String> userIdList;
+    private static List<Action> actionList;
 
 
     private double latitude;
     private double longitude;
     private String token;
     private String userId;
+
+
 
 
 
@@ -206,6 +217,9 @@ public class PostViewModel extends AndroidViewModel {
         uriList = new ArrayList<Uri>();
         viewpagerList = new ArrayList<Uri>();
         userIdList = new ArrayList<String>();
+        if(actionList != null) {
+            actionList = new ArrayList<>();
+        }
 
 
 
@@ -220,7 +234,8 @@ public class PostViewModel extends AndroidViewModel {
         storageReference = storage.getReference();
 
         postSQL = db.postDao().getPost();
-
+        postHalf = new MutableLiveData<List<PostHalf>>();
+        postFull = new MutableLiveData<List<PostFull>>();
 
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         client
@@ -253,6 +268,16 @@ public class PostViewModel extends AndroidViewModel {
                 List<Integer> tagUsers = postSQL.get(i).getTagUsers();
                 int groupId = 0;//null
                 List<String> imageUrl = postSQL.get(i).getImageUrl();
+                if(imageUrl.get(0).contains("post"))
+                {
+                    uriList.add(null);
+                }
+                else
+                {
+                    uriList.add(Uri.parse(imageUrl.get(0)));
+                }
+
+
                 int userId = postSQL.get(i).getUserId();
                 userIdList.add(userId+"");
                 HashTags hashTag = postSQL.get(i).getHashTag();
@@ -277,7 +302,8 @@ public class PostViewModel extends AndroidViewModel {
         GpsTracker gpsTracker = new GpsTracker(context);
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
-        restApi = postInterface.getPost(latitude, longitude, 3000, "word", postList.size(), postList.size()+POST_NUM, 0);
+        longitude = longitude * -1;
+        restApi = postInterface.getPost(latitude, longitude, 1000, "", postList.size(), postList.size()+POST_NUM+20, 1);
         restApi.enqueue(postCallback);
 
 
@@ -311,6 +337,7 @@ public class PostViewModel extends AndroidViewModel {
         }
         postSQL = postSQLList;
         db.postDao().insertPost(postSQL);
+
     }
     public void setMarker()
     {
@@ -360,8 +387,12 @@ public class PostViewModel extends AndroidViewModel {
             String nickname = "이름";
             String content = postList.get(i).getContent();
             String imageUrl = postList.get(i).getImageUrl().get(0);
-            String time = "1시간 전";
-            //String time = getTime();
+            String time = postList.get(i).getCreatedAt();
+            SimpleDateFormat oldTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date currentDay = oldTime.parse(time, new ParsePosition(0));
+            Long currentLong = currentDay.getTime();
+            time = formatTimeString(currentLong);
+
             gridList.add(new PostGrid(uriList.get(i), nickname, content, time));
         }
         postGrid.setValue(gridList);
@@ -372,6 +403,10 @@ public class PostViewModel extends AndroidViewModel {
         for(int i = 0; i < postList.size(); i++)
         {
             String createdAt = postList.get(i).getCreatedAt();
+            SimpleDateFormat oldTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            Date currentDay = oldTime.parse(createdAt, new ParsePosition(0));
+            Long currentLong = currentDay.getTime();
+            createdAt = formatTimeString(currentLong);
             String updatedAt = postList.get(i).getUpdatedAt();
             int feedId = postList.get(i).getFeedId();
             String content = postList.get(i).getContent();
@@ -404,12 +439,56 @@ public class PostViewModel extends AndroidViewModel {
         }
     }
 
-    public void postAction(long oldTime)
+    public void actionAdd(long time, int position)//확대 추가
     {
         long newTime = System.currentTimeMillis();
+        newTime -= time;
+
+        String postId = postList.get(position).getFeedId()+"";
+
+        double score = 0;
+        score += (newTime/1000)*0.1;
+        if(postList.get(position).isFavorite())
+            score += 1;
+        if(postList.get(position).getComments() != null)
+            score += 1;
+
+
+        actionList.add(new Action(userId, postId, score));
+
 
     }
-
+    public void postAction()
+    {
+        if(actionList.size() >= 1) {
+            restApi = postInterface.actionResult(actionList);
+            restApi.enqueue(postCallback);
+        }
+    }
+    public void postMy()
+    {
+        restApi = postInterface.getPost(latitude, longitude, 50000, "", postList.size(), postList.size()+POST_NUM+20, 1);
+        restApi.enqueue(postCallback);
+    }
+    public void postSearch()
+    {
+//        postList = new ArrayList<Post>();
+//        Call<List<String>> restApi = postInterface.getSearch(new UserId(userId));
+//        restApi.enqueue(new Callback<List<String>>() {
+//            @Override
+//            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+//                if (response.code() == 200)
+//                {
+//                    List<String> body = response.body();
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<List<String>> call, Throwable t) {
+//
+//            }
+//        });
+    }
     public void moveMap(int position)
     {
         if(position != -1) {
@@ -482,68 +561,81 @@ public class PostViewModel extends AndroidViewModel {
 
             if(responseCode == SUCCESS)
             {
-                if(body instanceof Post)
+                List<Post> posts = (List<Post>) body;
+                Log.e("포스트 통신ㅁㄴㅇㄴㅁㅇㄴㅁㅇ : ", posts.size()+"");
+                for(int i = 0; i < posts.size(); i++)
                 {
-                    List<Post> posts = (List<Post>) body;
-                    for(int i = 0; i < posts.size(); i++)
-                    {
-                        postList.add(posts.get(i));
-                    }
-                    List<PostSQL> postSQLList = new ArrayList<PostSQL>();
-                    for(int i = 0; i < postList.size(); i++)
-                    {
-                        String createdAt = postList.get(i).getCreatedAt();
-                        String updatedAt = postList.get(i).getUpdatedAt();
-                        int feedId = postList.get(i).getFeedId();
-                        String content = postList.get(i).getContent();
-                        Location location = postList.get(i).getLocation();
-                        List<Integer> tagUsers = postList.get(i).getTagUsers();
-                        int groupId = 0;//null
-                        List<String> imageUrl = postList.get(i).getImageUrl();
-                        int userId = postList.get(i).getUserId();
-                        userIdList.add(userId+"");
-                        HashTags hashTag = postList.get(i).getHashTag();
-                        String comments = postList.get(i).getComments();
-                        boolean favorite = postList.get(i).isFavorite();
-                        boolean used = postList.get(i).isUsed();
-                        postSQL.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
-                    }
-                    postSQL = postSQLList;
-                    db.postDao().insertPost(postSQL);
-                    //비동기 처리를 위한 큐 생성
-                    Queue<Integer> queue = new LinkedList<>();
-                    for(int i = 0; i < 10; i++)
-                    {
-                        for(int j = 0; j < postList.get(i).getImageUrl().size(); j++)
-                        {
-                            String uri = postList.get(i).getImageUrl().get(j);
-                            storageReference.child(uri).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    uriList.add(uri);
-                                    queue.add(0);
-                                    if(queue.size() == 10)
-                                    {
-                                        userIdLiveData.setValue(userIdList);
-                                        //postEvent.setValue(true);
-                                    }
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.e("스토리지 이미지 불러오기 실패 : ", e.getMessage());
-                                    queue.add(0);
-                                    if(queue.size() == 10)
-                                    {
-                                        userIdLiveData.setValue(userIdList);
-                                        //postEvent.setValue(true);
-                                    }
-                                }
-                            });
-                        }
-                    }
+                    postList.add(posts.get(i));
                 }
+                List<PostSQL> postSQLList = new ArrayList<PostSQL>();
+                for(int i = 0; i < postList.size(); i++)
+                {
+                    String createdAt = postList.get(i).getCreatedAt();
+                    String updatedAt = postList.get(i).getUpdatedAt();
+                    int feedId = postList.get(i).getFeedId();
+                    String content = postList.get(i).getContent();
+                    Location location = postList.get(i).getLocation();
+                    List<Integer> tagUsers = postList.get(i).getTagUsers();
+                    int groupId = 0;//null
+                    List<String> imageUrl = postList.get(i).getImageUrl();
+                    if(imageUrl.get(0).contains("post"))
+                    {
+                        uriList.add(null);
+                    }
+                    else
+                    {
+                        uriList.add(Uri.parse(imageUrl.get(0)));
+                    }
 
+                    int userId = postList.get(i).getUserId();
+                    userIdList.add(userId+"");
+                    HashTags hashTag = postList.get(i).getHashTag();
+                    String comments = postList.get(i).getComments();
+                    boolean favorite = postList.get(i).isFavorite();
+                    boolean used = postList.get(i).isUsed();
+                    postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
+                }
+                postSQL = postSQLList;
+                db.postDao().insertPost(postSQL);
+                //비동기 처리를 위한 큐 생성
+                Queue<Integer> queue = new LinkedList<>();
+                for(int i = 0; i < postList.size(); i++)
+                {
+                    for(int j = 0; j < postList.get(i).getImageUrl().size(); j++)
+                    {
+                        String uri = postList.get(i).getImageUrl().get(j);
+                            uriList.add(Uri.parse(uri));
+                            Log.e("Uri : ", uri);
+
+//                        storageReference.child(uri).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                            @Override
+//                            public void onSuccess(Uri uri) {
+//                                uriList.add(uri);
+//                                queue.add(0);
+//                                if(queue.size() == 10)
+//                                {
+//                                    userIdLiveData.setValue(userIdList);
+//                                    //postEvent.setValue(true);
+//                                }
+//                            }
+//                        }).addOnFailureListener(new OnFailureListener() {
+//                            @Override
+//                            public void onFailure(@NonNull Exception e) {
+//                                Log.e("스토리지 이미지 불러오기 실패 : ", e.getMessage());
+//                                queue.add(0);
+//                                if(queue.size() == 10)
+//                                {
+//                                    userIdLiveData.setValue(userIdList);
+//                                    //postEvent.setValue(true);
+//                                }
+//                            }
+//                        });
+                    }
+
+                }
+                postHalf(null);
+                postGrid(null);
+                postFull();
             }
             else
             {
@@ -618,5 +710,32 @@ public class PostViewModel extends AndroidViewModel {
 
             return chain.proceed(request);
         }
+    }
+
+    private static class TIME_MAXIMUM{
+        public static final int SEC = 60;
+        public static final int MIN = 60;
+        public static final int HOUR = 24;
+        public static final int DAY = 30;
+        public static final int MONTH = 12;
+    }
+    public static String formatTimeString(long regTime) {
+        long curTime = System.currentTimeMillis();
+        long diffTime = (curTime - regTime) / 1000;
+        String msg = null;
+        if (diffTime < TIME_MAXIMUM.SEC) {
+            msg = "방금 전";
+        } else if ((diffTime /= TIME_MAXIMUM.SEC) < TIME_MAXIMUM.MIN) {
+            msg = diffTime + "분 전";
+        } else if ((diffTime /= TIME_MAXIMUM.MIN) < TIME_MAXIMUM.HOUR) {
+            msg = (diffTime) + "시간 전";
+        } else if ((diffTime /= TIME_MAXIMUM.HOUR) < TIME_MAXIMUM.DAY) {
+            msg = (diffTime) + "일 전";
+        } else if ((diffTime /= TIME_MAXIMUM.DAY) < TIME_MAXIMUM.MONTH) {
+            msg = (diffTime) + "달 전";
+        } else {
+            msg = (diffTime) + "년 전";
+        }
+        return msg;
     }
 }

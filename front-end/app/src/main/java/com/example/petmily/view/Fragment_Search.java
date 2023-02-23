@@ -52,6 +52,7 @@ public class Fragment_Search extends Fragment {
     {
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         postViewModel.init();
+        postViewModel.postSearch();
 
         post = binding.searchPost;
         post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
@@ -73,7 +74,7 @@ public class Fragment_Search extends Fragment {
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
 
-        //postViewModel.postGrid();
+        postViewModel.postGrid(null);
     }
 
 }

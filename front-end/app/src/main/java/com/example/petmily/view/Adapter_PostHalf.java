@@ -56,13 +56,14 @@ public class Adapter_PostHalf extends RecyclerView.Adapter<Adapter_PostHalf.Hold
     @Override
     public void onBindViewHolder(@NonNull Adapter_PostHalf.Holder holder, int position) {
         PostHalf post = list.get(position);
+
         Glide.with(context)
                 .load(post.getImageUri())
                 .into(holder.postListHalfBinding.postImage);
 
 
-
         holder.postListHalfBinding.setPostHalf(post);
+        holder.postListHalfBinding.postImage.setClipToOutline(true);
 
     }
 
