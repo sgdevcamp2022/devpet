@@ -75,8 +75,8 @@ public class Activity_PostFull extends AppCompatActivity {
             public void onChildViewAttachedToWindow(@NonNull View view) {
                 if(linearLayoutManager.findFirstVisibleItemPosition() != -1)
                 {
-                    postViewModel.actionAdd(time, linearLayoutManager.findFirstVisibleItemPosition());
-                    time  = System.currentTimeMillis();
+                    postViewModel.actionAdd(time, linearLayoutManager.findFirstVisibleItemPosition()+position);
+                    time = System.currentTimeMillis();
                 }
             }
 
@@ -130,9 +130,6 @@ public class Activity_PostFull extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable final Profile profile) {
                 profileList.add(profile);
-//                Glide.with(context)
-//                        .load(profile.getImageUri())
-//                        .into(binding.profileImage);
             }
         };
         profileViewModel.getProfile().observe(this, profileObserver);
@@ -145,10 +142,6 @@ public class Activity_PostFull extends AppCompatActivity {
                     postViewModel.postFull(profile, position);
                     binding.fullSwipe.setRefreshing(false);
                 }
-
-//                Glide.with(context)
-//                        .load(profile.getImageUri())
-//                        .into(binding.profileImage);
             }
         };
         profileViewModel.getProfileLiveData().observe(this, profileListObserver);

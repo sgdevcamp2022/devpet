@@ -2,11 +2,11 @@ package com.example.petmily.model.data.post.Entity;
 
 public class ReplaceComment {
     String comment;
-    int commentId;
+    Long profileId;
 
-    public ReplaceComment(String comment, int commentId) {
+    public ReplaceComment(String comment, Long profileId) {
         this.comment = comment;
-        this.commentId = commentId;
+        this.profileId = profileId;
     }
 
     public String getComment() {
@@ -17,11 +17,11 @@ public class ReplaceComment {
         this.comment = comment;
     }
 
-    public int getCommentId() {
-        return commentId;
+    public Long getCommentId() {
+        return profileId;
     }
 
-    public void setCommentId(int commentId) {
-        this.commentId = commentId;
+    public void setCommentId(Long profileId) {
+        this.profileId = profileId;
     }
 }

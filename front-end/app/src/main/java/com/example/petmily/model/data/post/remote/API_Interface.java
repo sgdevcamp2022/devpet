@@ -45,34 +45,15 @@ public interface API_Interface {
             @Query("size") Integer size,
             @Query("category") Integer category
     );
-    @GET("feeds/marker")
-    Call<List<Post>> getMarker(
-            @Query("latitude") Double latitude,
-            @Query("longitude") Double longitude,
-            @Query("distance") Integer distance,
-            @Query("word") String word,
-            @Query("start") Integer start,
-            @Query("size") Integer size,
-            @Query("category") Integer category
-    );
-    @GET("feads/gallery")
-    Call<List<Post>> getGallery(
-            @Query("latitude") Double latitude,
-            @Query("longitude") Double longitude,
-            @Query("distance") Integer distance,
-            @Query("word") String word,
-            @Query("start") Integer start,
-            @Query("size") Integer size,
-            @Query("category") Integer category
-    );
-
     @GET("feeds/my-feed")
-    Call<List<Post>> getMyfeed(
+    Call<List<String>> getMyfeed(
             @Query("start") Integer start,
             @Query("size") Integer size
     );
     @GET("feeds/recommend")
-    Call<List<Post>> getRecommend();
+    Call<List<Post>> getRecommend(
+            @Query("start") Integer start,
+            @Query("size") Integer size);
 
     @GET("feeds/{feedId}/emotion")
     Call<Success> getLike(@Path("feedId") int feedId);

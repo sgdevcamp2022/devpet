@@ -52,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra("roomId", roomId);
             startActivity(intent);
         }
+        Intent intent = new Intent(this, Activity_Test.class);
+        //startActivity(intent);
         init();
         /*
         FirebaseMessaging.getInstance().getToken()
@@ -143,7 +145,9 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.hide(fragment_home);
                 fragmentTransaction.hide(fragment_profile);
+
                 fragmentTransaction.show(fragment_group).commit();
+                //fragmentTransaction.replace(R.id.search, fragment_group).commit();
                 binding.search.setImageResource(R.drawable.search_touch);
                 binding.home.setImageResource(R.drawable.home);
                 binding.user.setImageResource(R.drawable.user);
@@ -156,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.hide(fragment_group);
                 fragmentTransaction.hide(fragment_profile);
                 fragmentTransaction.show(fragment_home).commit();
+                //fragmentTransaction.replace(R.id.home, fragment_home).commit();
                 binding.toolbar.setVisibility(View.VISIBLE);
                 binding.search.setImageResource(R.drawable.search);
                 binding.home.setImageResource(R.drawable.home_touch);
@@ -170,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.hide(fragment_home);
                 fragmentTransaction.hide(fragment_group);
                 fragmentTransaction.show(fragment_profile).commit();
+                //fragmentTransaction.replace(R.id.user, fragment_profile).commit();
                 binding.toolbar.setVisibility(View.GONE);
                 binding.search.setImageResource(R.drawable.search);
                 binding.home.setImageResource(R.drawable.home);

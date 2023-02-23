@@ -48,7 +48,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MakeViewModel extends AndroidViewModel {
 
-    final String URL =  "http://121.187.22.37:5000/api/app/";
+    //final String URL =  "http://121.187.22.37:5000/api/app/";
+    final String URL = "http://ec2-13-115-157-11.ap-northeast-1.compute.amazonaws.com:5678/api/app/";
     private MakeCallback makeCallback;
 
     private API_Interface makeInterface;

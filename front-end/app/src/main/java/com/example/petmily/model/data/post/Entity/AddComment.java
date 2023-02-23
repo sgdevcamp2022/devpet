@@ -2,11 +2,13 @@ package com.example.petmily.model.data.post.Entity;
 
 public class AddComment {
     String comment;
-    String parentId;
+    Long profileId;
+    Long parentCommentId;
 
-    public AddComment(String comment, String parentId) {
+    public AddComment(String comment, Long profileId, Long parentCommentId) {
         this.comment = comment;
-        this.parentId = parentId;
+        this.profileId = profileId;
+        this.parentCommentId = parentCommentId;
     }
 
     public String getComment() {
@@ -17,11 +19,19 @@ public class AddComment {
         this.comment = comment;
     }
 
-    public String getParentId() {
-        return parentId;
+    public Long getProfileId() {
+        return profileId;
     }
 
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
+    public void setProfileId(Long profileId) {
+        this.profileId = profileId;
+    }
+
+    public Long getParentCommentId() {
+        return parentCommentId;
+    }
+
+    public void setParentCommentId(Long parentCommentId) {
+        this.parentCommentId = parentCommentId;
     }
 }

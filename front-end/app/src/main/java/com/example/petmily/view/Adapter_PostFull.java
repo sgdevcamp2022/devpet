@@ -60,7 +60,7 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
     String userId;
     RequestManager glide;
     LinearLayoutManager linearLayoutManager;
-    public String page;
+    int feedId;
 
     public Adapter_PostFull(List<PostFull> list, RequestManager glide) {
         this.list = list;
@@ -80,6 +80,7 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
         userId = sharedPreferences.getString("userId", "");
         postViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(PostViewModel.class);
+        feedId = 0;
         return new Adapter_PostFull.Holder(postListFullBinding);
     }
 
@@ -88,6 +89,8 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
         PostFull post = list.get(position);
         holder.postListBinding.setPost(post);
 
+
+        feedId = post.getFeedId();
         if (post.isFavorite()) {
             holder.postListBinding.like.setImageResource(R.drawable.heart_touch);
         } else {
@@ -98,7 +101,7 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, Activity_Profile.class);
-                intent.putExtra("userId", post.getUserId());
+                intent.putExtra("userId", list.get(position).getUserId()+"");
                 context.startActivity(intent);
             }
         });
@@ -165,6 +168,10 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
             holder.postListBinding.removeMenu.setVisibility(View.VISIBLE);
         }
 
+
+
+
+
     }
 
 
@@ -180,14 +187,16 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
         public Holder(@NonNull PostListFullBinding postListBinding) {
             super(postListBinding.getRoot());
             this.postListBinding = postListBinding;
-            postListBinding.profileImage.setImageResource(R.drawable.ic_launcher_background);
             postListBinding.profileImage.setClipToOutline(true);
             postListBinding.coment.setMovementMethod(LinkMovementMethod.getInstance());
             linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
             postListBinding.postImage.setLayoutManager(linearLayoutManager);
-
         }
 
+    }
+    public int getFeedId()
+    {
+        return feedId;
     }
 
     public void setList(List<PostFull> list) {
@@ -204,7 +213,7 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
 
         for (i = 0; i < hashTag.size(); i++) {
             int[] hashSpan = hashTag.get(i);
-            int hashTagStart = hashSpan[0]-1;
+            int hashTagStart = hashSpan[0];
             int hashTagEnd = hashSpan[1];
 
             HashTag hash = new HashTag(context);

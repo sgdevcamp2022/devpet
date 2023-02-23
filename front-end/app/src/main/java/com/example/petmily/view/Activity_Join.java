@@ -44,9 +44,9 @@ public class Activity_Join extends AppCompatActivity {
 
                 authenticationViewModel.join(username, name, phone, password);
 
-                Intent intent = new Intent(view.getContext(), Activity_MakeProfile.class);
-                //intent.putExtra("nickname", nickname);
-                startActivity(intent);
+//                Intent intent = new Intent(view.getContext(), Activity_MakeProfile.class);
+//                //intent.putExtra("nickname", nickname);
+//                startActivity(intent);
                 finish();
 
             }

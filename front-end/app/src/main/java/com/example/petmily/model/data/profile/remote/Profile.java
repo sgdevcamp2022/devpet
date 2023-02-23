@@ -7,7 +7,6 @@ import java.util.List;
 
 public class Profile {
 
-    @SerializedName("imageUri")
     String imageUri;
 
     @SerializedName("nickname")

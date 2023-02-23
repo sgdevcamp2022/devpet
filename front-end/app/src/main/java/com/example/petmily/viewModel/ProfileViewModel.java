@@ -56,8 +56,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ProfileViewModel extends AndroidViewModel {
 
-    final String URL = "http://121.187.22.37:5000/api/app/";
-    final String CHATURL = "http://121.187.22.37:5000/api/chat/";
+    //final String URL = "http://121.187.22.37:5000/api/app/";
+    final String URL = "http://ec2-13-115-157-11.ap-northeast-1.compute.amazonaws.com:5678/api/app/";
+
+    //final String CHATURL = "http://121.187.22.37:5000/api/chat/";
+    final String CHATURL = "http://ec2-13-115-157-11.ap-northeast-1.compute.amazonaws.com:5678/api/chat/";
 
     private FirebaseStorage firebaseStorage;
     private StorageReference storageRef;
@@ -78,6 +81,14 @@ public class ProfileViewModel extends AndroidViewModel {
             petList = new MutableLiveData<List<Pet>>();
         }
         return petList;
+    }
+
+    private MutableLiveData<Profile> profileLigin;
+    public MutableLiveData<Profile> getProfileLigin() {
+        if (profileLigin == null) {
+            profileLigin = new MutableLiveData<Profile>();
+        }
+        return profileLigin;
     }
 
     private MutableLiveData<Profile> profile;
@@ -154,7 +165,7 @@ public class ProfileViewModel extends AndroidViewModel {
         userId = sharedPreferences.getString("userId", "");
         db = ProfileDatabase.getInstance(context);
         profileCallback = new ProfileCallback(context);
-
+        profile = new MutableLiveData<Profile>();
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         client
                 .readTimeout(10, TimeUnit.SECONDS)
@@ -201,9 +212,9 @@ public class ProfileViewModel extends AndroidViewModel {
 
     public void profileMyImport()
     {
-        restApi = profileInterface.getMyProfile();
-        restApi.enqueue(profileCallback);
-        /*
+//        restApi = profileInterface.getMyProfile();
+//        restApi.enqueue(profileCallback);
+
         Call<Profile> restApi = profileInterface.getMyProfile();
         restApi.enqueue(new Callback<Profile>() {
             @Override
@@ -235,10 +246,9 @@ public class ProfileViewModel extends AndroidViewModel {
                         firebaseStorage = FirebaseStorage.getInstance();
                         storageRef = firebaseStorage.getReference();
                         Profile result = (Profile) body;
-                        profile.setValue(result);
-                        profileList.add(result);
-                        ProfileSQL profileSQL = new ProfileSQL(result.getNickname(), result.getAbout(), result.getBirth());
-                        db.profileDao().insertProfile(profileSQL);
+                        profileLigin.setValue(result);
+                        //ProfileSQL profileSQL = new ProfileSQL(result.getNickname(), result.getAbout(), result.getBirth());
+                        //db.profileDao().insertProfile(profileSQL);
                         if(result.getImageUri() == null)
                         {
                             Log.e("프로필이미지  : ","null");
@@ -247,7 +257,7 @@ public class ProfileViewModel extends AndroidViewModel {
                         {
                             Log.e("프로필이미지 : ", result.getImageUri());
                         }
-                        profileLiveData.setValue(profileList);
+                        //profileLiveData.setValue(profileList);
                         //팔로잉 여부 반환
 //                    followEvent.setValue(result.getFollow());
 
@@ -277,9 +287,11 @@ public class ProfileViewModel extends AndroidViewModel {
 //
 //                        followerList.setValue(successFollower);
 //                    }
-
-
-
+                    
+                }
+                else
+                {
+                    profileLigin.setValue(null);
                 }
             }
             @Override
@@ -288,7 +300,7 @@ public class ProfileViewModel extends AndroidViewModel {
             }
         });
 
-         */
+
 
     }
 
@@ -331,7 +343,7 @@ public class ProfileViewModel extends AndroidViewModel {
         if(imageUri == null)
         {
             Profile profile = new Profile(nickname, about, birth, pets);
-            restApi = profileInterface.replaceProfile(profile);
+            restApi = profileInterface.saveProfile(profile);
             restApi.enqueue(profileCallback);
         }
         else
@@ -383,7 +395,7 @@ public class ProfileViewModel extends AndroidViewModel {
         if(imageUri == null)
         {
             Profile profile = new Profile(nickname, about, birth, pets);
-            restApi = profileInterface.replaceProfile(profile);
+            restApi = profileInterface.saveProfile(profile);
             restApi.enqueue(profileCallback);
         }
         else
@@ -406,7 +418,7 @@ public class ProfileViewModel extends AndroidViewModel {
                             List<String> imageUrl = new ArrayList<>();
                             imageUrl.add(uri.toString());
                             Profile profile = new Profile(imageUri, nickname, about, birth, pets);
-                            restApi = profileInterface.replaceProfile(profile);
+                            restApi = profileInterface.saveProfile(profile);
                             restApi.enqueue(profileCallback);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
@@ -424,14 +436,15 @@ public class ProfileViewModel extends AndroidViewModel {
     public void createChatRoom(String userId)
     {
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
-        String myId = sharedPreferences.getString("username", "");
+        String myId = sharedPreferences.getString("email", "");
         List<String> list = new ArrayList<String>();
+
         if(!myId.equals(""))
         {
             list.add(myId);
             list.add(userId);
         }
-
+        Log.e("룸생성테스트"+myId, list.get(1));
         restApi =  chatRoomInterface.createRoom(list);
         restApi.enqueue(profileCallback);
     }
@@ -484,8 +497,8 @@ public class ProfileViewModel extends AndroidViewModel {
             }
             else
             {
-                Profile result = (Profile) body;
-                Log.e("프로필 통신 확인 : ",  result.toString());
+//                Profile result = (Profile) body;
+//                Log.e("프로필 통신 확인 : ",  result.toString());
             }
 
             if(responseCode == SUCCESS) {

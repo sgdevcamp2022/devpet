@@ -9,11 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.petmily.R;
 import com.example.petmily.databinding.CommentListBinding;
-import com.example.petmily.databinding.PlaceListBinding;
-import com.example.petmily.model.Place;
 import com.example.petmily.model.data.post.remote.Result;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Adapter_Comment extends RecyclerView.Adapter<Adapter_Comment.Holder>{
@@ -29,7 +26,7 @@ public class Adapter_Comment extends RecyclerView.Adapter<Adapter_Comment.Holder
     public Adapter_Comment.Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         CommentListBinding commentListBinding= DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()),
-                R.layout.place_list,
+                R.layout.comment_list,
                 parent,
                 false
         );

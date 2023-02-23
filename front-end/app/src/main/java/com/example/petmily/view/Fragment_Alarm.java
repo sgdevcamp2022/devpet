@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.petmily.R;
 import com.example.petmily.databinding.FragmentAlarmBinding;
 import com.example.petmily.model.Alarm;
-import com.example.petmily.model.Place;
 
 import java.util.ArrayList;
 

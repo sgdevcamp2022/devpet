@@ -24,6 +24,7 @@ import com.example.petmily.model.data.post.Entity.Location;
 import com.example.petmily.model.data.post.PostFull;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
+import com.example.petmily.model.data.post.PostMy;
 import com.example.petmily.model.data.post.local.CommentDatabase;
 import com.example.petmily.model.data.post.local.PostDatabase;
 import com.example.petmily.model.data.post.local.PostSQL;
@@ -75,8 +76,10 @@ import retrofit2.http.DELETE;
 import retrofit2.http.Path;
 
 public class PostViewModel extends AndroidViewModel {
-    final String URL = "http://121.187.22.37:5000/api/app/";
-    final String ACTIONURL = "http://121.187.22.37:5000/api/relation/";
+    //final String URL = "http://121.187.22.37:5000/api/app/";
+    final String URL = "http://ec2-13-115-157-11.ap-northeast-1.compute.amazonaws.com:5678/api/app/";
+    //final String ACTIONURL = "http://121.187.22.37:5000/api/relation/";
+    final String ACTIONURL = "http://ec2-13-115-157-11.ap-northeast-1.compute.amazonaws.com:5678/api/relation/";
 
     final int POST_NUM = 20;
 
@@ -189,6 +192,14 @@ public class PostViewModel extends AndroidViewModel {
         return commentList;
     }
 
+    private MutableLiveData<List<PostMy>> postMyList;
+    public MutableLiveData<List<PostMy>> getPostMyList() {
+        if (postMyList == null) {
+            postMyList = new MutableLiveData<List<PostMy>>();
+        }
+        return postMyList;
+    }
+
     private List<PostHalf> halfList;
     private List<PostGrid> gridList;
     private List<Marker> markers;
@@ -228,7 +239,6 @@ public class PostViewModel extends AndroidViewModel {
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
         username = sharedPreferences.getString("email", "");
-        username = username.substring(0, username.length()-1);
         userId = sharedPreferences.getString("userId", "");
 
         markers = new ArrayList<Marker>();
@@ -300,7 +310,39 @@ public class PostViewModel extends AndroidViewModel {
         GpsTracker gpsTracker = new GpsTracker(context);
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
-        restApi = postInterface.getPost(latitude, longitude, 1000, "", 1480, 100, 1);
+        restApi = postInterface.getPost(latitude, longitude, 3000, "", 0, POST_NUM, 1);
+        restApi.enqueue(postCallback);
+
+//        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
+//        for(int i = 0; i < postList.size(); i++)
+//        {
+//            String createdAt = postList.get(i).getCreatedAt();
+//            String updatedAt = postList.get(i).getUpdatedAt();
+//            int feedId = postList.get(i).getFeedId();
+//            String content = postList.get(i).getContent();
+//            Location location = postList.get(i).getLocation();
+//            List<Integer> tagUsers = postList.get(i).getTagUsers();
+//            int groupId = 0;//null
+//            List<String> imageUrl = postList.get(i).getImageUrl();
+//            int userId = postList.get(i).getUserId();
+//            HashTags hashTag = postList.get(i).getHashTag();
+//            String comments = postList.get(i).getComments();
+//            boolean favorite = postList.get(i).isFavorite();
+//            boolean used = postList.get(i).isUsed();
+//            postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
+//        }
+//        postSQL = postSQLList;
+//        db.postDao().insertPost(postSQL);
+
+    }
+
+    public void postImport(int start)
+    {
+        //postList = new ArrayList<Post>();
+        GpsTracker gpsTracker = new GpsTracker(context);
+        latitude = gpsTracker.getLatitude();
+        longitude = gpsTracker.getLongitude();
+        restApi = postInterface.getPost(latitude, longitude, 3000, "", start, start+POST_NUM, 1);
         restApi.enqueue(postCallback);
 
 //        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
@@ -446,22 +488,21 @@ public class PostViewModel extends AndroidViewModel {
 
     public void addComment(int feedId, String comment)
     {
-
-        String randomUUID = UUID.randomUUID().toString();
-
-        AddComment addComment = new AddComment(comment, userId+"");
-        Call<Success> restApi = postInterface.addComment(feedId, addComment);
-        restApi.enqueue(new Callback<Success>() {
-            @Override
-            public void onResponse(Call<Success> call, Response<Success> response) {
-                //commentDatabase.commentDao().commentId(randomUUID);
-            }
-
-            @Override
-            public void onFailure(Call<Success> call, Throwable t) {
-
-            }
-        });
+//        ProfileSQL profileSQL = profileDatabase.profileDao().getProfile();
+//
+//        AddComment addComment = new AddComment(comment, profileSQL.getProfileId());
+//        Call<Success> restApi = postInterface.addComment(feedId, addComment);
+//        restApi.enqueue(new Callback<Success>() {
+//            @Override
+//            public void onResponse(Call<Success> call, Response<Success> response) {
+//                //commentDatabase.commentDao().commentId(randomUUID);
+//            }
+//
+//            @Override
+//            public void onFailure(Call<Success> call, Throwable t) {
+//
+//            }
+//        });
     }
 
     public void pushComment(String comment, int feedId)
@@ -472,8 +513,6 @@ public class PostViewModel extends AndroidViewModel {
         //result.setNickname(profileSQL.getNickname());
         comments.add(result);
         commentList.setValue(comments);
-
-
     }
 
     public void removePost(int feedId)
@@ -512,7 +551,7 @@ public class PostViewModel extends AndroidViewModel {
         if(postList.get(feedId).getComments() != null)
             score += 1;
 
-        actionList.add(new Action(username, feedId+"", score));
+        actionList.add(new Action(username, postSQL.get(feedId).getFeedId()+"", score));
 
 
     }
@@ -528,7 +567,7 @@ public class PostViewModel extends AndroidViewModel {
         Gson gson = new GsonBuilder().setLenient().create();
         OkHttpClient httpClient = client.build();
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://121.187.22.37:5000/api/relation/")
+                .baseUrl(ACTIONURL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(httpClient)
                 .build();
@@ -558,14 +597,35 @@ public class PostViewModel extends AndroidViewModel {
     }
     public void postMy()
     {
-        postList = new ArrayList<>();
-        restApi = postInterface.getMyfeed(0, 20);
-        restApi.enqueue(postCallback);
+        List<PostMy> postMy = new ArrayList<>();
+        Call<List<String>> restApi = postInterface.getMyfeed(0, 100);
+        restApi.enqueue(new Callback<List<String>>() {
+            @Override
+            public void onResponse(Call<List<String>> call, Response<List<String>> response) {
+                if(response.code() == 200)
+                {
+                    List<String> list = response.body();
+                    if(list!=null)
+                    {
+                        for(int i = 0; i < list.size(); i++)
+                        {
+                            postMy.add(new PostMy(list.get(i)));
+                        }
+                        postMyList.setValue(postMy);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<String>> call, Throwable t) {
+
+            }
+        });
     }
-    public void postSearch()
+    public void postSearch(int count)
     {
         postList = new ArrayList<>();
-        restApi = postInterface.getRecommend();
+        restApi = postInterface.getRecommend(count, POST_NUM);
         restApi.enqueue(postCallback);
     }
     public void moveMap(int position)
@@ -677,7 +737,6 @@ public class PostViewModel extends AndroidViewModel {
                 postSQL = postSQLList;
                 db.postDao().insertPost(postSQL);
                 //비동기 처리를 위한 큐 생성
-                Queue<Integer> queue = new LinkedList<>();
                 for(int i = 0; i < postList.size(); i++)
                 {
                     for(int j = 0; j < postList.get(i).getImageUrl().size(); j++)

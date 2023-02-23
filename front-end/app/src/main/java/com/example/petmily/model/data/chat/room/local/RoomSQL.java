@@ -2,6 +2,7 @@ package com.example.petmily.model.data.chat.room.local;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.example.petmily.model.data.chat.room.Message;
@@ -23,6 +24,7 @@ public class RoomSQL {
     public List<Message> messages;
 
     public String timeLog;
+
 
 
     public RoomSQL(@NonNull String roomId, String senderName, String receiverName, List<Message> messages, String timeLog) {

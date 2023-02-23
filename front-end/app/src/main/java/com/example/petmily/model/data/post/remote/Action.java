@@ -2,7 +2,7 @@ package com.example.petmily.model.data.post.remote;
 
 public class Action {
 
-    String userName;
+    String userId;
 
     String postId;
 
@@ -10,17 +10,17 @@ public class Action {
 
 
     public Action(String username, String postId, double score) {
-        this.userName = username;
+        this.userId = username;
         this.postId = postId;
         this.score = score;
     }
 
     public String getUsername() {
-        return userName;
+        return userId;
     }
 
     public void setUsername(String username) {
-        this.userName = username;
+        this.userId = username;
     }
 
     public String getPostId() {

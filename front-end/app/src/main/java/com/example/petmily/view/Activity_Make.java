@@ -280,6 +280,10 @@ public class Activity_Make extends AppCompatActivity implements OnMapReadyCallba
             user.add(tag.substring(hashTagStart+1, hashTagEnd));
         }
 
+        for(i = 0; i < hash.size(); i++)
+        {
+            Log.e("해시태그 : ", hash.get(i));
+        }
         int category = 1;
         makeViewModel.makePost(tag, category, latitude, longitude, uriList, 0, hash, user);
         finish();

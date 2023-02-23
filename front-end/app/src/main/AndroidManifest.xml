@@ -34,7 +34,7 @@
 
         <activity android:name=".view.Activity_Chat"/>
         <activity android:name=".view.Activity_Make"/>
-
+        <activity android:name=".view.Activity_Test"/>
 
         <activity android:name=".view.Activity_Login"/>
         <activity android:name=".view.Activity_Join"/>

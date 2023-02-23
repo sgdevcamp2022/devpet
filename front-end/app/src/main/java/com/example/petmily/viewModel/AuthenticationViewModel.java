@@ -32,7 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AuthenticationViewModel extends AndroidViewModel {
 
-    final String URL = "http://121.187.22.37:7070/oauth/";
+    //final String URL = "http://121.187.22.37:7070/oauth/";
+    final String URL = "http://ec2-52-192-78-94.ap-northeast-1.compute.amazonaws.com:7070/oauth/";
 
 
     private AuthDatabase db;
@@ -193,8 +194,15 @@ public class AuthenticationViewModel extends AndroidViewModel {
                     e.printStackTrace();
                 }
                 if(errorBody  != null) {
-                    int code = Integer.parseInt(errorBody.getMessage());
-
+                    int code;
+                    if(errorBody.getMessage().charAt(0) != '4')
+                    {
+                        code = responseCode;
+                    }
+                    else
+                    {
+                        code = Integer.parseInt(errorBody.getMessage());
+                    }
                     switch (code) {
                         //회원가입 페이지
                         case EMAIL_DUPLICATION:
@@ -251,10 +259,17 @@ public class AuthenticationViewModel extends AndroidViewModel {
                     Log.e("자동 로그인 성공 - userId",token.getUserId());
                     SharedPreferences sharedPreferences= context.getSharedPreferences("token", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor= sharedPreferences.edit();
+                    String email = token.getUserEmail();
+                    for(int i = 0; i < email.length(); i++)
+                    {
+                        if(email.charAt(i)==' ')
+                        {
+
+                        }
+                    }
                     editor.putString("token", token.getAccessToken());
                     editor.putString("refresh", token.getAccessToken());
-                    int userId = Integer.parseInt(token.getUserId())-10;
-                    editor.putString("userId", userId+"");
+                    editor.putString("userId", token.getUserId());
                     editor.putString("email", token.getUserEmail());
                     editor.commit();
                     eventRefreshExpiration.setValue(true);

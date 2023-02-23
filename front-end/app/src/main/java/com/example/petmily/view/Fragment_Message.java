@@ -32,7 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class Fragment_Message extends Fragment {
-    private String URL = "http://10.0.2.2:4444/chat/";
+    private String URL = "http://ec2-54-248-187-237.ap-northeast-1.compute.amazonaws.com:8080/api/chat/";
 
     private FragmentMessageBinding binding;
     private Context context;

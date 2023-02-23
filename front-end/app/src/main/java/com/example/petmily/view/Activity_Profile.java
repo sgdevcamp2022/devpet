@@ -4,6 +4,7 @@ package com.example.petmily.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -55,6 +56,10 @@ public class Activity_Profile extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
         binding.setProfile(this);
         context = this;
+        Intent intent = getIntent();
+
+
+        userId =  intent.getStringExtra("userId");
         init();
     }
 
@@ -63,15 +68,10 @@ public class Activity_Profile extends AppCompatActivity {
 
     public void init()
     {
-        userId = getIntent().getStringExtra("userId");
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        profileViewModel.init();
 
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-        //postViewModel.init();
-
-
 
         initView();
     }
@@ -111,14 +111,9 @@ public class Activity_Profile extends AppCompatActivity {
         final Observer<Profile> profileObserver  = new Observer<Profile>() {
             @Override
             public void onChanged(@Nullable final Profile profile) {
-//                nickname = profile.getNickname();
-//                about = profile.getAbout();
                 binding.nickname.setText(profile.getNickname());
                 binding.about.setText(profile.getAbout());
                 birth = profile.getBirth();
-//                Glide.with(context)
-//                        .load(profile.getImageUri())
-//                        .into(binding.profileImage);
 
             }
         };
@@ -146,7 +141,8 @@ public class Activity_Profile extends AppCompatActivity {
         final Observer<String> roomIdObserver  = new Observer<String>() {
             @Override
             public void onChanged(@Nullable final String result) {
-                Intent i = new Intent(getApplicationContext(), Activity_Chat.class);
+                Intent i = new Intent(getApplicationContext(), Activity_Chat_Room.class);
+                i.putExtra("userId", userId);
                 i.putExtra("roomId", result);
                 startActivity(i);
             }
