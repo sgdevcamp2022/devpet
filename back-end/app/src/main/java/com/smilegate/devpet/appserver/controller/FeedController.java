@@ -13,6 +13,9 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
+import static com.smilegate.devpet.appserver.config.ConstVariables.LONGITUDE_RADIUS;
+import static com.smilegate.devpet.appserver.config.ConstVariables.MILE_TO_METER;
+
 @RestController
 @RequestMapping("/feeds")
 public class FeedController {
@@ -53,13 +56,15 @@ public class FeedController {
     public List<String> getNearBySimpleFeedList(
                                         @RequestParam(value = "longitude") Double longitude,
                                         @RequestParam("latitude") Double latitude,
-                                        @RequestParam("distance") int distance,
+                                        @RequestParam("distance") Integer distance,
                                         @RequestParam(value = "word",required = false) String word,
                                         @RequestParam(value = "category",required = false) Integer category,
                                         @RequestParam("start") int start,
                                         @RequestParam("size") int size)
     {
-        Circle center = new Circle(longitude,latitude,distance);
+        Circle center = null;
+        if (longitude!=null&&latitude!=null&&distance!=null)
+            center = new Circle(longitude,latitude,distance/(LONGITUDE_RADIUS*MILE_TO_METER));
         return feedService.getSimpleFeedList(word,category,center,start,size);
     }
     @GetMapping("/my-feed")
@@ -82,7 +87,7 @@ public class FeedController {
     {
         Circle center = null;
         if (longitude!=null&&latitude!=null&&distance!=null)
-            center = new Circle(longitude,latitude,distance);
+            center = new Circle(longitude,latitude,distance/(LONGITUDE_RADIUS*MILE_TO_METER));
         return feedService.getFeedList(word,category,center,start,size);
     }
     @GetMapping("/marker")

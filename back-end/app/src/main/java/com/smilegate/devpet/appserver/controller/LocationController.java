@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+import static com.smilegate.devpet.appserver.config.ConstVariables.LONGITUDE_RADIUS;
+import static com.smilegate.devpet.appserver.config.ConstVariables.MILE_TO_METER;
+
 @RestController
 @RequestMapping("/map")
 @RequiredArgsConstructor
@@ -25,6 +28,9 @@ public class LocationController {
                                             ,@RequestParam(value="content",required = false) String content
                                             ,@RequestParam(value="address",required = false) String address)
     {
-        return locationService.getNearByLocation(new Circle(latitude,longitude,distance), category, content,address);
+        Circle center = null;
+        if (longitude!=null&&latitude!=null&&distance!=null)
+            center = new Circle(longitude,latitude,distance/(LONGITUDE_RADIUS*MILE_TO_METER));
+        return locationService.getNearByLocation(center, category, content,address);
     }
 }
