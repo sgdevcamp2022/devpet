@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SearchView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -48,6 +49,7 @@ public class Fragment_Search extends Fragment {
     int count;
     boolean lodingGrid;
     boolean firstImportGrid;
+    boolean search;
     private Adapter_PostGrid adapter_postGrid;
 
     @Nullable
@@ -61,6 +63,7 @@ public class Fragment_Search extends Fragment {
         POST_NUM = 20;
         lodingGrid = false;
         firstImportGrid = true;
+        search = false;
         init();
         return view;
     }
@@ -78,20 +81,38 @@ public class Fragment_Search extends Fragment {
                 firstImportGrid = true;
                 postViewModel.postSearch(count);
 
-//                Adapter_PostSearch newAdapter = new Adapter_PostSearch(gridList, Glide.with(context));
-//                newAdapter.setOnItemClickListener(new Adapter_PostSearch.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(View v, int position) {
-//                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
-//                        intent.putExtra("position", position);
-//                        startActivity(intent);
-//                    }
-//                });
-//                post = binding.searchPost;
-//                post.setLayoutManager(staggeredGridLayoutManager);
-//                post.setAdapter(newAdapter);
-//                count += 20;
+                Adapter_PostSearch newAdapter = new Adapter_PostSearch(gridList, Glide.with(context));
+                newAdapter.setOnItemClickListener(new Adapter_PostSearch.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View v, int position) {
+                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+                        intent.putExtra("position", position);
+                        startActivity(intent);
+                    }
+                });
+                post = binding.searchPost;
+                post.setLayoutManager(staggeredGridLayoutManager);
+                post.setAdapter(newAdapter);
+                count += 20;
 
+            }
+        });
+
+        binding.search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                firstImportGrid = true;
+                postViewModel.postSearch(query);
+                binding.searchSwipe.setRefreshing(true);
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                search = true;
+                return true;
             }
         });
 
@@ -160,7 +181,7 @@ public class Fragment_Search extends Fragment {
             public void onChanged(@Nullable final List<Profile> profile) {
                 if(POST_NUM == profileList.size())
                 {
-                    postViewModel.postHalf(profile);
+                    //postViewModel.postHalf(profile);
                     postViewModel.postGrid(profile);
 
                 }
@@ -193,13 +214,12 @@ public class Fragment_Search extends Fragment {
                 int[] lastVisible = layoutManager.findLastCompletelyVisibleItemPositions(new int[5]);
                 Log.e("totalcount:", lastVisible[0]+"");
                 // 스크롤을 맨 끝까지 한 것!
-                if(!lodingGrid) {
-                    if (lastVisible[0] >= totalItemCount - 8) {
+                if(!lodingGrid && !search) {
+                    if (lastVisible[0] >= totalItemCount - 5) {
 
                         postViewModel.postImport(count);
                         count += 10;
                         lodingGrid = true;
-                        binding.searchSwipe.setRefreshing(true);
                     }
                 }
             }

@@ -9,15 +9,19 @@
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+
+        >
 
 
         <ImageView
             android:id="@+id/postImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/corner_image"
             android:adjustViewBounds="true"
             android:scaleType="fitXY"
+
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

@@ -78,6 +78,7 @@ public class ChatViewModel extends AndroidViewModel{
     public ChatViewModel(@NonNull Application application) {
         super(application);
         context = application.getApplicationContext();
+        chatList = new MutableLiveData<List<ChatList>>();
 
     }
 

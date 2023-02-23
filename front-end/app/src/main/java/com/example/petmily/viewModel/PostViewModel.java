@@ -255,7 +255,7 @@ public class PostViewModel extends AndroidViewModel {
         userIdLiveData = new MutableLiveData<List<String>>();
         localName = new MutableLiveData<String>();
         markerList = new MutableLiveData<List<Marker>>();
-
+        commentList = new MutableLiveData<List<Result>>();
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         client
                 .readTimeout(10, TimeUnit.SECONDS)
@@ -312,29 +312,29 @@ public class PostViewModel extends AndroidViewModel {
         GpsTracker gpsTracker = new GpsTracker(context);
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
-        restApi = postInterface.getPost(latitude, longitude, 5, "", 0, POST_NUM, 1);
+        restApi = postInterface.getPost(latitude, longitude, 5000, "", 0, POST_NUM, 1);
         restApi.enqueue(postCallback);
 
-//        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
-//        for(int i = 0; i < postList.size(); i++)
-//        {
-//            String createdAt = postList.get(i).getCreatedAt();
-//            String updatedAt = postList.get(i).getUpdatedAt();
-//            int feedId = postList.get(i).getFeedId();
-//            String content = postList.get(i).getContent();
-//            Location location = postList.get(i).getLocation();
-//            List<Integer> tagUsers = postList.get(i).getTagUsers();
-//            int groupId = 0;//null
-//            List<String> imageUrl = postList.get(i).getImageUrl();
-//            int userId = postList.get(i).getUserId();
-//            HashTags hashTag = postList.get(i).getHashTag();
-//            String comments = postList.get(i).getComments();
-//            boolean favorite = postList.get(i).isFavorite();
-//            boolean used = postList.get(i).isUsed();
-//            postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
-//        }
-//        postSQL = postSQLList;
-//        db.postDao().insertPost(postSQL);
+        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
+        for(int i = 0; i < postList.size(); i++)
+        {
+            String createdAt = postList.get(i).getCreatedAt();
+            String updatedAt = postList.get(i).getUpdatedAt();
+            int feedId = postList.get(i).getFeedId();
+            String content = postList.get(i).getContent();
+            Location location = postList.get(i).getLocation();
+            List<Integer> tagUsers = postList.get(i).getTagUsers();
+            int groupId = 0;//null
+            List<String> imageUrl = postList.get(i).getImageUrl();
+            int userId = postList.get(i).getUserId();
+            HashTags hashTag = postList.get(i).getHashTag();
+            String comments = postList.get(i).getComments();
+            boolean favorite = postList.get(i).isFavorite();
+            boolean used = postList.get(i).isUsed();
+            postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
+        }
+        postSQL = postSQLList;
+        db.postDao().insertPost(postSQL);
 
     }
 
@@ -344,31 +344,32 @@ public class PostViewModel extends AndroidViewModel {
         GpsTracker gpsTracker = new GpsTracker(context);
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
-        restApi = postInterface.getPost(latitude, longitude, 5, "", start, start+POST_NUM, 1);
+        restApi = postInterface.getPost(latitude, longitude, 5000, "", start, start+POST_NUM, 1);
         restApi.enqueue(postCallback);
 
-//        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
-//        for(int i = 0; i < postList.size(); i++)
-//        {
-//            String createdAt = postList.get(i).getCreatedAt();
-//            String updatedAt = postList.get(i).getUpdatedAt();
-//            int feedId = postList.get(i).getFeedId();
-//            String content = postList.get(i).getContent();
-//            Location location = postList.get(i).getLocation();
-//            List<Integer> tagUsers = postList.get(i).getTagUsers();
-//            int groupId = 0;//null
-//            List<String> imageUrl = postList.get(i).getImageUrl();
-//            int userId = postList.get(i).getUserId();
-//            HashTags hashTag = postList.get(i).getHashTag();
-//            String comments = postList.get(i).getComments();
-//            boolean favorite = postList.get(i).isFavorite();
-//            boolean used = postList.get(i).isUsed();
-//            postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
-//        }
-//        postSQL = postSQLList;
-//        db.postDao().insertPost(postSQL);
+        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
+        for(int i = 0; i < postList.size(); i++)
+        {
+            String createdAt = postList.get(i).getCreatedAt();
+            String updatedAt = postList.get(i).getUpdatedAt();
+            int feedId = postList.get(i).getFeedId();
+            String content = postList.get(i).getContent();
+            Location location = postList.get(i).getLocation();
+            List<Integer> tagUsers = postList.get(i).getTagUsers();
+            int groupId = 0;//null
+            List<String> imageUrl = postList.get(i).getImageUrl();
+            int userId = postList.get(i).getUserId();
+            HashTags hashTag = postList.get(i).getHashTag();
+            String comments = postList.get(i).getComments();
+            boolean favorite = postList.get(i).isFavorite();
+            boolean used = postList.get(i).isUsed();
+            postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
+        }
+        postSQL = postSQLList;
+        db.postDao().insertPost(postSQL);
 
     }
+
     public void getComments(int feedId)
     {
 
@@ -609,6 +610,7 @@ public class PostViewModel extends AndroidViewModel {
                 if(response.code() == 200)
                 {
                     List<String> list = response.body();
+                    Log.e("내포스트불러오기", list.size()+"개");
                     if(list!=null)
                     {
                         for(int i = 0; i < list.size(); i++)
@@ -616,11 +618,9 @@ public class PostViewModel extends AndroidViewModel {
                             postMy.add(new PostMy(list.get(i)));
                         }
                         postMyList.setValue(postMy);
-                        Log.e("내포스트불러오기", list.size()+"개");
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<List<String>> call, Throwable t) {
 
@@ -633,9 +633,15 @@ public class PostViewModel extends AndroidViewModel {
         restApi = postInterface.getRecommend(count, POST_NUM);
         restApi.enqueue(postCallback);
     }
+    public void postSearch(String text)
+    {
+        postList = new ArrayList<>();
+        restApi = postInterface.searchPost(text, 0, POST_NUM);
+        restApi.enqueue(postCallback);
+    }
     public void moveMap(int position)
     {
-        if(position != -1) {
+        if(position != -1 && halfList.size()>position) {
             Coord coord = halfList.get(position).getCoord();
             CameraPosition cameraPosition = new CameraPosition(
                     new LatLng(coord.getY(), coord.getX()),  // 위치 지정
@@ -720,24 +726,29 @@ public class PostViewModel extends AndroidViewModel {
                 List<PostSQL> postSQLList = new ArrayList<PostSQL>();
                 for(int i = 0; i < postList.size(); i++)
                 {
-                    String createdAt = postList.get(i).getCreatedAt();
-                    String updatedAt = postList.get(i).getUpdatedAt();
-                    int feedId = postList.get(i).getFeedId();
-                    String content = postList.get(i).getContent();
-                    Location location = postList.get(i).getLocation();
-                    List<Integer> tagUsers = postList.get(i).getTagUsers();
-                    int groupId = 0;//null
-                    List<String> imageUrl = postList.get(i).getImageUrl();
-
-                    uriList.add(Uri.parse(imageUrl.get(0)));
-
+                    Log.e("프로필아이디:",postList.get(i).getUserId()+"");
                     int userId = postList.get(i).getUserId();
-                    userIdList.add(userId+"");
-                    HashTags hashTag = postList.get(i).getHashTag();
-                    String comments = postList.get(i).getComments();
-                    boolean favorite = postList.get(i).isFavorite();
-                    boolean used = postList.get(i).isUsed();
-                    postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location, tagUsers, groupId, imageUrl, userId, hashTag, comments, favorite, used));
+                    if(userId != 0)
+                    {
+                        userIdList.add(userId+"");
+                        String createdAt = postList.get(i).getCreatedAt();
+                        String updatedAt = postList.get(i).getUpdatedAt();
+                        int feedId = postList.get(i).getFeedId();
+                        String content = postList.get(i).getContent();
+                        Location location = postList.get(i).getLocation();
+                        List<Integer> tagUsers = postList.get(i).getTagUsers();
+                        int groupId = 0;//null
+                        List<String> imageUrl = postList.get(i).getImageUrl();
+                        uriList.add(Uri.parse(imageUrl.get(0)));
+                        HashTags hashTag = postList.get(i).getHashTag();
+                        String comments = postList.get(i).getComments();
+                        boolean favorite = postList.get(i).isFavorite();
+                        boolean used = postList.get(i).isUsed();
+                        postSQLList.add(new PostSQL(createdAt, updatedAt, feedId, content, location,
+                                tagUsers, groupId, imageUrl, userId, hashTag, comments,
+                                favorite, used));
+
+                    }
                 }
                 postSQL = postSQLList;
                 db.postDao().insertPost(postSQL);

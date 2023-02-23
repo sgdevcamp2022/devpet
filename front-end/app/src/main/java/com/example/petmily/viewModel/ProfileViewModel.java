@@ -149,7 +149,7 @@ public class ProfileViewModel extends AndroidViewModel {
     public ProfileViewModel(@NonNull Application application) {
         super(application);
         context = application.getApplicationContext();
-
+        roomIdLive = new MutableLiveData<String>();
         init();
     }
     public void init()
@@ -459,8 +459,6 @@ public class ProfileViewModel extends AndroidViewModel {
     }
 
     public class ProfileCallback<T> implements retrofit2.Callback<T> {
-        private FirebaseStorage storage;
-        private StorageReference storageReference;
 
         final int SUCCESS               = 200;
 

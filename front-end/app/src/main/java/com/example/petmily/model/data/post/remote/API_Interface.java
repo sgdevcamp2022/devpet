@@ -48,13 +48,9 @@ public interface API_Interface {
 
     @GET("feeds")
     Call<List<Post>> searchPost(
-            @Query("latitude") Double latitude,
-            @Query("longitude") Double longitude,
-            @Query("distance") Integer distance,
             @Query("word") String word,
             @Query("start") Integer start,
-            @Query("size") Integer size,
-            @Query("category") Integer category
+            @Query("size") Integer size
     );
 
     @GET("feeds/my-feed")

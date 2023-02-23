@@ -224,7 +224,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                     binding.postGridListSwipe.setRefreshing(false);
                 }
 
-                // postViewModel.setMarker();
+                //postViewModel.setMarker();
             }
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
@@ -258,7 +258,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                     binding.postHalfListSwipe.setRefreshing(false);
                 }
 
-                postViewModel.setMarker();
+              // postViewModel.setMarker();
             }
         };
         postViewModel.getPostHalf().observe(getViewLifecycleOwner(), postHalfObserver);
@@ -269,7 +269,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(cameraPosition).animate(CameraAnimation.Easing);
                 naverMap1.moveCamera(cameraUpdate);
                 naverMap1.setLocationTrackingMode(LocationTrackingMode.Follow);
-                Log.e("카메라움직임","");
             }
         };
         postViewModel.getCameraPosition().observe(getViewLifecycleOwner(), cameraPositionObserver);
@@ -288,7 +287,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
                     double longitude = markerList.get(i).getPosition().latitude;
                     double latitude = markerList.get(i).getPosition().longitude;
-                    Log.e("좌표값:"+latitude,":"+longitude);
                     markerList.get(i).setPosition(new LatLng(latitude, longitude));
                 }
                 for(int i = 0; i < markerList.size(); i++)
@@ -324,7 +322,11 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         final Observer<Profile> profileObserver  = new Observer<Profile>() {
             @Override
             public void onChanged(@Nullable final Profile profile) {
-                profileList.add(profile);
+                if(!profile.getNickname().equals("더미"))
+                {
+                    profileList.add(profile);
+                }
+
             }
         };
         profileViewModel.getProfile().observe(getViewLifecycleOwner(), profileObserver);
@@ -336,6 +338,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 {
                     postViewModel.postHalf(profile);
                     postViewModel.postGrid(profile);
+                    //postViewModel.setMarker();
                     binding.postGridListSwipe.setRefreshing(false);
                 }
             }
@@ -375,7 +378,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
                 postViewModel.moveMap(linearLayoutManager.findFirstVisibleItemPosition());
-                Log.e("맵움직임","");
             }
 
             @Override
@@ -406,7 +408,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 Log.e("totalcount:", lastVisible[0]+"");
                 // 스크롤을 맨 끝까지 한 것!
                 if(!lodingGrid) {
-                    if (lastVisible[0] >= totalItemCount - 8) {
+                    if (lastVisible[0] >= totalItemCount - 3) {
 
                         postViewModel.postImport(count);
                         count += 8;
@@ -436,7 +438,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
                 if(!lodingHalf)
                 {
-                    if (lastVisible >= totalItemCount - 5) {
+                    if (lastVisible >= totalItemCount - 3) {
                         postViewModel.postImport(count);
                         count += 8;
                         lodingHalf =true;
