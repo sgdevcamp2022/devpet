@@ -4,7 +4,7 @@
 ---
  <img src= "https://user-images.githubusercontent.com/32475430/221047363-d8734e76-d675-42ec-8727-4078e5b0fa67.png" width="800px"/>
 
-## 👨‍👩‍👧‍👦 팀 소개 👨‍👧‍👦 
+## 👨‍👩‍👧‍👦 팀 역할 👨‍👧‍👦 
 <table>
   <tr>
     <td><b>김동훈</b></td>
@@ -66,8 +66,8 @@
 * Spring Quartz
 * Spring Data Redis
 * Spring Data MongoDB
-> firebase fcm
-> AWS EC2
+* firebase fcm
+* AWS EC2
 
  ### feed
  * Java 15
