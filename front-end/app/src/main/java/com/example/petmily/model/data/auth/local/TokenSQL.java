@@ -15,18 +15,21 @@ public class TokenSQL {
 
     String refreshToken;
 
-    public TokenSQL(@NonNull String userId, String accessToken, String refreshToken) {
+    String userEmail;
+
+    public TokenSQL(@NonNull String userId, String accessToken, String refreshToken, String userEmail) {
         this.userId = userId;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
+        this.userEmail = userEmail;
     }
 
     @NonNull
-    public String getUid() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUid(@NonNull String userId) {
+    public void setUserId(@NonNull String userId) {
         this.userId = userId;
     }
 
@@ -44,5 +47,13 @@ public class TokenSQL {
 
     public void setRefreshToken(String refreshToken) {
         this.refreshToken = refreshToken;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 }

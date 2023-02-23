@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -32,6 +35,7 @@ import com.example.petmily.viewModel.ProfileViewModel;
 import com.example.petmily.viewModel.service.ChatService;
 import com.example.petmily.viewModel.service.ChatWorker;
 import com.example.petmily.viewModel.service.UndeadService;
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.List;
 
@@ -69,8 +73,8 @@ public class Fragment_Profile extends Fragment {
         profileViewModel.init();
 
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-        postViewModel.init();
-        postViewModel.postMy();
+        //postViewModel.init();
+        //postViewModel.postMy();
 
 
 
@@ -85,13 +89,28 @@ public class Fragment_Profile extends Fragment {
         binding.setting.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //authenticationViewModel.logout();
-//                Intent intent = new Intent(context, Activity_MakeProfile.class);
-//                startActivity(intent);
-                ChatWorker.isRunning = false;
-                UndeadService.isRunning = false;
-                ChatService.isRunning = false;
 
+//                ChatWorker.isRunning = false;
+//                UndeadService.isRunning = false;
+//                ChatService.isRunning = false;
+                binding.drawerLayout.openDrawer(Gravity.RIGHT);
+            }
+        });
+
+
+        binding.logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                authenticationViewModel.logout();
+            }
+        });
+
+        binding.tagPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, Activity_MakeProfile.class);
+                intent.putExtra("replace", true);
+                startActivity(intent);
             }
         });
         initObserver();
@@ -102,7 +121,7 @@ public class Fragment_Profile extends Fragment {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids);
+                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids, Glide.with(context));
                 post.setAdapter(newAdapter);
             }
         };
@@ -111,8 +130,6 @@ public class Fragment_Profile extends Fragment {
         final Observer<Profile> profileObserver  = new Observer<Profile>() {
             @Override
             public void onChanged(@Nullable final Profile profile) {
-                //nickname = profile.getNickname();
-                //about = profile.getAbout();
                 if(profile != null)
                 {
                     binding.nickname.setText(profile.getNickname());
@@ -153,8 +170,9 @@ public class Fragment_Profile extends Fragment {
         profileViewModel.getFollower().observe(getViewLifecycleOwner(), followerObserver);
 
         profileViewModel.profileMyImport();
-        postViewModel.postGrid(null);
+        postViewModel.postMy();
 
     }
+
 
 }

@@ -18,7 +18,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.petmily.R;
 import com.example.petmily.databinding.FragmentSearchBinding;
 import com.example.petmily.model.data.post.PostGrid;
@@ -51,12 +53,19 @@ public class Fragment_Search extends Fragment {
     public void init()
     {
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-        postViewModel.init();
-        postViewModel.postSearch();
 
         post = binding.searchPost;
         post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
+
+        binding.searchSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                postViewModel.postSearch();
+
+
+            }
+        });
         gridList = new ArrayList<PostGrid>();
 
         initObserver();
@@ -67,14 +76,15 @@ public class Fragment_Search extends Fragment {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                Adapter_PostGrid newAdapter = new Adapter_PostGrid(gridList);
+                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids, Glide.with(context));
                 post.setAdapter(newAdapter);
+                binding.searchSwipe.setRefreshing(false);
 
             }
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
 
-        postViewModel.postGrid(null);
+        postViewModel.postSearch();
     }
 
 }

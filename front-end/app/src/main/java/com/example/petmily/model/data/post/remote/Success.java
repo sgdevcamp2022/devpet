@@ -1,13 +1,15 @@
 package com.example.petmily.model.data.post.remote;
 
 
+import java.util.List;
+
 public class Success {
     String txId;
     boolean isSuccess;
-    Result result;
+    List<Result> result;
 
 
-    public Success(String txId, boolean isSuccess, Result result) {
+    public Success(String txId, boolean isSuccess, List<Result> result) {
         this.txId = txId;
         this.isSuccess = isSuccess;
         this.result = result;
@@ -29,11 +31,11 @@ public class Success {
         isSuccess = success;
     }
 
-    public Result getResult() {
+    public List<Result> getResult() {
         return result;
     }
 
-    public void setResult(Result result) {
+    public void setResult(List<Result> result) {
         this.result = result;
     }
 }

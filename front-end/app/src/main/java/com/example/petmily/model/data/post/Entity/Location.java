@@ -3,14 +3,13 @@ package com.example.petmily.model.data.post.Entity;
 
 public class Location {
 
-
     int locationId;
     String name;
     String address;
-    int category;
+    String category;
     Coord coord;
 
-    public Location(int locationId, String name, String address, int category, Coord coord) {
+    public Location(int locationId, String name, String address, String category, Coord coord) {
         this.locationId = locationId;
         this.name = name;
         this.address = address;
@@ -42,11 +41,11 @@ public class Location {
         this.address = address;
     }
 
-    public int getCategory() {
+    public String getCategory() {
         return category;
     }
 
-    public void setCategory(int category) {
+    public void setCategory(String category) {
         this.category = category;
     }
 
@@ -58,3 +57,4 @@ public class Location {
         this.coord = coord;
     }
 }
+

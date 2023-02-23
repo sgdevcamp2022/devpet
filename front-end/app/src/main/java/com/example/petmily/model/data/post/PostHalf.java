@@ -9,13 +9,13 @@ import retrofit2.http.Url;
 public class PostHalf {
 
     Coord coord;
-    String placename;
+    String nickname;
     Uri imageUri;
     //int image;
 
-    public PostHalf(Coord coord, String placename, Uri imageUri) {
+    public PostHalf(Coord coord, String nickname, Uri imageUri) {
         this.coord = coord;
-        this.placename = placename;
+        this.nickname = nickname;
         this.imageUri = imageUri;
     }
 
@@ -28,11 +28,11 @@ public class PostHalf {
     }
 
     public String getPlacename() {
-        return placename;
+        return nickname;
     }
 
-    public void setPlacename(String placename) {
-        this.placename = placename;
+    public void setPlacename(String nickname) {
+        this.nickname = nickname;
     }
 
     public Uri getImageUri() {

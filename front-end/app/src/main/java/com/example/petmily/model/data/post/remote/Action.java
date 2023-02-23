@@ -2,26 +2,25 @@ package com.example.petmily.model.data.post.remote;
 
 public class Action {
 
-    String userId;
+    String userName;
 
     String postId;
 
     double score;
 
 
-    public Action(String userId, String postId, double score) {
-        this.userId = userId;
+    public Action(String username, String postId, double score) {
+        this.userName = username;
         this.postId = postId;
         this.score = score;
-
     }
 
-    public String getUserId() {
-        return userId;
+    public String getUsername() {
+        return userName;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.userName = username;
     }
 
     public String getPostId() {
@@ -39,5 +38,4 @@ public class Action {
     public void setScore(double score) {
         this.score = score;
     }
-
 }

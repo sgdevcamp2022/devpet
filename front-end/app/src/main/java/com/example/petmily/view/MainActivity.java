@@ -26,15 +26,16 @@ import com.example.petmily.viewModel.AuthenticationViewModel;
 import com.example.petmily.viewModel.service.ChatService;
 import com.example.petmily.viewModel.service.ChatWorker;
 import com.example.petmily.viewModel.service.UndeadService;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private FragmentTransaction fragmentTransaction;
-    Intent in;
 
     private Fragment fragment_home;
     private Fragment fragment_group;
     private Fragment fragment_profile;
+    private Fragment_Home fragment;
 
     private AuthenticationViewModel authenticationViewModel;
 
@@ -77,7 +78,6 @@ public class MainActivity extends AppCompatActivity {
     {
         authenticationViewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
         authenticationViewModel.init();
-        in = new Intent(this, UndeadService.class);
         initObserver();
     }
     public void initObserver()
@@ -90,18 +90,23 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                     Log.e("토큰이 없어 로그인 화면으로 이동", "");
+
+                }
+                else
+                {
+                    initView();
                 }
 
             }
         };
         authenticationViewModel.getEventRefreshExpiration().observe(this, eventRefreshExpiration);
+
         checkToken();
     }
 
     public void checkToken()
     {
         authenticationViewModel.accessTokenCheck();
-        initView();
     }
     public void initView() {
         Toolbar toolbar = binding.toolbar;
@@ -118,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        fragment = new Fragment_Home();
         FragmentManager fragmentManager = getSupportFragmentManager();
 
         fragment_home = new Fragment_Home();
@@ -190,5 +195,21 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onBackPressed()
+    {
+
+        if(fragment.state== SlidingUpPanelLayout.PanelState.EXPANDED)
+        {
+            fragment.setState(SlidingUpPanelLayout.PanelState.ANCHORED);
+        }
+//        else if(fragment.state==SlidingUpPanelLayout.PanelState.ANCHORED)
+//        {
+//            fragment.setState(SlidingUpPanelLayout.PanelState.HIDDEN);
+//        }
+        else {
+            super.onBackPressed();
+        }
     }
 }

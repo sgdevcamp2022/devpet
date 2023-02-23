@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityProfileBinding;
 import com.example.petmily.model.data.post.PostGrid;
@@ -39,7 +40,7 @@ public class Activity_Profile extends AppCompatActivity {
     private PostViewModel postViewModel;
     private ProfileViewModel profileViewModel;
     private String userId;
-
+    private Context context;
 
     public String nickname;
     public String about;
@@ -53,7 +54,7 @@ public class Activity_Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
         binding.setProfile(this);
-
+        context = this;
         init();
     }
 
@@ -68,7 +69,7 @@ public class Activity_Profile extends AppCompatActivity {
         profileViewModel.init();
 
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-        postViewModel.init();
+        //postViewModel.init();
 
 
 
@@ -101,7 +102,7 @@ public class Activity_Profile extends AppCompatActivity {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids);
+                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids, Glide.with(context));
                 post.setAdapter(newAdapter);
             }
         };

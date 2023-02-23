@@ -1,7 +1,5 @@
 package com.example.petmily.model.data.make.Entity;
 
-import com.example.petmily.model.data.post.Entity.Coord;
-
 public class Location {
     int category;
     Coord coord;

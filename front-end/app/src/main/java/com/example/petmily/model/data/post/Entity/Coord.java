@@ -2,27 +2,27 @@ package com.example.petmily.model.data.post.Entity;
 
 public class Coord {
 
-    double latitude;
-    double lonngitude;
+    double x;
+    double y;
 
-    public Coord(double latitude, double lonngitude) {
-        this.latitude = latitude;
-        this.lonngitude = lonngitude;
+    public Coord(double x, double y) {
+        this.x = x;
+        this.y = y;
     }
 
-    public double getLatitude() {
-        return latitude;
+    public double getX() {
+        return x;
     }
 
-    public void setLatitude(double latitude) {
-        this.latitude = latitude;
+    public void setX(double x) {
+        this.x = x;
     }
 
-    public double getLonngitude() {
-        return lonngitude;
+    public double getY() {
+        return y;
     }
 
-    public void setLonngitude(double lonngitude) {
-        this.lonngitude = lonngitude;
+    public void setY(double y) {
+        this.y = y;
     }
 }

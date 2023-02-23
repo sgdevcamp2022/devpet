@@ -15,6 +15,9 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 
+import com.example.petmily.model.data.make.remote.Post;
+import com.example.petmily.model.data.profile.local.ProfileDatabase;
+import com.example.petmily.model.data.profile.local.ProfileSQL;
 import com.example.petmily.model.data.profile.remote.ChatRoomMake;
 import com.example.petmily.model.data.profile.Pet;
 import com.example.petmily.model.data.profile.remote.API_Interface;
@@ -30,6 +33,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -46,6 +50,7 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -115,10 +120,20 @@ public class ProfileViewModel extends AndroidViewModel {
         return followEvent;
     }
 
+    private MutableLiveData<List<Profile>> profileLiveData;
+    public MutableLiveData<List<Profile>> getProfileLiveData() {
+        if (profileLiveData == null) {
+            profileLiveData = new SingleLiveEvent<List<Profile>>();
+        }
+        return profileLiveData;
+    }
+
     private List<Pet> pets;
     private String token;
     private String userId;
     private Uri imageUri;
+    private List<Profile> profileList;
+    private ProfileDatabase db;
 
     public ProfileViewModel(@NonNull Application application) {
         super(application);
@@ -132,11 +147,12 @@ public class ProfileViewModel extends AndroidViewModel {
         firebaseStorage = FirebaseStorage.getInstance();
         storageRef = firebaseStorage.getReference();
         storageRef.child("profile");
-
+        profileList = new ArrayList<>();
+        profileLiveData = new MutableLiveData<List<Profile>>();
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
         token = sharedPreferences.getString("token", "");
         userId = sharedPreferences.getString("userId", "");
-        //db = ProfileDatabase.getInstance(context);
+        db = ProfileDatabase.getInstance(context);
         profileCallback = new ProfileCallback(context);
 
         OkHttpClient.Builder client = new OkHttpClient.Builder();
@@ -187,13 +203,110 @@ public class ProfileViewModel extends AndroidViewModel {
     {
         restApi = profileInterface.getMyProfile();
         restApi.enqueue(profileCallback);
+        /*
+        Call<Profile> restApi = profileInterface.getMyProfile();
+        restApi.enqueue(new Callback<Profile>() {
+            @Override
+            public void onResponse(Call<Profile> call, retrofit2.Response<Profile> response) {
+                Gson gson = new Gson();
+                int responseCode = response.code();//네트워크 탐지할 때 사용 코드
+                Profile body = response.body();
+
+                ResponseBody errorBody = response.errorBody();
+
+                Log.e("프로필 통신 확인 : ", responseCode+"");
+
+                if(errorBody != null)
+                {
+                    try {
+                        Log.e("프로필 통신 확인 : ", errorBody.string());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                else
+                {
+                    Profile result = (Profile) body;
+                    Log.e("프로필 통신 확인 : ",  result.toString());
+                }
+
+                if(responseCode == 200) {
+                    if (body instanceof Profile) {
+                        firebaseStorage = FirebaseStorage.getInstance();
+                        storageRef = firebaseStorage.getReference();
+                        Profile result = (Profile) body;
+                        profile.setValue(result);
+                        profileList.add(result);
+                        ProfileSQL profileSQL = new ProfileSQL(result.getNickname(), result.getAbout(), result.getBirth());
+                        db.profileDao().insertProfile(profileSQL);
+                        if(result.getImageUri() == null)
+                        {
+                            Log.e("프로필이미지  : ","null");
+                        }
+                        else
+                        {
+                            Log.e("프로필이미지 : ", result.getImageUri());
+                        }
+                        profileLiveData.setValue(profileList);
+                        //팔로잉 여부 반환
+//                    followEvent.setValue(result.getFollow());
+
+                        //프로필 이미지 불러오기
+//                    storageReference.child(result.getImageUri()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+//                        @Override
+//                        public void onSuccess(Uri uri) {
+//                            result.setImageUri(uri.getPath());
+//                            profile.setValue(result);
+//                        }
+//                    }).addOnFailureListener(new OnFailureListener() {
+//                        @Override
+//                        public void onFailure(@NonNull Exception e) {
+//                            //Log.e("파일 불러오기 실패 : ", e.getMessage());
+//                        }
+//                    });
+                    }
+//                    if(body instanceof SuccessFollow)
+//                    {
+//                        SuccessFollow successFollow = (SuccessFollow) body;
+//
+//                        followList.setValue(successFollow);
+//                    }
+//                    if(body instanceof SuccessFollower)
+//                    {
+//                        SuccessFollower successFollower = (SuccessFollower) body;
+//
+//                        followerList.setValue(successFollower);
+//                    }
+
+
+
+                }
+            }
+            @Override
+            public void onFailure(Call<Profile> call, Throwable t) {
+
+            }
+        });
+
+         */
+
     }
+
 
     public void profileImport(String userId)
     {
         restApi = profileInterface.getProfile(userId);
         restApi.enqueue(profileCallback);
-
+    }
+    public void profileFollow(String userId)
+    {
+        restApi = profileInterface.getFollow(userId, 0,20);
+        restApi.enqueue(profileCallback);
+    }
+    public void profileFollower(String userId)
+    {
+        restApi = profileInterface.getFollower(userId, 0,20);
+        restApi.enqueue(profileCallback);
     }
     public void petAppend(String imageUri, String name, String division, String birth, String about)
     {
@@ -205,19 +318,113 @@ public class ProfileViewModel extends AndroidViewModel {
     }
     public void profileSave(String imageUri, String nickname, String about, String birth)
     {
-        //this.imageUri = imageUri;
-        this.imageUri = null;
-        Profile profile = new Profile(nickname, about, birth, pets);
-        //Profile profile = new Profile(imageUri, name, about, birth, pets);
-        restApi = profileInterface.saveProfile(profile);
-        restApi.enqueue(profileCallback);
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        userId = sharedPreferences.getString("userId", "");
+
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String getTime = dateFormat.format(date);
+
+        if(imageUri == null)
+        {
+            Profile profile = new Profile(nickname, about, birth, pets);
+            restApi = profileInterface.replaceProfile(profile);
+            restApi.enqueue(profileCallback);
+        }
+        else
+        {
+            UploadTask uploadTask = storageReference.child("profile/"+userId+"/"+getTime+("0")+".jpg").putFile(Uri.parse(imageUri));
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("스토리지 저장 실패 : ", e.toString());
+                    e.printStackTrace();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.e("스토리지 저장 성공 : ", taskSnapshot.getMetadata().getPath());
+                    storageReference.child(taskSnapshot.getMetadata().getPath()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                            List<String> imageUrl = new ArrayList<>();
+                            imageUrl.add(uri.toString());
+                            Profile profile = new Profile(imageUri, nickname, about, birth, pets);
+                            restApi = profileInterface.saveProfile(profile);
+                            restApi.enqueue(profileCallback);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("스토리지 이미지 불러오기 실패 : ", e.getMessage());
+                        }
+                    });
+                }
+            });
+        }
+
+    }
+    public void profileReplace(String imageUri, String nickname, String about, String birth)
+    {
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
+
+        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+        userId = sharedPreferences.getString("userId", "");
+
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String getTime = dateFormat.format(date);
+
+        if(imageUri == null)
+        {
+            Profile profile = new Profile(nickname, about, birth, pets);
+            restApi = profileInterface.replaceProfile(profile);
+            restApi.enqueue(profileCallback);
+        }
+        else
+        {
+            UploadTask uploadTask = storageReference.child("profile/"+userId+"/"+getTime+("0")+".jpg").putFile(Uri.parse(imageUri));
+            uploadTask.addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.e("스토리지 저장 실패 : ", e.toString());
+                    e.printStackTrace();
+                }
+            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    Log.e("스토리지 저장 성공 : ", taskSnapshot.getMetadata().getPath());
+                    storageReference.child(taskSnapshot.getMetadata().getPath()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+
+                            List<String> imageUrl = new ArrayList<>();
+                            imageUrl.add(uri.toString());
+                            Profile profile = new Profile(imageUri, nickname, about, birth, pets);
+                            restApi = profileInterface.replaceProfile(profile);
+                            restApi.enqueue(profileCallback);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("스토리지 이미지 불러오기 실패 : ", e.getMessage());
+                        }
+                    });
+                }
+            });
+        }
 
     }
 
     public void createChatRoom(String userId)
     {
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
-        String myId = sharedPreferences.getString("userId", "");
+        String myId = sharedPreferences.getString("username", "");
         List<String> list = new ArrayList<String>();
         if(!myId.equals(""))
         {
@@ -229,6 +436,14 @@ public class ProfileViewModel extends AndroidViewModel {
         restApi.enqueue(profileCallback);
     }
 
+    public void newProfileList()
+    {
+        profileList = new ArrayList<>();
+    }
+    public void getProfileList()
+    {
+
+    }
 
     public class ProfileCallback<T> implements retrofit2.Callback<T> {
         private FirebaseStorage storage;
@@ -279,6 +494,16 @@ public class ProfileViewModel extends AndroidViewModel {
                     storageRef = firebaseStorage.getReference();
                     Profile result = (Profile) body;
                     profile.setValue(result);
+                    profileList.add(result);
+                    if(result.getImageUri() == null)
+                    {
+                        Log.e("프로필이미지  : ","null");
+                    }
+                    else
+                    {
+                        Log.e("프로필이미지 : ", result.getImageUri());
+                    }
+                    profileLiveData.setValue(profileList);
                     //팔로잉 여부 반환
 //                    followEvent.setValue(result.getFollow());
 
@@ -296,25 +521,24 @@ public class ProfileViewModel extends AndroidViewModel {
 //                        }
 //                    });
                 }
-                //현재 팔로우 조회 안됨
-//                if(body instanceof SuccessFollow)
-//                {
-//                    SuccessFollow successFollow = (SuccessFollow) body;
-//
-//                    followList.setValue(successFollow);
-//                }
-//                if(body instanceof SuccessFollower)
-//                {
-//                    SuccessFollower successFollower = (SuccessFollower) body;
-//
-//                    followerList.setValue(successFollower);
-//                }
+                if(body instanceof SuccessFollow)
+                {
+                    SuccessFollow successFollow = (SuccessFollow) body;
+
+                    followList.setValue(successFollow);
+                }
+                if(body instanceof SuccessFollower)
+                {
+                    SuccessFollower successFollower = (SuccessFollower) body;
+
+                    followerList.setValue(successFollower);
+                }
                 else if (body instanceof ChatRoomMake)
                 {
                     ChatRoomMake result = (ChatRoomMake) response.body();
                     roomIdLive.setValue(result.getRoomId());
                 }
-               else if (body instanceof Success)//프로필 등록 성공시
+                else if (body instanceof Success)//프로필 등록 성공시
                 {
 //                    Date date = new Date(System.currentTimeMillis());
 //                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
@@ -356,9 +580,10 @@ public class ProfileViewModel extends AndroidViewModel {
             }
             else if(responseCode == INTERNAL_SERVER_ERROR)
             {
-                Profile result = (Profile) body;
+                Profile result = new Profile("더미", "", "", null);
+                profileList.add(result);
+                profileLiveData.setValue(profileList);
                 profile.setValue(result);
-                //profile.setValue(null);
             }
         }
 

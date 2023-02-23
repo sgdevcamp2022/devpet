@@ -1,17 +1,21 @@
 package com.example.petmily.view;
 
 import android.content.ClipData;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -42,6 +46,8 @@ import com.naver.maps.map.overlay.Marker;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Activity_Make extends AppCompatActivity implements OnMapReadyCallback {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1000;
@@ -51,8 +57,6 @@ public class Activity_Make extends AppCompatActivity implements OnMapReadyCallba
 
     private Toolbar toolbar;
     private Uri uri;
-    private RecyclerView userTag;
-    private RecyclerView hashTag;
 
     private MapView mapView;
     private static NaverMap naverMap;
@@ -87,12 +91,8 @@ public class Activity_Make extends AppCompatActivity implements OnMapReadyCallba
     public void init()
     {
         makeViewModel = new ViewModelProvider(this).get(MakeViewModel.class);
-        userTag = binding.userTag;
-        hashTag = binding.hashTag;
         uriList = new ArrayList<Uri>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false);
-        hashTag.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
-        userTag.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.HORIZONTAL, false));
 
         initView();
 
@@ -135,56 +135,13 @@ public class Activity_Make extends AppCompatActivity implements OnMapReadyCallba
             }
         });
 
-        binding.hashTagButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Dialog_Make dialog_make = new Dialog_Make(Activity_Make.this, new Dialog_Make.Dialog_MakeListener() {
-                    @Override
-                    public void clickBtn(String data) {
-                        makeViewModel.addHashTag(data);
-                    }
-                });
-                dialog_make.show();
-
-            }
-        });
-
-        binding.userTagButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Dialog_Make dialog_make = new Dialog_Make(Activity_Make.this, new Dialog_Make.Dialog_MakeListener() {
-                    @Override
-                    public void clickBtn(String data) {
-                        makeViewModel.addUserTag(data);
-                    }
-                });
-                dialog_make.show();
-            }
-        });
-
         marker = new Marker();
         initObserver();
     }
 
     public void initObserver()
     {
-        final Observer<List<Make>> hashTagListObserver = new Observer<List<Make>>() {
-            @Override
-            public void onChanged(@Nullable final List<Make> makes) {
-                Adapter_Make newAdapter = new Adapter_Make(makes);
-                hashTag.setAdapter(newAdapter);
-            }
-        };
-        makeViewModel.getHashTagList().observe(this, hashTagListObserver);
 
-        final Observer<List<Make>> userTagListObserver = new Observer<List<Make>>() {
-            @Override
-            public void onChanged(@Nullable final List<Make> makes) {
-                Adapter_Make newAdapter = new Adapter_Make(makes);
-                userTag.setAdapter(newAdapter);
-            }
-        };
-        makeViewModel.getUserTagList().observe(this, userTagListObserver);
     }
 
 
@@ -200,14 +157,8 @@ public class Activity_Make extends AppCompatActivity implements OnMapReadyCallba
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.save:
-                //String content, int category, double latitude, double longitude, List<String> tag, List<String> hashTag, List<String> imageUri, int groupId
                 String content = binding.about.getText().toString();
-                int category = 1;
-
-
-                //save
-                makeViewModel.makePost(content, category, latitude, longitude, uriList, 3);
-                finish();
+                setContent(content);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -306,6 +257,80 @@ public class Activity_Make extends AppCompatActivity implements OnMapReadyCallba
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
     }
 
+    private void setContent(String tag){
+        int i;
+
+        ArrayList<int[]> hashTag = getSpans(tag, '#');
+        ArrayList<int[]> userTag = getSpans(tag, '@');
+        List<String> hash = new ArrayList<>();
+        List<String> user = new ArrayList<>();
+        SpannableString tagsContent = new SpannableString(tag);
+
+        for(i = 0; i < hashTag.size(); i++){
+            int[] span = hashTag.get(i);
+            int hashTagStart = span[0];
+            int hashTagEnd = span[1];
+            hash.add(tag.substring(hashTagStart, hashTagEnd));
+        }
+        for(i = 0; i < userTag.size(); i++){
+            int[] span = userTag.get(i);
+            int hashTagStart = span[0];
+            int hashTagEnd = span[1];
+
+            user.add(tag.substring(hashTagStart+1, hashTagEnd));
+        }
+
+        int category = 1;
+        makeViewModel.makePost(tag, category, latitude, longitude, uriList, 0, hash, user);
+        finish();
+    }
+
+    public ArrayList<int[]> getSpans(String body, char prefix) {
+        ArrayList<int[]> spans = new ArrayList<int[]>();
+
+        Pattern pattern = Pattern.compile(prefix + "\\w+");
+        Matcher matcher = pattern.matcher(body);
+
+        // Check all occurrences
+        while (matcher.find()) {
+            int[] currentSpan = new int[2];
+            currentSpan[0] = matcher.start();
+            currentSpan[1] = matcher.end();
+            spans.add(currentSpan);
+        }
+        return  spans;
+    }
+    public class HashTag extends ClickableSpan
+    {
+        Context context;
+        TextPaint textPaint;
+        public HashTag(Context context)
+        {
+            super();
+            this.context = context;
+        }
+        @Override
+        public void updateDrawState(TextPaint ds)
+        {
+            textPaint = ds;
+            ds.setColor(ds.linkColor);
+            ds.setARGB(255,30,144,255);
+        }
+
+        @Override
+        public void onClick(View widget)
+        {
+            TextView tv = (TextView) widget;
+            Spanned s = (Spanned) tv.getText();
+            int start = s.getSpanStart(this);
+            int end = s.getSpanEnd(this);
+            String theWord = s.subSequence(start+1,end).toString();
+
+        }
+
+
+
+    }
 
 
 }

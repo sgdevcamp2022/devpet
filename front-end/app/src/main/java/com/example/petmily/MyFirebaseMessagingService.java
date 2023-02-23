@@ -46,12 +46,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         //알림 채널 아이디 : 본인 하고싶으신대로...
         String channel_id = "CHN_ID";
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_MUTABLE);
 
         //기본 사운드로 알림음 설정. 커스텀하려면 소리 파일의 uri 입력
         Uri uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), channel_id)
-                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setSmallIcon(R.drawable.icon)
                 .setSound(uri)
                 .setAutoCancel(true)
                 .setVibrate(new long[]{1000}) //알림시 진동 설정 : 1초 진동, 1초 쉬고, 1초 진동
@@ -61,12 +61,12 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             //커스텀 레이아웃 호출
             builder = builder.setContentTitle(title)
                     .setContentText(message)
-                    .setSmallIcon(R.drawable.ic_launcher_background); //커스텀 레이아웃에 사용된 로고 파일과 동일하게..
+                    .setSmallIcon(R.drawable.icon); //커스텀 레이아웃에 사용된 로고 파일과 동일하게..
             //builder = builder.setContent(getCustomDesign(title, message));
         } else { //아니면 기본 레이아웃 호출
             builder = builder.setContentTitle(title)
                     .setContentText(message)
-                    .setSmallIcon(R.drawable.ic_launcher_background); //커스텀 레이아웃에 사용된 로고 파일과 동일하게..
+                    .setSmallIcon(R.drawable.icon); //커스텀 레이아웃에 사용된 로고 파일과 동일하게..
         }
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
