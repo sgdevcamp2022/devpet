@@ -7,18 +7,21 @@
 ## 👨‍👩‍👧‍👦 팀 역할 👨‍👧‍👦 
 <table>
   <tr>
+    <td>이름</td>
     <td><b>김동훈</b></td>
     <td><b>안재진</b></td>
     <td><b>오세환</b></td>
     <td><b>채현수</b></td>
   </tr>
   <tr>
+    <td>역할</td>
     <td>Back-End</td>
     <td>Back-End</td>
     <td>Back-End</td>
     <td>Front-End</td>
   </tr>
   <tr>
+    <td>한마디</td>
     <td>살려줘.</td>
     <td>집에보내줘.</td>
     <td>왜안돼.</td>
