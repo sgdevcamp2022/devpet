@@ -253,6 +253,8 @@ public class PostViewModel extends AndroidViewModel {
         postFull = new MutableLiveData<List<PostFull>>();
         postEvent = new SingleLiveEvent<Boolean>();
         userIdLiveData = new MutableLiveData<List<String>>();
+        localName = new MutableLiveData<String>();
+        markerList = new MutableLiveData<List<Marker>>();
 
         OkHttpClient.Builder client = new OkHttpClient.Builder();
         client
@@ -310,7 +312,7 @@ public class PostViewModel extends AndroidViewModel {
         GpsTracker gpsTracker = new GpsTracker(context);
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
-        restApi = postInterface.getPost(latitude, longitude, 3000, "", 0, POST_NUM, 1);
+        restApi = postInterface.getPost(latitude, longitude, 5, "", 0, POST_NUM, 1);
         restApi.enqueue(postCallback);
 
 //        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
@@ -342,7 +344,7 @@ public class PostViewModel extends AndroidViewModel {
         GpsTracker gpsTracker = new GpsTracker(context);
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
-        restApi = postInterface.getPost(latitude, longitude, 3000, "", start, start+POST_NUM, 1);
+        restApi = postInterface.getPost(latitude, longitude, 5, "", start, start+POST_NUM, 1);
         restApi.enqueue(postCallback);
 
 //        List<PostSQL> postSQLList = new ArrayList<PostSQL>();
@@ -404,7 +406,7 @@ public class PostViewModel extends AndroidViewModel {
             Coord coord = postList.get(i).getLocation().getCoord();
 
             Marker marker = new Marker();
-            marker.setPosition(new LatLng(coord.getX(), coord.getY()));
+            marker.setPosition(new LatLng(coord.getY(), coord.getX()));
             marker.setZIndex(5000+i);
 
             marker.setIcon(MarkerIcons.GREEN);
@@ -424,6 +426,7 @@ public class PostViewModel extends AndroidViewModel {
         }
         markerList.setValue(markers);
     }
+
 
     public void postHalf(List<Profile> profile)
     {
@@ -454,6 +457,7 @@ public class PostViewModel extends AndroidViewModel {
 
             gridList.add(new PostGrid(uriList.get(i), nickname, content, time));
         }
+
         postGrid.setValue(gridList);
     }
     public void postFull(List<Profile> profileList, int position)
@@ -612,6 +616,7 @@ public class PostViewModel extends AndroidViewModel {
                             postMy.add(new PostMy(list.get(i)));
                         }
                         postMyList.setValue(postMy);
+                        Log.e("내포스트불러오기", list.size()+"개");
                     }
                 }
             }

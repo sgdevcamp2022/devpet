@@ -47,12 +47,9 @@ public class Adapter_PostMy extends RecyclerView.Adapter<Adapter_PostMy.Holder>{
     @Override
     public void onBindViewHolder(@NonNull Adapter_PostMy.Holder holder, int position) {
         PostMy post = list.get(position);
-
-        glide.load(post).into(holder.postListMyBinding.postImage);
-
-        holder.postListMyBinding.postImage.setClipToOutline(true);
         holder.postListMyBinding.setPostMy(post);
-
+        glide.load(post.getImageUrl()).into(holder.postListMyBinding.postImage);
+        holder.postListMyBinding.postImage.setClipToOutline(true);
     }
 
     @Override
@@ -65,8 +62,9 @@ class Holder extends RecyclerView.ViewHolder {
 
     public Holder(@NonNull PostListMyBinding postListMyBinding) {
         super(postListMyBinding.getRoot());
-        this.postListMyBinding = postListMyBinding;
+
         postListMyBinding.postImage.setClipToOutline(true);
+        this.postListMyBinding = postListMyBinding;
     }
 }
     public void setList(List<PostMy> list) {

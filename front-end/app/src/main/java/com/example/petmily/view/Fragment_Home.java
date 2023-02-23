@@ -30,6 +30,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.example.petmily.R;
 import com.example.petmily.databinding.FragmentHomeBinding;
+import com.example.petmily.model.data.post.Entity.Coord;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
 import com.example.petmily.model.data.profile.remote.Profile;
@@ -48,19 +49,23 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
+
 public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     private int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     private FragmentHomeBinding binding;
     private MapView mapView;
-    private static NaverMap naverMap;
+    private static NaverMap naverMap1;
 
     private FragmentManager fragmentManager;
 
@@ -87,8 +92,13 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     int count;
     boolean lodingHalf;
     boolean lodingGrid;
-
+    boolean firstImportHalf;
+    boolean firstImportGrid;
+    private Adapter_PostGrid adapter_postGrid;
+    private Adapter_PostHalf adapter_postHalf;
+    private Bundle savedInstanceState;
     Context context;
+
 
     @Nullable
     @Override
@@ -97,13 +107,14 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 inflater, R.layout.fragment_home, container, false);
         View view = binding.getRoot();
         context = container.getContext();
-        count = 20;
+        count = 10;
         permission();
         lodingHalf = false;
         lodingGrid = false;
-        mapView = binding.mapView;
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+        firstImportHalf = true;
+        firstImportGrid = true;
+
+
 
 
         gpsTracker = new GpsTracker(context);
@@ -127,12 +138,12 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
         halfView = binding.postHalfList;
         grid = binding.postGridList;
-
-
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
         linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         halfView.setLayoutManager(linearLayoutManager);
-        grid.setLayoutManager(staggeredGridLayoutManager);
+        grid.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
+
         fragmentManager = getParentFragmentManager();
 
         half = binding.postHalfLayout;
@@ -142,16 +153,21 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onRefresh() {
                 postViewModel.postImport();
-                count = 0;
+                firstImportGrid = true;
+
             }
         });
         binding.postHalfListSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 postViewModel.postImport();
-                count = 0;
+                firstImportHalf = true;
+
             }
         });
+
+        grid = binding.postGridList;
+        grid.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
 
         sliding = binding.slidingLayout;
         sliding.setClipToOutline(true);
@@ -183,19 +199,32 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids, Glide.with(context));
-                newAdapter.setOnItemClickListener(new Adapter_PostGrid.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
-                        intent.putExtra("position", position);
-                        startActivity(intent);
-                    }
-                });
-                grid = binding.postGridList;
-                grid.setLayoutManager(staggeredGridLayoutManager);
-                grid.setAdapter(newAdapter);
-                lodingGrid = false;
+                if(firstImportGrid)
+                {
+                    adapter_postGrid = new Adapter_PostGrid(postGrids, Glide.with(context));
+                    adapter_postGrid.setOnItemClickListener(new Adapter_PostGrid.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View v, int position) {
+                            Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+                            intent.putExtra("position", position);
+                            startActivity(intent);
+                        }
+                    });
+                    firstImportGrid = false;
+                    grid.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                    grid.setAdapter(adapter_postGrid);
+                    lodingGrid = false;
+                    binding.postGridListSwipe.setRefreshing(false);
+                }
+                else
+                {
+                    adapter_postGrid.additem(postGrids);
+                    adapter_postGrid.notifyDataSetChanged();
+                    lodingGrid = false;
+                    binding.postGridListSwipe.setRefreshing(false);
+                }
+
+                // postViewModel.setMarker();
             }
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
@@ -203,17 +232,33 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         final Observer<List<PostHalf>> postHalfObserver  = new Observer<List<PostHalf>>() {
             @Override
             public void onChanged(@Nullable final List<PostHalf> postHalfList) {
-                Adapter_PostHalf newAdapter = new Adapter_PostHalf(postHalfList, Glide.with(context));
-                newAdapter.setOnItemClickListener(new Adapter_PostHalf.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
-                        intent.putExtra("position", position);
-                        startActivity(intent);
-                    }
-                });
-                halfView.setAdapter(newAdapter);
-                lodingHalf = false;
+                if(firstImportHalf)
+                {
+                    adapter_postHalf = new Adapter_PostHalf(postHalfList, Glide.with(context));
+                    adapter_postHalf.setOnItemClickListener(new Adapter_PostHalf.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View v, int position) {
+                            Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+                            intent.putExtra("position", position);
+                            startActivity(intent);
+                        }
+                    });
+                   // halfView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                    halfView.setAdapter(adapter_postHalf);
+                    lodingGrid = false;
+                    binding.postHalfListSwipe.setRefreshing(false);
+                    firstImportHalf = false;
+
+                }
+                else
+                {
+                    adapter_postHalf.additem(postHalfList);
+                    adapter_postHalf.notifyDataSetChanged();
+                    lodingGrid = false;
+                    binding.postHalfListSwipe.setRefreshing(false);
+                }
+
+                postViewModel.setMarker();
             }
         };
         postViewModel.getPostHalf().observe(getViewLifecycleOwner(), postHalfObserver);
@@ -222,8 +267,9 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(@Nullable final CameraPosition cameraPosition) {
                 CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(cameraPosition).animate(CameraAnimation.Easing);
-                naverMap.moveCamera(cameraUpdate);
-                naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+                naverMap1.moveCamera(cameraUpdate);
+                naverMap1.setLocationTrackingMode(LocationTrackingMode.Follow);
+                Log.e("카메라움직임","");
             }
         };
         postViewModel.getCameraPosition().observe(getViewLifecycleOwner(), cameraPositionObserver);
@@ -235,6 +281,19 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 for(int i = 0; i < markers.size(); i++)
                 {
                     markerList.add(markers.get(i));
+                }
+
+                for(int i = 0; i < markerList.size(); i++)
+                {
+
+                    double longitude = markerList.get(i).getPosition().latitude;
+                    double latitude = markerList.get(i).getPosition().longitude;
+                    Log.e("좌표값:"+latitude,":"+longitude);
+                    markerList.get(i).setPosition(new LatLng(latitude, longitude));
+                }
+                for(int i = 0; i < markerList.size(); i++)
+                {
+                    markerList.get(i).setMap(naverMap1);
                 }
             }
         };
@@ -258,7 +317,6 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 {
                     profileViewModel.profileImport(userIdList.get(i));
                 }
-
             }
         };
         postViewModel.getUserIdLiveData().observe(getViewLifecycleOwner(), userIdLivaDataObserver);
@@ -317,6 +375,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
                 postViewModel.moveMap(linearLayoutManager.findFirstVisibleItemPosition());
+                Log.e("맵움직임","");
             }
 
             @Override
@@ -340,12 +399,17 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 // 받아온 리사이클러 뷰 카운트
                 int totalCount = recyclerView.getAdapter().getItemCount();
 
+                StaggeredGridLayoutManager layoutManager =
+                        StaggeredGridLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int[] lastVisible = layoutManager.findLastCompletelyVisibleItemPositions(new int[5]);
+                Log.e("totalcount:", lastVisible[0]+"");
                 // 스크롤을 맨 끝까지 한 것!
                 if(!lodingGrid) {
-                    if (lastPosition.length - 1 == totalCount - 1) {
+                    if (lastVisible[0] >= totalItemCount - 8) {
 
                         postViewModel.postImport(count);
-                        count += 20;
+                        count += 8;
                         lodingGrid = true;
                     }
                 }
@@ -362,36 +426,39 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
 
-                // 리사이클러뷰 가장 마지막 index
-                int lastPosition = linearLayoutManager
-                        .findLastCompletelyVisibleItemPosition();
 
-                // 받아온 리사이클러 뷰 카운트
-                int totalCount = recyclerView.getAdapter().getItemCount();
+                LinearLayoutManager layoutManager =
+                        LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisible = layoutManager.findLastCompletelyVisibleItemPosition();
 
                 // 스크롤을 맨 끝까지 한 것!
-                Log.e("totalcount:", lastPosition+"");
+
                 if(!lodingHalf)
                 {
-                    if(lastPosition == totalCount -8){
+                    if (lastVisible >= totalItemCount - 5) {
                         postViewModel.postImport(count);
-                        count += 20;
+                        count += 8;
                         lodingHalf =true;
-
+                        binding.postHalfListSwipe.setRefreshing(true);
                     }
                 }
-
             }
         });
 
         grid.setVisibility(View.INVISIBLE);
+
+
+        mapView = binding.mapView;
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
 
     }
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap)
     {
-        this.naverMap = naverMap;
+        naverMap1 = naverMap;
         CameraPosition cameraPosition = new CameraPosition(new LatLng(latitude, longitude),18);
         naverMap.setCameraPosition(cameraPosition);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
@@ -403,24 +470,17 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onLoad() {
                 postViewModel.setMarker();
-                Log.e("마커리스트 사이즈 : ", markerList.size()+"");
                 for(int i = 0; i < markerList.size(); i++)
                 {
-
-
                     double longitude = markerList.get(i).getPosition().latitude;
                     double latitude = markerList.get(i).getPosition().longitude;
                     markerList.get(i).setPosition(new LatLng(latitude, longitude));
-//                    Marker m = new Marker();
-//                    m.setPosition(new LatLng(latitude, longitude));
-//                    m.setZIndex(5000+i);
-//                    m.setIcon(MarkerIcons.GREEN);
-//                    m.setMap(naverMap);
                 }
                 for(int i = 0; i < markerList.size(); i++)
                 {
                     markerList.get(i).setMap(naverMap);
                 }
+                Log.e("맵준비완료:","");
 
             }
         });

@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.petmily.R;
 import com.example.petmily.databinding.PostListHalfBinding;
-import com.example.petmily.model.data.post.PostGrid;
+import com.example.petmily.model.data.post.PostHalf;
 import com.example.petmily.model.data.post.PostHalf;
 
 import java.util.List;
@@ -64,7 +64,6 @@ public class Adapter_PostHalf extends RecyclerView.Adapter<Adapter_PostHalf.Hold
         PostHalf post = list.get(position);
 
         glide.load(post.getImageUri()).into(holder.postListHalfBinding.postImage);
-
 
         holder.postListHalfBinding.removeMenu.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,4 +125,14 @@ public class Adapter_PostHalf extends RecyclerView.Adapter<Adapter_PostHalf.Hold
         this.list = list;
         notifyDataSetChanged();
     }
+
+    public void additem(List<PostHalf> list)
+    {
+        for(int i = 0; i < list.size(); i++)
+        {
+            this.list.add(list.get(i));
+        }
+
+    }
 }
+

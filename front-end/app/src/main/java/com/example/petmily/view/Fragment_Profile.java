@@ -20,6 +20,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
@@ -95,7 +96,7 @@ public class Fragment_Profile extends Fragment {
     public void initView()
     {
         post = binding.searchPost;
-        post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        post.setLayoutManager(new GridLayoutManager(context, 3));
         AuthenticationViewModel authenticationViewModel = new ViewModelProvider(this).get(AuthenticationViewModel.class);
         binding.setting.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -133,6 +134,7 @@ public class Fragment_Profile extends Fragment {
             @Override
             public void onChanged(@Nullable final List<PostMy> postGrids) {
                 Adapter_PostMy newAdapter = new Adapter_PostMy(postGrids, Glide.with(context));
+                post.setLayoutManager(new GridLayoutManager(context, 3));
                 post.setAdapter(newAdapter);
             }
         };

@@ -102,6 +102,7 @@ public class Adapter_PostFull extends RecyclerView.Adapter<Adapter_PostFull.Hold
             public void onClick(View view) {
                 Intent intent = new Intent(context, Activity_Profile.class);
                 intent.putExtra("userId", list.get(position).getUserId()+"");
+
                 context.startActivity(intent);
             }
         });

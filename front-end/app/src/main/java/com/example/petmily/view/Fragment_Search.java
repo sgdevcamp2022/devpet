@@ -41,12 +41,14 @@ public class Fragment_Search extends Fragment {
     private RecyclerView post;
     private PostViewModel postViewModel;
     private ProfileViewModel profileViewModel;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
     List<PostGrid> gridList;
     private List<Profile> profileList;
-    private StaggeredGridLayoutManager staggeredGridLayoutManager;
     private int POST_NUM;
     int count;
     boolean lodingGrid;
+    boolean firstImportGrid;
+    private Adapter_PostGrid adapter_postGrid;
 
     @Nullable
     @Override
@@ -58,6 +60,7 @@ public class Fragment_Search extends Fragment {
         count = 0;
         POST_NUM = 20;
         lodingGrid = false;
+        firstImportGrid = true;
         init();
         return view;
     }
@@ -66,41 +69,66 @@ public class Fragment_Search extends Fragment {
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         post = binding.searchPost;
-        post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+        gridList = new ArrayList<PostGrid>();
 
         binding.searchSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                firstImportGrid = true;
                 postViewModel.postSearch(count);
-                count += 20;
+
+//                Adapter_PostSearch newAdapter = new Adapter_PostSearch(gridList, Glide.with(context));
+//                newAdapter.setOnItemClickListener(new Adapter_PostSearch.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(View v, int position) {
+//                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+//                        intent.putExtra("position", position);
+//                        startActivity(intent);
+//                    }
+//                });
+//                post = binding.searchPost;
+//                post.setLayoutManager(staggeredGridLayoutManager);
+//                post.setAdapter(newAdapter);
+//                count += 20;
 
             }
         });
-        gridList = new ArrayList<PostGrid>();
+
 
         initObserver();
     }
+
 
     public void initObserver()
     {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids, Glide.with(context));
-                newAdapter.setOnItemClickListener(new Adapter_PostGrid.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
-                        intent.putExtra("position", position);
-                        startActivity(intent);
-                    }
-                });
-                post = binding.searchPost;
-                post.setLayoutManager(staggeredGridLayoutManager);
-                post.setAdapter(newAdapter);
-                lodingGrid = false;
-                binding.searchSwipe.setRefreshing(false);
+                if(firstImportGrid)
+                {
+                    adapter_postGrid = new Adapter_PostGrid(postGrids, Glide.with(context));
+                    adapter_postGrid.setOnItemClickListener(new Adapter_PostGrid.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View v, int position) {
+                            Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+                            intent.putExtra("position", position);
+                            startActivity(intent);
+                        }
+                    });
+                    firstImportGrid = false;
+                    post.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                    post.setAdapter(adapter_postGrid);
+                    lodingGrid = false;
+                    binding.searchSwipe.setRefreshing(false);
+                }
+                else
+                {
+                    adapter_postGrid.additem(postGrids);
+                    adapter_postGrid.notifyDataSetChanged();
+                    lodingGrid = false;
+                    binding.searchSwipe.setRefreshing(false);
+                }
             }
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
@@ -127,9 +155,58 @@ public class Fragment_Search extends Fragment {
             }
         };
         profileViewModel.getProfile().observe(getViewLifecycleOwner(), profileObserver);
+        final Observer<List<Profile>> profileListObserver  = new Observer<List<Profile>>() {
+            @Override
+            public void onChanged(@Nullable final List<Profile> profile) {
+                if(POST_NUM == profileList.size())
+                {
+                    postViewModel.postHalf(profile);
+                    postViewModel.postGrid(profile);
+
+                }
+            }
+        };
+        profileViewModel.getProfileLiveData().observe(getViewLifecycleOwner(), profileListObserver);
 
         postViewModel.postSearch(count);
         //count+=20;
+
+        post.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                // 리사이클러뷰 가장 마지막 index
+                int x[] = new int[5];
+                int[] lastPosition = staggeredGridLayoutManager.findFirstVisibleItemPositions(x);
+
+                // 받아온 리사이클러 뷰 카운트
+                int totalCount = recyclerView.getAdapter().getItemCount();
+
+                StaggeredGridLayoutManager layoutManager =
+                        StaggeredGridLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int[] lastVisible = layoutManager.findLastCompletelyVisibleItemPositions(new int[5]);
+                Log.e("totalcount:", lastVisible[0]+"");
+                // 스크롤을 맨 끝까지 한 것!
+                if(!lodingGrid) {
+                    if (lastVisible[0] >= totalItemCount - 8) {
+
+                        postViewModel.postImport(count);
+                        count += 10;
+                        lodingGrid = true;
+                        binding.searchSwipe.setRefreshing(true);
+                    }
+                }
+            }
+        });
+
+
+
     }
 
 }
