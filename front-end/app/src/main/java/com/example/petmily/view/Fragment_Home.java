@@ -22,6 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -143,6 +144,13 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         grid.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
 
+        grid = binding.postGridList;
+        grid.setItemViewCacheSize(100);
+        halfView.setItemViewCacheSize(100);
+
+
+
+
 
         fragmentManager = getParentFragmentManager();
 
@@ -166,8 +174,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        grid = binding.postGridList;
-        grid.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+
 
         sliding = binding.slidingLayout;
         sliding.setClipToOutline(true);
@@ -394,21 +401,16 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                // 리사이클러뷰 가장 마지막 index
-                int x[] = new int[5];
-                int[] lastPosition = staggeredGridLayoutManager.findFirstVisibleItemPositions(x);
 
-                // 받아온 리사이클러 뷰 카운트
-                int totalCount = recyclerView.getAdapter().getItemCount();
+
 
                 StaggeredGridLayoutManager layoutManager =
                         StaggeredGridLayoutManager.class.cast(recyclerView.getLayoutManager());
                 int totalItemCount = layoutManager.getItemCount();
                 int[] lastVisible = layoutManager.findLastCompletelyVisibleItemPositions(new int[5]);
-                Log.e("totalcount:", lastVisible[0]+"");
                 // 스크롤을 맨 끝까지 한 것!
                 if(!lodingGrid) {
-                    if (lastVisible[0] >= totalItemCount - 3) {
+                    if (lastVisible[0] >= totalItemCount - 4) {
 
                         postViewModel.postImport(count);
                         count += 8;
@@ -434,15 +436,13 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 int totalItemCount = layoutManager.getItemCount();
                 int lastVisible = layoutManager.findLastCompletelyVisibleItemPosition();
 
-                // 스크롤을 맨 끝까지 한 것!
-
                 if(!lodingHalf)
                 {
-                    if (lastVisible >= totalItemCount - 3) {
+                    if (lastVisible >= totalItemCount - 4) {
                         postViewModel.postImport(count);
                         count += 8;
                         lodingHalf =true;
-                        binding.postHalfListSwipe.setRefreshing(true);
+                        //binding.postHalfListSwipe.setRefreshing(true);
                     }
                 }
             }

@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.example.petmily.R;
 import com.example.petmily.databinding.PostListGridBinding;
@@ -57,7 +58,7 @@ public class Adapter_PostSearch extends RecyclerView.Adapter<Adapter_PostSearch.
         PostGrid post = list.get(position);
 
 
-        glide.load(post.getUri()).into(holder.postListBinding.postImage);
+        Glide.with(context).load(post.getUri()).into(holder.postListBinding.postImage);
 
 
 

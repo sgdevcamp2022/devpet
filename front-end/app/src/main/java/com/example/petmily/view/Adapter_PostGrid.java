@@ -19,6 +19,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 import com.example.petmily.R;
 import com.example.petmily.databinding.PostListGridBinding;
 import com.example.petmily.model.data.post.PostGrid;
@@ -66,7 +68,10 @@ public class Adapter_PostGrid extends RecyclerView.Adapter<Adapter_PostGrid.Hold
     @Override
     public void onBindViewHolder(@NonNull Adapter_PostGrid.Holder holder, int position) {
         PostGrid post = list.get(position);
-        glide.load(post.getUri()).into(holder.postListBinding.postImage);
+        glide.load(post.getUri())
+                .override(Target.SIZE_ORIGINAL)
+                .into(holder.postListBinding.postImage);
+
 
         holder.postListBinding.postImage.setClipToOutline(true);
         holder.postListBinding.setPostGrid(post);

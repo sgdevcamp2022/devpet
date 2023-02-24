@@ -2,6 +2,7 @@ package com.example.petmily.view;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,9 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.target.Target;
 import com.example.petmily.R;
 import com.example.petmily.databinding.PostListHalfBinding;
 import com.example.petmily.model.data.post.PostHalf;
@@ -63,7 +67,17 @@ public class Adapter_PostHalf extends RecyclerView.Adapter<Adapter_PostHalf.Hold
     public void onBindViewHolder(@NonNull Adapter_PostHalf.Holder holder, int position) {
         PostHalf post = list.get(position);
 
-        glide.load(post.getImageUri()).into(holder.postListHalfBinding.postImage);
+        glide.load(post.getImageUri())
+                .override(Target.SIZE_ORIGINAL)
+                .into(holder.postListHalfBinding.postImage);
+
+
+
+
+
+
+
+
 
         holder.postListHalfBinding.removeMenu.setOnClickListener(new View.OnClickListener() {
             @Override

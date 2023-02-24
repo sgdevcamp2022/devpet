@@ -48,7 +48,7 @@ public class Activity_PostFull extends AppCompatActivity {
     private long time;
     private List<Profile> profileList;
     private int POST_NUM = 0;
-
+    private boolean flag = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +57,14 @@ public class Activity_PostFull extends AppCompatActivity {
         binding.setPost(this);
 
         position = getIntent().getIntExtra("position", -1);
+        if(position == 0)
+        {
+            flag = true;
+        }
+        else
+        {
+            flag = false;
+        }
         time = System.currentTimeMillis();
         context = this;
         init();
@@ -69,7 +77,7 @@ public class Activity_PostFull extends AppCompatActivity {
         profileList = new ArrayList<>();
         post = binding.postFull;
         linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
-        post.setLayoutManager(linearLayoutManager);
+        post.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         post.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
@@ -145,7 +153,15 @@ public class Activity_PostFull extends AppCompatActivity {
             }
         };
         profileViewModel.getProfileLiveData().observe(this, profileListObserver);
-        postViewModel.postImport();
+        if(flag)
+        {
+            postViewModel.postSearch("로스트아크");
+        }
+        else
+        {
+            postViewModel.postImport();
+        }
+
 
     }
 

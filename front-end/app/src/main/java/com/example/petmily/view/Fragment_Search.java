@@ -91,6 +91,7 @@ public class Fragment_Search extends Fragment {
                     }
                 });
                 post = binding.searchPost;
+                post.setItemViewCacheSize(100);
                 post.setLayoutManager(staggeredGridLayoutManager);
                 post.setAdapter(newAdapter);
                 count += 20;
@@ -126,8 +127,8 @@ public class Fragment_Search extends Fragment {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                if(firstImportGrid)
-                {
+//                if(firstImportGrid)
+//                {
                     adapter_postGrid = new Adapter_PostGrid(postGrids, Glide.with(context));
                     adapter_postGrid.setOnItemClickListener(new Adapter_PostGrid.OnItemClickListener() {
                         @Override
@@ -142,14 +143,14 @@ public class Fragment_Search extends Fragment {
                     post.setAdapter(adapter_postGrid);
                     lodingGrid = false;
                     binding.searchSwipe.setRefreshing(false);
-                }
-                else
-                {
-                    adapter_postGrid.additem(postGrids);
-                    adapter_postGrid.notifyDataSetChanged();
-                    lodingGrid = false;
-                    binding.searchSwipe.setRefreshing(false);
-                }
+//                }
+//                else
+//                {
+//                    adapter_postGrid.additem(postGrids);
+//                    adapter_postGrid.notifyDataSetChanged();
+//                    lodingGrid = false;
+//                    binding.searchSwipe.setRefreshing(false);
+//                }
             }
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
@@ -217,7 +218,7 @@ public class Fragment_Search extends Fragment {
                 if(!lodingGrid && !search) {
                     if (lastVisible[0] >= totalItemCount - 5) {
 
-                        postViewModel.postImport(count);
+                        //postViewModel.postImport(count);
                         count += 10;
                         lodingGrid = true;
                     }
