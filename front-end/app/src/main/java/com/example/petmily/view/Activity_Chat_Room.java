@@ -29,6 +29,7 @@ public class Activity_Chat_Room extends AppCompatActivity {
     private ChatViewModel chatViewModel;
     private RecyclerView messageList;
 
+    private String userId;
     @NonNull private String roomId;
 
     @Override
@@ -42,6 +43,8 @@ public class Activity_Chat_Room extends AppCompatActivity {
     }
     public void init()
     {
+
+        userId =  getIntent().getStringExtra("userId");
         roomId = getIntent().getStringExtra("roomId");
 
         chatViewModel = new ViewModelProvider(this).get(ChatViewModel.class);
@@ -73,7 +76,7 @@ public class Activity_Chat_Room extends AppCompatActivity {
             }
         };
         chatViewModel.getMessageList().observe(this, messageListObserver);
-        chatViewModel.initChatRoom(roomId);
+        chatViewModel.initChatRoom(roomId, userId);
     }
 
     @Override

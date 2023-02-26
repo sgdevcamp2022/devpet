@@ -51,7 +51,7 @@ public class FavoriteService {
      */
     public void favoriteUserAddFeed(Long feedId)
     {
-        List<Favorite> favoriteList = favoriteRepository.findAllByPostIdAndFavorite(feedId,true);
+        List<Favorite> favoriteList = favoriteRepository.findAllByPostIdAndIsFavoriteIsTrue(feedId);
         if (favoriteList==null || favoriteList.isEmpty())
             return;
 //        for(Long userId : favoriteList.stream().map(Favorite::getUserId).collect(Collectors.toList()))\

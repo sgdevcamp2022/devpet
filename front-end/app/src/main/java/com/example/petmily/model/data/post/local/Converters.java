@@ -3,11 +3,9 @@ package com.example.petmily.model.data.post.local;
 import androidx.room.ProvidedTypeConverter;
 import androidx.room.TypeConverter;
 
-import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.HashTags;
 import com.example.petmily.model.data.post.Entity.Location;
-import com.example.petmily.model.data.post.Entity.Profile;
-import com.example.petmily.model.data.post.remote.Post;
+
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 

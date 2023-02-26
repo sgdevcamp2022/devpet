@@ -6,5 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface FavoriteRepository extends MongoRepository<Favorite,Long> {
-    public List<Favorite> findAllByPostIdAndFavorite(Long postId,Boolean favorite);
+    public List<Favorite> findAllByPostIdAndIsFavoriteIsTrue(Long postId);
 }

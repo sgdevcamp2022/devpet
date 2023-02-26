@@ -8,9 +8,9 @@
         android:allowBackup="false"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/icon"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.Petmily"
         tools:targetApi="31">
@@ -20,6 +20,8 @@
         <activity
             android:name=".view.MainActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustPan"
+
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,14 +34,17 @@
 
         <activity android:name=".view.Activity_Chat"/>
         <activity android:name=".view.Activity_Make"/>
+        <activity android:name=".view.Activity_Test"/>
+
         <activity android:name=".view.Activity_Login"/>
         <activity android:name=".view.Activity_Join"/>
         <activity android:name=".view.Activity_Chat_Room"/>
-
         <activity android:name=".view.Activity_MakeProfile" />
         <activity android:name=".view.Activity_PetAppend"/>
         <activity android:name=".view.Activity_PostFull"/>
         <activity android:name=".view.Activity_Profile"/>
+        <activity android:name=".view.Activity_Comment"/>
+        <activity android:name=".view.Navigation_Profile"/>
 
         <service
             android:name=".MyFirebaseMessagingService"
@@ -60,6 +65,8 @@
                 <action android:name="ACTION.RESTART.PersistentService"/>
             </intent-filter>
         </receiver>
+
+
 
     </application>
 

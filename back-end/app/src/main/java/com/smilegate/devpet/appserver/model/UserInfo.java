@@ -3,6 +3,7 @@ package com.smilegate.devpet.appserver.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 import java.util.List;
 

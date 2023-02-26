@@ -15,10 +15,13 @@ public class ProfileSQL {
 
     String about;
 
-    public ProfileSQL(@NonNull String name, String nickname, String about) {
+    int profileId;
+
+    public ProfileSQL(@NonNull String name, String nickname, String about, int profileId) {
         this.name = name;
         this.nickname = nickname;
         this.about = about;
+        this.profileId = profileId;
     }
 
     @NonNull
@@ -44,5 +47,13 @@ public class ProfileSQL {
 
     public void setAbout(String about) {
         this.about = about;
+    }
+
+    public int getProfileId() {
+        return profileId;
+    }
+
+    public void setProfileId(int profileId) {
+        this.profileId = profileId;
     }
 }

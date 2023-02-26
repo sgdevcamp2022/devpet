@@ -27,7 +27,7 @@ public class PostFull {
 
     int groupId;//null
 
-    List<Uri> imageUrl;
+    List<String> imageUrl;
 
     int userId;
 
@@ -39,7 +39,10 @@ public class PostFull {
 
     boolean used;
 
-    public PostFull(String createdAt, String updatedAt, int feedId, String content, Location location, List<Integer> tagUsers, int groupId, List<Uri> imageUrl, int userId, HashTags hashTag, String comments, boolean favorite, boolean used) {
+    String nickname;
+    String profileImage;
+
+    public PostFull(String createdAt, String updatedAt, int feedId, String content, Location location, List<Integer> tagUsers, int groupId, List<String> imageUrl, int userId, HashTags hashTag, String comments, boolean favorite, boolean used, String nickname, String profileImage) {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.feedId = feedId;
@@ -53,6 +56,25 @@ public class PostFull {
         this.comments = comments;
         this.favorite = favorite;
         this.used = used;
+        this.nickname = nickname;
+        this.profileImage = profileImage;
+    }
+
+    public PostFull(String createdAt, String updatedAt, int feedId, String content, Location location, List<Integer> tagUsers, int groupId, List<String> imageUrl, int userId, HashTags hashTag, String comments, boolean favorite, boolean used, String nickname) {
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.feedId = feedId;
+        this.content = content;
+        this.location = location;
+        this.tagUsers = tagUsers;
+        this.groupId = groupId;
+        this.imageUrl = imageUrl;
+        this.userId = userId;
+        this.hashTag = hashTag;
+        this.comments = comments;
+        this.favorite = favorite;
+        this.used = used;
+        this.nickname = nickname;
     }
 
     public String getCreatedAt() {
@@ -111,11 +133,11 @@ public class PostFull {
         this.groupId = groupId;
     }
 
-    public List<Uri> getImageUrl() {
+    public List<String> getImageUrl() {
         return imageUrl;
     }
 
-    public void setImageUrl(List<Uri> imageUrl) {
+    public void setImageUrl(List<String> imageUrl) {
         this.imageUrl = imageUrl;
     }
 
@@ -157,5 +179,21 @@ public class PostFull {
 
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public String getProfileImage() {
+        return profileImage;
+    }
+
+    public void setProfileImage(String profileImage) {
+        this.profileImage = profileImage;
     }
 }

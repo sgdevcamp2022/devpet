@@ -4,6 +4,7 @@ package com.example.petmily.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -18,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
+import com.bumptech.glide.Glide;
 import com.example.petmily.R;
 import com.example.petmily.databinding.ActivityProfileBinding;
 import com.example.petmily.model.data.post.PostGrid;
@@ -39,7 +41,7 @@ public class Activity_Profile extends AppCompatActivity {
     private PostViewModel postViewModel;
     private ProfileViewModel profileViewModel;
     private String userId;
-
+    private Context context;
 
     public String nickname;
     public String about;
@@ -53,7 +55,11 @@ public class Activity_Profile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
         binding.setProfile(this);
+        context = this;
+        Intent intent = getIntent();
 
+
+        userId =  intent.getStringExtra("userId");
         init();
     }
 
@@ -62,15 +68,10 @@ public class Activity_Profile extends AppCompatActivity {
 
     public void init()
     {
-        userId = getIntent().getStringExtra("userId");
 
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
-        profileViewModel.init();
 
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-        postViewModel.init();
-
-
 
         initView();
     }
@@ -101,7 +102,7 @@ public class Activity_Profile extends AppCompatActivity {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids);
+                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids, Glide.with(context));
                 post.setAdapter(newAdapter);
             }
         };
@@ -110,14 +111,9 @@ public class Activity_Profile extends AppCompatActivity {
         final Observer<Profile> profileObserver  = new Observer<Profile>() {
             @Override
             public void onChanged(@Nullable final Profile profile) {
-//                nickname = profile.getNickname();
-//                about = profile.getAbout();
                 binding.nickname.setText(profile.getNickname());
                 binding.about.setText(profile.getAbout());
                 birth = profile.getBirth();
-//                Glide.with(context)
-//                        .load(profile.getImageUri())
-//                        .into(binding.profileImage);
 
             }
         };
@@ -145,7 +141,8 @@ public class Activity_Profile extends AppCompatActivity {
         final Observer<String> roomIdObserver  = new Observer<String>() {
             @Override
             public void onChanged(@Nullable final String result) {
-                Intent i = new Intent(getApplicationContext(), Activity_Chat.class);
+                Intent i = new Intent(getApplicationContext(), Activity_Chat_Room.class);
+                i.putExtra("userId", userId);
                 i.putExtra("roomId", result);
                 startActivity(i);
             }

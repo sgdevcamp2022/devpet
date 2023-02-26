@@ -5,6 +5,7 @@ import lombok.*;
 import org.springframework.data.neo4j.core.schema.*;
 import org.springframework.data.neo4j.core.support.UUIDStringGenerator;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.springframework.data.neo4j.core.schema.Relationship.Direction.OUTGOING;
@@ -28,7 +29,7 @@ public class PetInfo {
     private String petSpecies;
 
     @Relationship(type="TAGD" , direction = OUTGOING)
-    private Set<Tag> tags ;
+    private List<Tag> tags ;
 
     @Builder
     public PetInfo(Long petId, String petName, String petBirth, String petSpecies) {

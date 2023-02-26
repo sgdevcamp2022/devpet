@@ -8,6 +8,7 @@ public class Result {
     int profileId;
     String comment;
     boolean used;
+    String nickname;
 
     public Result(String createdAt, String updatedAt, int commentId, int postId, int profileId, String comment, boolean used) {
         this.createdAt = createdAt;
@@ -73,5 +74,13 @@ public class Result {
 
     public void setUsed(boolean used) {
         this.used = used;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 }

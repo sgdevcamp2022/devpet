@@ -11,10 +11,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
 
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/profile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -22,6 +24,7 @@
             android:gravity="start|center"
             android:orientation="horizontal"
             android:paddingStart="10dp"
+            android:layout_marginBottom="15dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">>
@@ -30,42 +33,71 @@
                 android:id="@+id/profile_image"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                app:srcCompat="@drawable/ic_launcher_foreground" />
+                android:adjustViewBounds="true"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/corner_profile"
+                app:srcCompat="@drawable/user"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
             <TextView
                 android:id="@+id/nickname"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@={Post.comments}" />
-        </LinearLayout>
+                android:text="@={Post.nickname}"
+                android:textSize="20dp"
+                android:textColor="#000000"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/profile_image"/>
 
-        <LinearLayout
+            <ImageView
+                android:id="@+id/remove_menu"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:layout_marginRight="15dp"
+                android:alpha="0.5"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/remove" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/body"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginTop="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/profile">
 
-            <ImageView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/post_image"
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
-                app:srcCompat="@drawable/ic_launcher_background"
-                android:scaleType="centerCrop"/>
+                android:layout_height="wrap_content"
+                tools:listitem="@layout/viewpaser_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="parent"/>
 
 
-        </LinearLayout>
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
             android:id="@+id/body2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:orientation="vertical"
             android:paddingStart="10dp"
+            android:layout_marginTop="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/body">
@@ -81,17 +113,20 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_marginEnd="5dp"
+                    android:padding="2dp"
                     app:srcCompat="@drawable/heart" />
 
                 <ImageView
-                    android:id="@+id/dm"
+                    android:id="@+id/comment"
                     android:layout_width="30dp"
                     android:layout_height="30dp"
-                    app:srcCompat="@drawable/dm" />
+                    app:srcCompat="@drawable/comment" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/coment"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@={Post.content}" />
@@ -102,16 +137,14 @@
                 android:layout_height="wrap_content"
                 android:text="@={Post.createdAt}" />
 
+            <!--
             <Button
                 android:id="@+id/comments"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="댓글 확인하기" />
+                -->
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/commentview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
 
         </LinearLayout>
 

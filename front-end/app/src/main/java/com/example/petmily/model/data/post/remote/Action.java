@@ -9,19 +9,18 @@ public class Action {
     double score;
 
 
-    public Action(String userId, String postId, double score) {
-        this.userId = userId;
+    public Action(String username, String postId, double score) {
+        this.userId = username;
         this.postId = postId;
         this.score = score;
-
     }
 
-    public String getUserId() {
+    public String getUsername() {
         return userId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUsername(String username) {
+        this.userId = username;
     }
 
     public String getPostId() {
@@ -39,5 +38,4 @@ public class Action {
     public void setScore(double score) {
         this.score = score;
     }
-
 }

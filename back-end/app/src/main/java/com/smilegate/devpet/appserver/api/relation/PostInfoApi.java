@@ -30,5 +30,5 @@ public interface PostInfoApi {
 
     // 코멘트 저장
     @PostMapping("/postinfo/comment")
-    public PostInfo postComment(CommentRelationRequest commentRequest);
+    public String postComment(CommentRelationRequest commentRequest);
 }

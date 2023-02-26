@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,6 +20,8 @@ import java.time.LocalDateTime;
 public class Favorite {
     @Transient
     public static final String SEQUENCE_NAME = "favorite_sequence";
+
+    @Id
     private Long favoriteId;
     private Long postId;
     private String username;

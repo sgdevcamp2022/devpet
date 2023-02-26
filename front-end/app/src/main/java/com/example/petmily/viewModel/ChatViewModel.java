@@ -3,6 +3,7 @@ package com.example.petmily.viewModel;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.MainThread;
@@ -37,7 +38,8 @@ import ua.naiksoftware.stomp.StompClient;
 
 public class ChatViewModel extends AndroidViewModel{
 
-    final private String URL = "https://121.187.22.37:5000/api/chat/";
+    //final private String URL = "https://121.187.22.37:5000/api/chat/";
+    final private String URL = "http://ec2-13-115-157-11.ap-northeast-1.compute.amazonaws.com:5678/api/chat/";
 
     boolean isUnexpectedClosed;
     private String TAG = "테스트 :\t";
@@ -52,6 +54,8 @@ public class ChatViewModel extends AndroidViewModel{
     private Call<?> restApi;
 
     private List<Message> messages;
+    private List<RoomSQL> roomSQLList;
+    private String roomId;
 
     private StompClient stompClient;
 
@@ -74,6 +78,7 @@ public class ChatViewModel extends AndroidViewModel{
     public ChatViewModel(@NonNull Application application) {
         super(application);
         context = application.getApplicationContext();
+        chatList = new MutableLiveData<List<ChatList>>();
 
     }
 
@@ -88,12 +93,23 @@ public class ChatViewModel extends AndroidViewModel{
         listDB = ChatDatabase.getInstance(context);
         roomDB = RoomDatabase.getInstance(context);
     }
-    public void initChatRoom(String roomId)
+    public void initChatRoom(String roomId, String userId)
     {
         roomSQL = roomDB.chatRoomDao().getMessage(roomId);
-        if(roomSQL != null)
+        this.roomId = roomId;
+        if(roomSQL == null)
         {
-            messageList.setValue(roomSQL.getMessages());
+            SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+            String myId = sharedPreferences.getString("email", "");
+            Message message = new Message("TEXT",roomId, myId, userId, myId+"님이 방에 접속하셨습니다.", "");
+            List<Message> messageList = new ArrayList<>();
+            messageList.add(message);
+            RoomSQL roomSQL = new RoomSQL(roomId, myId, userId, messageList,"");
+            this.roomSQL = roomSQL;
+            roomSQLList.add(roomSQL);
+
+            roomDB.chatRoomDao().insertMessage(roomSQLList);
+            this.messageList.setValue(roomSQL.getMessages());
         }
 
         initStomp();
@@ -142,9 +158,11 @@ public class ChatViewModel extends AndroidViewModel{
     @SuppressLint("CheckResult")
     public void topicMessage()
     {
-        stompClient.topic("/sub/chat/room/"+roomSQL.getRoomId()).subscribe(topicMessage -> {
-            Gson parser=new Gson();
-            Message payLoad = parser.fromJson(topicMessage.getPayload(), Message.class);
+        if(roomSQL == null)
+        {
+            stompClient.topic("/sub/chat/room/"+roomId).subscribe(topicMessage -> {
+                Gson parser=new Gson();
+                Message payLoad = parser.fromJson(topicMessage.getPayload(), Message.class);
             /*
             if(payLoad.getType().equals("ENTER"))
             {
@@ -158,12 +176,39 @@ public class ChatViewModel extends AndroidViewModel{
             {
             }
              */
-            messages.add(payLoad);
-            roomSQL.getMessages().add(payLoad);
+                messages.add(payLoad);
+                roomSQL.getMessages().add(payLoad);
 
-            roomDB.chatRoomDao().updateMessage(roomSQL);
-            messageList.setValue(messages);
-        });
+                roomDB.chatRoomDao().updateMessage(roomSQL);
+                messageList.setValue(messages);
+            });
+        }
+        else
+        {
+            stompClient.topic("/sub/chat/room/"+roomSQL.getRoomId()).subscribe(topicMessage -> {
+                Gson parser=new Gson();
+                Message payLoad = parser.fromJson(topicMessage.getPayload(), Message.class);
+            /*
+            if(payLoad.getType().equals("ENTER"))
+            {
+
+            }
+            else if(payLoad.getType().equals("EXIT"))
+            {
+
+            }
+            else
+            {
+            }
+             */
+                messages.add(payLoad);
+                roomSQL.getMessages().add(payLoad);
+
+                roomDB.chatRoomDao().updateMessage(roomSQL);
+                messageList.setValue(messages);
+            });
+        }
+
     }
 
     @SuppressLint("CheckResult")

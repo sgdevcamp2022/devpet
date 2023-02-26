@@ -32,7 +32,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class AuthenticationViewModel extends AndroidViewModel {
 
-    final String URL = "http://121.187.22.37:7070/oauth/";
+    //final String URL = "http://121.187.22.37:7070/oauth/";
+    final String URL = "http://ec2-52-192-78-94.ap-northeast-1.compute.amazonaws.com:7070/oauth/";
 
 
     private AuthDatabase db;
@@ -104,7 +105,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
         }
         else
         {
-            token = new TokenSQL("dummy", "dummy", "dummy");
+            token = new TokenSQL("dummy", "dummy", "dummy", "dummy");
         }
     }
 
@@ -131,6 +132,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
     public void login(String username, String password)
     {
         restApi = authInterface.login("password", username, password, "trust");
+        email = username;
         restApi.enqueue(authCallback);
     }
 
@@ -138,7 +140,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
     {
         if(token != null)
         {
-            TokenSQL logout = new TokenSQL(token.getUid(), "", "");
+            TokenSQL logout = new TokenSQL(token.getUserId(), "", "", "");
             db.authDao().insertToken(logout);
         }
     }
@@ -147,7 +149,7 @@ public class AuthenticationViewModel extends AndroidViewModel {
         String newAccessToken = refreshToken.getAccess_token();
         String newRefreshToken = refreshToken.getRefresh_token();
         String uid = refreshToken.getUid();
-        TokenSQL newToken = new TokenSQL(uid, newAccessToken, newRefreshToken);
+        TokenSQL newToken = new TokenSQL(uid, newAccessToken, newRefreshToken, email);
         db.authDao().insertToken(newToken);
     }
     public class AuthCallback<T> implements retrofit2.Callback<T> {
@@ -192,8 +194,15 @@ public class AuthenticationViewModel extends AndroidViewModel {
                     e.printStackTrace();
                 }
                 if(errorBody  != null) {
-                    int code = Integer.parseInt(errorBody.getMessage());
-
+                    int code;
+                    if(errorBody.getMessage().charAt(0) != '4')
+                    {
+                        code = responseCode;
+                    }
+                    else
+                    {
+                        code = Integer.parseInt(errorBody.getMessage());
+                    }
                     switch (code) {
                         //회원가입 페이지
                         case EMAIL_DUPLICATION:
@@ -238,31 +247,34 @@ public class AuthenticationViewModel extends AndroidViewModel {
                     SharedPreferences.Editor editor= sharedPreferences.edit();
                     editor.putString("token", token.getAccessToken());
                     editor.putString("refresh", token.getAccessToken());
-                    editor.putString("userId", token.getUid());
+                    editor.putString("userId", token.getUserId());
+                    editor.putString("email", token.getUserEmail());
                     editor.commit();
+
                 }
                 else if(body instanceof  AccessToken)//자동 로그인 성공
                 {
                     Log.e("자동 로그인 성공 - token",token.getAccessToken());
                     Log.e("자동 로그인 성공 - refresh",token.getRefreshToken());
-                    Log.e("자동 로그인 성공 - userId",token.getUid());
+                    Log.e("자동 로그인 성공 - userId",token.getUserId());
                     SharedPreferences sharedPreferences= context.getSharedPreferences("token", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor= sharedPreferences.edit();
+                    String email = token.getUserEmail();
+                    for(int i = 0; i < email.length(); i++)
+                    {
+                        if(email.charAt(i)==' ')
+                        {
+
+                        }
+                    }
                     editor.putString("token", token.getAccessToken());
                     editor.putString("refresh", token.getAccessToken());
-                    editor.putString("userId", token.getUid());
+                    editor.putString("userId", token.getUserId());
+                    editor.putString("email", token.getUserEmail());
                     editor.commit();
+                    eventRefreshExpiration.setValue(true);
                 }
-                //발생하는 상황 없음
-                else
-                {
-                    Log.e("발생하는 상황이 없어야 하는 로그", "");
-                    SharedPreferences sharedPreferences= context.getSharedPreferences("token", Context.MODE_PRIVATE);
-                    SharedPreferences.Editor editor= sharedPreferences.edit();
-                    editor.putString("token", token.getAccessToken());
-                    editor.putString("userId", token.getUid());
-                    editor.commit();
-                }
+
             }
             else
             {

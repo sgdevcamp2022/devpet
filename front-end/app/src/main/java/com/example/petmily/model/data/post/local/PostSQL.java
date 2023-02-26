@@ -5,10 +5,9 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.HashTags;
 import com.example.petmily.model.data.post.Entity.Location;
-import com.example.petmily.model.data.post.Entity.Profile;
+
 
 import java.util.List;
 
@@ -79,6 +78,9 @@ public class PostSQL {
         this.favorite = favorite;
         this.used = used;
     }
+
+
+
 
     public String getCreatedAt() {
         return createdAt;

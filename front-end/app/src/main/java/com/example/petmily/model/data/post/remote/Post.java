@@ -1,9 +1,7 @@
 package com.example.petmily.model.data.post.remote;
 
-import com.example.petmily.model.data.post.Entity.Comment;
 import com.example.petmily.model.data.post.Entity.HashTags;
 import com.example.petmily.model.data.post.Entity.Location;
-import com.example.petmily.model.data.post.Entity.Profile;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -35,7 +33,7 @@ public class Post implements Serializable {
     @SerializedName("imageUrl")
     List<String> imageUrl;
 
-    @SerializedName("userId")
+    @SerializedName("profileId")
     int userId;
 
     @SerializedName("hashTag")

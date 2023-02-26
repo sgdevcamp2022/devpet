@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -59,8 +60,8 @@ public class Activity_Chat extends AppCompatActivity {
             fragmentTransaction.replace(R.id.chat_frame, fragment_alarm).commitAllowingStateLoss();
         }
 
-        Button b1 = binding.alarm;
-        Button b2 = binding.message;
+        ImageView b1 = binding.alarm;
+        ImageView b2 = binding.message;
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

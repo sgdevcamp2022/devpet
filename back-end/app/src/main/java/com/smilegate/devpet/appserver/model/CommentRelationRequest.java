@@ -18,5 +18,5 @@ import java.sql.Timestamp;
 public class CommentRelationRequest {
     private String userId;
     private String postId;
-    private String createdAt;
+    private long createdAt;
 }

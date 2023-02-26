@@ -10,6 +10,8 @@ public class Message {
     public String message;
     public String timeLog;
     public int profileImage;
+
+    public int viewType;
     //public String profileImage;
 
 
@@ -88,6 +90,14 @@ public class Message {
 
     public void setProfileImage(int profileImage) {
         this.profileImage = profileImage;
+    }
+
+    public int getViewType() {
+        return viewType;
+    }
+
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
     }
 
     @Override
