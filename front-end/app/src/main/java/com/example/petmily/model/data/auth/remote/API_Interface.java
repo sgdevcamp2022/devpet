@@ -17,8 +17,6 @@ import retrofit2.http.PUT;
 
 public interface API_Interface {
 
-    //이메일 회원가입
-    //의논 후 반환타입 생각
     @FormUrlEncoded
     @POST("sign-up")
     Call<Join> createUser(

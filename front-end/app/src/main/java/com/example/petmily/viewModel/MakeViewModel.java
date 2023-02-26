@@ -8,6 +8,7 @@ import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -17,8 +18,9 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.petmily.model.data.make.Make;
 import com.example.petmily.model.data.make.remote.API_Interface;
 import com.example.petmily.model.data.make.remote.Post;
-import com.example.petmily.model.data.post.Entity.Coord;
-import com.example.petmily.model.data.post.Entity.Location;
+import com.example.petmily.model.data.make.Entity.Coord;
+import com.example.petmily.model.data.make.Entity.HashTags;
+import com.example.petmily.model.data.make.Entity.Location;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -31,8 +33,10 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Queue;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -44,7 +48,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MakeViewModel extends AndroidViewModel {
 
-    final String URL =  "http://121.187.22.37:5000/api/app/";
+    //final String URL =  "http://121.187.22.37:5000/api/app/";
+    final String URL = "http://ec2-13-115-157-11.ap-northeast-1.compute.amazonaws.com:5678/api/app/";
     private MakeCallback makeCallback;
 
     private API_Interface makeInterface;
@@ -53,26 +58,9 @@ public class MakeViewModel extends AndroidViewModel {
 
     private Call<?> restApi;
 
-    private MutableLiveData<List<Make>> userTagList;
-    public MutableLiveData<List<Make>> getUserTagList() {
-        if (userTagList == null) {
-            userTagList = new MutableLiveData<List<Make>>();
-        }
-        return userTagList;
-    }
-
-    private MutableLiveData<List<Make>> hashTagList;
-    public MutableLiveData<List<Make>> getHashTagList() {
-        if (hashTagList == null) {
-            hashTagList = new MutableLiveData<List<Make>>();
-        }
-        return hashTagList;
-    }
 
 
-    
-    private List<Make> userTag;
-    private List<Make> hashTag;
+
     private List<String> imageUri;
 
     private String userId;
@@ -88,8 +76,6 @@ public class MakeViewModel extends AndroidViewModel {
     
     public void init()
     {
-        hashTag = new ArrayList<Make>();
-        userTag = new ArrayList<Make>();
         imageUri = new ArrayList<String>();
 
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
@@ -114,57 +100,45 @@ public class MakeViewModel extends AndroidViewModel {
         makeInterface = retrofit.create(API_Interface.class);
     }
     
-    public void makePost(String content, int category, double latitude, double longitude, List<Uri> imageUri, int groupId)
+    public void makePost(String content, int category, double latitude, double longitude, List<Uri> imageUri, int groupId, List<String> hashTag, List<String> userTag)
     {
-        addImageUri(imageUri);
+        //addImageUri(imageUri);
 
-        List<String> userTagList = new ArrayList<String>();
+        int count = imageUri.size();
+        List<Integer> userTagList = new ArrayList<>();
         for(int i = 0; i < userTag.size(); i++)
         {
-            userTagList.add(userTag.get(i).getMake());
+            userTagList.add(Integer.parseInt(userTag.get(i)));
         }
 
-        List<String> hashTagList = new ArrayList<String>();
+        List<HashTags> hashTagList = new ArrayList<>();
         for(int i = 0; i < hashTag.size(); i++)
         {
-            hashTagList.add(hashTag.get(i).getMake());
+            hashTagList.add(new HashTags(hashTag.get(i)));
         }
-        Location location = new Location(1, "이름", "주소",category, new Coord(latitude, longitude));
+        Location location = new Location(category, new Coord(longitude, latitude));
 
         List<String> imageList = new ArrayList<String>();
         for(int i = 0; i < imageUri.size(); i++)
         {
             imageList.add("post/"+userId+"/"+getTime+(i+"")+".jpg");
-            //imageList.add("dog2.png");
         }
 
+        FirebaseStorage storage = FirebaseStorage.getInstance();
+        StorageReference storageReference = storage.getReference();
 
-        Post post = new Post(content, category, location, userTagList, hashTagList, imageList, 0);
 
-        Log.e("메이크 통신 리퀘스트 : ", post.toString());
-        restApi = makeInterface.createPost(post);
-        restApi.enqueue(makeCallback);
-
-    }
-
-    public void addImageUri(List<Uri> imageUri)
-    {
         SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
         userId = sharedPreferences.getString("userId", "");
 
         Date date = new Date(System.currentTimeMillis());
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         getTime = dateFormat.format(date);
-
-
-        FirebaseStorage storage = FirebaseStorage.getInstance();
-        StorageReference storageReference = storage.getReference();
-
-        for(int i = 0; i < imageUri.size(); i++)
+        List<String> imageUrl = new ArrayList<>();
+        Queue<Integer> queue = new LinkedList<>();
+        for(int i = 0; i < count; i++)
         {
             UploadTask uploadTask = storageReference.child("post/"+userId+"/"+getTime+(i+"")+".jpg").putFile(imageUri.get(i));
-
-            //UploadTask uploadTask = storageReference.child("dog2.png").putFile(imageUri.get(i));
             uploadTask.addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
@@ -175,23 +149,67 @@ public class MakeViewModel extends AndroidViewModel {
                 @Override
                 public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                     Log.e("스토리지 저장 성공 : ", taskSnapshot.getMetadata().getPath());
+                    storageReference.child(taskSnapshot.getMetadata().getPath()).getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri uri) {
+                            queue.add(1);
+
+                            imageUrl.add(uri.toString());
+                            if(queue.size() == count)
+                            {
+                                Post post = new Post(content, location, userTagList, hashTagList, groupId, imageUrl);
+                                Log.e("메이크 통신 리퀘스트 : ", post.toString());
+                                restApi = makeInterface.createPost(post);
+                                restApi.enqueue(makeCallback);
+                            }
+
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("스토리지 이미지 불러오기 실패 : ", e.getMessage());
+                            Toast.makeText(context, "게시물 생성에 실패했습니다.", Toast.LENGTH_SHORT).show();
+                        }
+                    });
                 }
             });
         }
 
     }
 
-    public void addHashTag(String tag)
-    {
-        hashTag.add(new Make(tag));
-        hashTagList.setValue(hashTag);
+//    public void addImageUri(List<Uri> imageUri)
+//    {
+//        SharedPreferences sharedPreferences = context.getSharedPreferences("token", Context.MODE_PRIVATE);
+//        userId = sharedPreferences.getString("userId", "");
+//
+//        Date date = new Date(System.currentTimeMillis());
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//        getTime = dateFormat.format(date);
+//
+//        FirebaseStorage storage = FirebaseStorage.getInstance();
+//        StorageReference storageReference = storage.getReference();
+//
+//        for(int i = 0; i < imageUri.size(); i++)
+//        {
+//            UploadTask uploadTask = storageReference.child("post/"+userId+"/"+getTime+(i+"")+".jpg").putFile(imageUri.get(i));
+//
+//            //UploadTask uploadTask = storageReference.child("dog2.png").putFile(imageUri.get(i));
+//            uploadTask.addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Log.e("스토리지 저장 실패 : ", e.toString());
+//                    e.printStackTrace();
+//                }
+//            }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+//                @Override
+//                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                    Log.e("스토리지 저장 성공 : ", taskSnapshot.getMetadata().getPath());
+//                }
+//            });
+//        }
+//
+//    }
 
-    }
-    public void addUserTag(String tag)
-    {
-        userTag.add(new Make(tag));
-        userTagList.setValue(userTag);
-    }
 
     public String getCurrentAddress( double latitude, double longitude) {
         //지오코더... GPS를 주소로 변환

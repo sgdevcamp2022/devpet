@@ -1,13 +1,15 @@
 package com.example.petmily.model.data.profile.remote;
 
+import com.example.petmily.model.data.profile.Entity.Follow;
+
 import java.util.List;
 
 public class SuccessFollow {
     String txId;
     boolean isSuccess;
-    List<Profile> result;
+    List<Follow> result;
 
-    public SuccessFollow(String txId, boolean isSuccess, List<Profile> result) {
+    public SuccessFollow(String txId, boolean isSuccess, List<Follow> result) {
         this.txId = txId;
         this.isSuccess = isSuccess;
         this.result = result;
@@ -29,11 +31,11 @@ public class SuccessFollow {
         isSuccess = success;
     }
 
-    public List<Profile> getResult() {
+    public List<Follow> getResult() {
         return result;
     }
 
-    public void setResult(List<Profile> result) {
+    public void setResult(List<Follow> result) {
         this.result = result;
     }
 }

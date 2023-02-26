@@ -44,14 +44,15 @@ public class Activity_MakeProfile extends AppCompatActivity {
     private int month;
     private int day;
     private RecyclerView petList;
-
+    private boolean flag;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_make_profile);
         binding.setMakeProfile(this);
-
+        flag = getIntent().getBooleanExtra("replace", false);
+        Log.e("flag : ", flag+"");
         init();
     }
 
@@ -111,14 +112,26 @@ public class Activity_MakeProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String imageUri = null;
-                //String imageUri = uri.getPath();
+                if(uri != null)
+                {
+                   imageUri = uri.getPath();
+                }
                 String about = binding.about.getText().toString();
                 String birth = binding.time.getText().toString();
 
                 String nickname = binding.nickname.getText().toString();
-                profileViewModel.profileSave(imageUri, nickname, about, birth);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+                if(flag)
+                {
+                    profileViewModel.profileReplace(imageUri, nickname, about, birth);
+                    finish();
+                }
+                else
+                {
+                    profileViewModel.profileSave(imageUri, nickname, about, birth);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
+                }
+
             }
         });
         initObserver();

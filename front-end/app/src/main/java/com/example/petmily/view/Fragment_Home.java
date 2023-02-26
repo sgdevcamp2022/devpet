@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,15 +22,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.bumptech.glide.Glide;
 import com.example.petmily.R;
 import com.example.petmily.databinding.FragmentHomeBinding;
+import com.example.petmily.model.data.post.Entity.Coord;
 import com.example.petmily.model.data.post.PostGrid;
 import com.example.petmily.model.data.post.PostHalf;
-import com.example.petmily.model.data.post.remote.Post;
 import com.example.petmily.model.data.profile.remote.Profile;
 import com.example.petmily.viewModel.GpsTracker;
 import com.example.petmily.viewModel.PostViewModel;
@@ -48,26 +50,30 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
-import com.example.petmily.model.Place;
 
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.security.auth.callback.Callback;
+
 public class Fragment_Home extends Fragment implements OnMapReadyCallback {
+    private int LOCATION_PERMISSION_REQUEST_CODE = 1000;
 
     private FragmentHomeBinding binding;
     private MapView mapView;
-    private static NaverMap naverMap;
+    private static NaverMap naverMap1;
 
     private FragmentManager fragmentManager;
 
     private RecyclerView halfView;
     private RecyclerView grid;
-    private RecyclerView place;
+    private List<Marker> markerList;
+    private List<Profile> profileList;
 
     private LinearLayout half;
 
@@ -75,16 +81,25 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
     private ProfileViewModel profileViewModel;
 
     private LinearLayoutManager linearLayoutManager;
+    private StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     private GpsTracker gpsTracker;
-    private SlidingUpPanelLayout sliding;
+    private static SlidingUpPanelLayout sliding;
+    public static SlidingUpPanelLayout.PanelState state;
     double latitude;
     double longitude;
-    private String nickname;
-    private String about;
-    private long time;
-
+    private int POST_NUM = 0;
+    private FusedLocationSource locationSource;
+    int count;
+    boolean lodingHalf;
+    boolean lodingGrid;
+    boolean firstImportHalf;
+    boolean firstImportGrid;
+    private Adapter_PostGrid adapter_postGrid;
+    private Adapter_PostHalf adapter_postHalf;
+    private Bundle savedInstanceState;
     Context context;
+
 
     @Nullable
     @Override
@@ -93,12 +108,14 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 inflater, R.layout.fragment_home, container, false);
         View view = binding.getRoot();
         context = container.getContext();
-
+        count = 10;
         permission();
+        lodingHalf = false;
+        lodingGrid = false;
+        firstImportHalf = true;
+        firstImportGrid = true;
 
-        mapView = binding.mapView;
-        mapView.onCreate(savedInstanceState);
-        mapView.getMapAsync(this);
+
 
 
         gpsTracker = new GpsTracker(context);
@@ -106,7 +123,8 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         latitude = gpsTracker.getLatitude();
         longitude = gpsTracker.getLongitude();
 
-
+        locationSource =
+                new FusedLocationSource(this, LOCATION_PERMISSION_REQUEST_CODE);
         init();
 
         return view;
@@ -114,47 +132,54 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
 
     public void init()
     {
-
+        state = SlidingUpPanelLayout.PanelState.HIDDEN;
         postViewModel = new ViewModelProvider(this).get(PostViewModel.class);
-        postViewModel.init();
         profileViewModel = new ViewModelProvider(this).get(ProfileViewModel.class);
         profileViewModel.init();
 
         halfView = binding.postHalfList;
         grid = binding.postGridList;
-        grid.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
         halfView.setLayoutManager(linearLayoutManager);
+        grid.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
+
+        grid = binding.postGridList;
+        grid.setItemViewCacheSize(100);
+        halfView.setItemViewCacheSize(100);
+
+
+
+
 
         fragmentManager = getParentFragmentManager();
 
         half = binding.postHalfLayout;
 
 
-        List<Post> asd = new ArrayList<Post>();
-        Intent asdsad = new Intent();
-        asdsad.putExtra("post", (Serializable) asd);
+        binding.postGridListSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                postViewModel.postImport();
+                firstImportGrid = true;
 
+            }
+        });
+        binding.postHalfListSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                postViewModel.postImport();
+                firstImportHalf = true;
 
-        //테스트 코드
-//        place = binding.placeList;
-//        place.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
-//
-//        ArrayList<Place> test = new ArrayList<Place>();
-//        test.add(new Place("장소1"));
-//        test.add(new Place("장소2"));
-//        test.add(new Place("장소3"));
-//        test.add(new Place("장소4"));
-//        test.add(new Place("장소5"));
-//        Adapter_Place adapterPlace = new Adapter_Place(test);
-//        place.setAdapter(adapterPlace);
+            }
+        });
 
 
 
         sliding = binding.slidingLayout;
         sliding.setClipToOutline(true);
         sliding.setTouchEnabled(true);
-        sliding.setAnchorPoint(0.4F);
+        sliding.setAnchorPoint(0.38F);
         sliding.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
@@ -170,6 +195,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                     Animation animation = AnimationUtils.loadAnimation(context,R.anim.alpha_space);
                     half.startAnimation(animation);
                 }
+                state = newState;
             }
         });
         initObserver();
@@ -180,16 +206,32 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         final Observer<List<PostGrid>> postGridObserver  = new Observer<List<PostGrid>>() {
             @Override
             public void onChanged(@Nullable final List<PostGrid> postGrids) {
-                Adapter_PostGrid newAdapter = new Adapter_PostGrid(postGrids);
-                newAdapter.setOnItemClickListener(new Adapter_PostGrid.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
-                        intent.putExtra("position", position);
-                        startActivity(intent);
-                    }
-                });
-                grid.setAdapter(newAdapter);
+                if(firstImportGrid)
+                {
+                    adapter_postGrid = new Adapter_PostGrid(postGrids, Glide.with(context));
+                    adapter_postGrid.setOnItemClickListener(new Adapter_PostGrid.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View v, int position) {
+                            Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+                            intent.putExtra("position", position);
+                            startActivity(intent);
+                        }
+                    });
+                    firstImportGrid = false;
+                    grid.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+                    grid.setAdapter(adapter_postGrid);
+                    lodingGrid = false;
+                    binding.postGridListSwipe.setRefreshing(false);
+                }
+                else
+                {
+                    adapter_postGrid.additem(postGrids);
+                    adapter_postGrid.notifyDataSetChanged();
+                    lodingGrid = false;
+                    binding.postGridListSwipe.setRefreshing(false);
+                }
+
+                //postViewModel.setMarker();
             }
         };
         postViewModel.getPostGrid().observe(getViewLifecycleOwner(), postGridObserver);
@@ -197,16 +239,33 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         final Observer<List<PostHalf>> postHalfObserver  = new Observer<List<PostHalf>>() {
             @Override
             public void onChanged(@Nullable final List<PostHalf> postHalfList) {
-                Adapter_PostHalf newAdapter = new Adapter_PostHalf(postHalfList);
-                newAdapter.setOnItemClickListener(new Adapter_PostHalf.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(View v, int position) {
-                        Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
-                        intent.putExtra("position", position);
-                        startActivity(intent);
-                    }
-                });
-                halfView.setAdapter(newAdapter);
+                if(firstImportHalf)
+                {
+                    adapter_postHalf = new Adapter_PostHalf(postHalfList, Glide.with(context));
+                    adapter_postHalf.setOnItemClickListener(new Adapter_PostHalf.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(View v, int position) {
+                            Intent intent = new Intent(v.getContext(), Activity_PostFull.class);
+                            intent.putExtra("position", position);
+                            startActivity(intent);
+                        }
+                    });
+                   // halfView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+                    halfView.setAdapter(adapter_postHalf);
+                    lodingGrid = false;
+                    binding.postHalfListSwipe.setRefreshing(false);
+                    firstImportHalf = false;
+
+                }
+                else
+                {
+                    adapter_postHalf.additem(postHalfList);
+                    adapter_postHalf.notifyDataSetChanged();
+                    lodingGrid = false;
+                    binding.postHalfListSwipe.setRefreshing(false);
+                }
+
+              // postViewModel.setMarker();
             }
         };
         postViewModel.getPostHalf().observe(getViewLifecycleOwner(), postHalfObserver);
@@ -215,8 +274,8 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
             @Override
             public void onChanged(@Nullable final CameraPosition cameraPosition) {
                 CameraUpdate cameraUpdate = CameraUpdate.toCameraPosition(cameraPosition).animate(CameraAnimation.Easing);
-                naverMap.moveCamera(cameraUpdate);
-                naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+                naverMap1.moveCamera(cameraUpdate);
+                naverMap1.setLocationTrackingMode(LocationTrackingMode.Follow);
             }
         };
         postViewModel.getCameraPosition().observe(getViewLifecycleOwner(), cameraPositionObserver);
@@ -224,9 +283,22 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         final Observer<List<Marker>> markerObserver  = new Observer<List<Marker>>() {
             @Override
             public void onChanged(@Nullable final List<Marker> markers) {
-                for(Marker marker : markers)
+                markerList = new ArrayList<>();
+                for(int i = 0; i < markers.size(); i++)
                 {
-                    marker.setMap(naverMap);
+                    markerList.add(markers.get(i));
+                }
+
+                for(int i = 0; i < markerList.size(); i++)
+                {
+
+                    double longitude = markerList.get(i).getPosition().latitude;
+                    double latitude = markerList.get(i).getPosition().longitude;
+                    markerList.get(i).setPosition(new LatLng(latitude, longitude));
+                }
+                for(int i = 0; i < markerList.size(); i++)
+                {
+                    markerList.get(i).setMap(naverMap1);
                 }
             }
         };
@@ -243,55 +315,56 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         final Observer<List<String>> userIdLivaDataObserver = new Observer<List<String>>() {
             @Override
             public void onChanged(@Nullable final List<String> userIdList) {
+                profileList = new ArrayList<>();
+                profileViewModel.newProfileList();
+                POST_NUM = userIdList.size();
                 for(int i = 0; i < userIdList.size(); i++)
                 {
                     profileViewModel.profileImport(userIdList.get(i));
                 }
-//                    postViewModel.postHalf();
-//                    postViewModel.postGrid();
             }
         };
         postViewModel.getUserIdLiveData().observe(getViewLifecycleOwner(), userIdLivaDataObserver);
+
+        final Observer<Profile> profileObserver  = new Observer<Profile>() {
+            @Override
+            public void onChanged(@Nullable final Profile profile) {
+                if(!profile.getNickname().equals("더미"))
+                {
+                    profileList.add(profile);
+                }
+
+            }
+        };
+        profileViewModel.getProfile().observe(getViewLifecycleOwner(), profileObserver);
+
+        final Observer<List<Profile>> profileListObserver  = new Observer<List<Profile>>() {
+            @Override
+            public void onChanged(@Nullable final List<Profile> profile) {
+                if(POST_NUM == profileList.size())
+                {
+                    postViewModel.postHalf(profile);
+                    postViewModel.postGrid(profile);
+                    //postViewModel.setMarker();
+                    binding.postGridListSwipe.setRefreshing(false);
+                }
+            }
+        };
+        profileViewModel.getProfileLiveData().observe(getViewLifecycleOwner(), profileListObserver);
+
+
 
         final Observer<Boolean> eventPost = new Observer<Boolean>() {
             @Override
             public void onChanged(@Nullable final Boolean aBoolean) {
                 if(aBoolean)
                 {
-//                    postViewModel.postHalf(null);
-//                    postViewModel.postGrid(null);
+                    postViewModel.postHalf(profileList);
+                    postViewModel.postGrid(profileList);
                 }
             }
         };
         postViewModel.getPostEvent().observe(getViewLifecycleOwner(), eventPost);
-
-
-//        final Observer<Profile> profileObserver  = new Observer<Profile>() {
-//            @Override
-//            public void onChanged(@Nullable final Profile profile) {
-//
-//                if(profile != null)
-//                {
-////                    binding.localname.setText(profile.getNickname());
-////                    binding.about.setText(profile.getAbout());
-////                    birth = profile.getBirth();
-//                }
-//                else
-//                {
-//                    Intent intent = new Intent(context, Activity_MakeProfile.class);
-//                    startActivity(intent);
-//                    Log.e("프로필 정보가 없어 프로필 화면으로 이동 : ", profile.getNickname());
-//
-//                }
-////                Glide.with(context)
-////                        .load(profile.getImageUri())
-////                        .into(binding.profileImage);
-//            }
-//        };
-//        profileViewModel.getProfile().observe(getViewLifecycleOwner(), profileObserver);
-
-
-
 
         final Observer<Integer> markerPositionObserver  = new Observer<Integer>() {
             @Override
@@ -304,55 +377,116 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         };
         postViewModel.getMarkerPosition().observe(getViewLifecycleOwner(), markerPositionObserver);
 
+        postViewModel.postImport();
+        lodingGrid = true;
+        lodingHalf = true;
+
         halfView.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
             @Override
             public void onChildViewAttachedToWindow(@NonNull View view) {
                 postViewModel.moveMap(linearLayoutManager.findFirstVisibleItemPosition());
-                postViewModel.actionAdd(time, linearLayoutManager.findFirstVisibleItemPosition());
-                time  = System.currentTimeMillis();
             }
 
             @Override
-            public void onChildViewDetachedFromWindow(@NonNull View view) {
+            public void onChildViewDetachedFromWindow(@NonNull View view) {}
+        });
+
+
+        grid.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+
+
+                StaggeredGridLayoutManager layoutManager =
+                        StaggeredGridLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int[] lastVisible = layoutManager.findLastCompletelyVisibleItemPositions(new int[5]);
+                // 스크롤을 맨 끝까지 한 것!
+                if(!lodingGrid) {
+                    if (lastVisible[0] >= totalItemCount - 4) {
+
+                        postViewModel.postImport(count);
+                        count += 8;
+                        lodingGrid = true;
+                    }
+                }
             }
         });
 
-        grid.addOnChildAttachStateChangeListener(new RecyclerView.OnChildAttachStateChangeListener() {
+        halfView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onChildViewAttachedToWindow(@NonNull View view) {
-                postViewModel.actionAdd(time, linearLayoutManager.findFirstVisibleItemPosition());
-                time  = System.currentTimeMillis();
+            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
             }
 
             @Override
-            public void onChildViewDetachedFromWindow(@NonNull View view) {
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+
+                LinearLayoutManager layoutManager =
+                        LinearLayoutManager.class.cast(recyclerView.getLayoutManager());
+                int totalItemCount = layoutManager.getItemCount();
+                int lastVisible = layoutManager.findLastCompletelyVisibleItemPosition();
+
+                if(!lodingHalf)
+                {
+                    if (lastVisible >= totalItemCount - 4) {
+                        postViewModel.postImport(count);
+                        count += 8;
+                        lodingHalf =true;
+                        //binding.postHalfListSwipe.setRefreshing(true);
+                    }
+                }
             }
         });
-
-        postViewModel.postImport();
-
 
         grid.setVisibility(View.INVISIBLE);
-        time  = System.currentTimeMillis();
+
+
+        mapView = binding.mapView;
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
+
     }
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap)
     {
-        this.naverMap = naverMap;
-
+        naverMap1 = naverMap;
         CameraPosition cameraPosition = new CameraPosition(new LatLng(latitude, longitude),18);
         naverMap.setCameraPosition(cameraPosition);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
         naverMap.setMapType(NaverMap.MapType.Basic);
         UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setZoomControlEnabled(false);
+        //uiSettings.setLocationButtonEnabled(true);
         naverMap.addOnLoadListener(new NaverMap.OnLoadListener() {
             @Override
             public void onLoad() {
                 postViewModel.setMarker();
+                for(int i = 0; i < markerList.size(); i++)
+                {
+                    double longitude = markerList.get(i).getPosition().latitude;
+                    double latitude = markerList.get(i).getPosition().longitude;
+                    markerList.get(i).setPosition(new LatLng(latitude, longitude));
+                }
+                for(int i = 0; i < markerList.size(); i++)
+                {
+                    markerList.get(i).setMap(naverMap);
+                }
+                Log.e("맵준비완료:","");
+
             }
         });
+
     }
 
     public void permission()
@@ -390,7 +524,7 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
                 .setPermissions(
                         Manifest.permission.POST_NOTIFICATIONS,
                         Manifest.permission.ACCESS_FINE_LOCATION
-                        )
+                )
                 .check();
     }
 
@@ -496,4 +630,11 @@ public class Fragment_Home extends Fragment implements OnMapReadyCallback {
         postViewModel.postAction();
         super.onDestroy();
     }
+
+    public void setState(SlidingUpPanelLayout.PanelState state)
+    {
+        sliding.setPanelState(state);
+        this.state = sliding.getPanelState();
+    }
+
 }
