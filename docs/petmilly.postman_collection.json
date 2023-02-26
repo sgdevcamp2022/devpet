@@ -1,0 +1,3255 @@
+{
+	"info": {
+		"_postman_id": "a3ed0346-2ab4-4012-98fc-aca7719d62c2",
+		"name": "petmilly",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "12559085"
+	},
+	"item": [
+		{
+			"name": "app",
+			"item": [
+				{
+					"name": "프로필 등록하기",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nickname\":\"skine\",\n    \"about\":\"hello devpet\",\n    \"birth\":\"1997-06-02\",\n    \"imageUrl\":null,\n    \"petList\":[]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/app/profile",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"profile"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "프로필 등록하기",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"nickname\":\"skine134\",\n    \"description\":\"hello world\",\n    \"petList\":[\n        {\n            \"name\":\"Pozzi\",\n            \"category\":\"프렌치 불독\",\n            \"birth\":\"yyyy-MM-dd\",\n            \"description\":\"우리 애기\",\n            \"imageUrl\":\"\",\n            \"meetDate\":\"yyyy-MM-dd\"\n        },\n        {\n            \"name\":\"Pozzi\",\n            \"category\":\"프렌치 불독\",\n            \"birth\":\"yyyy-MM-dd\",\n            \"description\":\"우리 애기\",\n            \"imageUrl\":\"\",\n            \"meetDate\":\"yyyy-MM-dd\"\n        }\n    ]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/proflile",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"proflile"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":5\n}"
+						}
+					]
+				},
+				{
+					"name": "프로필 조회",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/app/profile/:profile-id",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"profile",
+								":profile-id"
+							],
+							"variable": [
+								{
+									"key": "profile-id",
+									"value": "my-profile"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "프로필 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/proflil",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"proflil"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":{\n        \"nickname\":\"hello world\",\n        \"petList\":[\n            {\n                \"name\":\"pozzi\",\n                \"description\":\"우리 애기 3살\"\n            },\n            {\n                \"name\":\"pobbi\",\n                \"description\":\"우리 애기 1살\"\n            }\n        ],\n        \"followerCount\":5,\n        \"followCount\":2\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "게시글 등록(시설, 피드)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"content\" : \"{{content}}\",\n    \"location\":{\n\t    \"category\" : 1,\n        \"coord\":{\n            \"x\":{{longitude}},\n            \"y\":{{latitude}}\n        }\n    },\n    \"tagUsers\":[],\n    \"hashTag\":[\n        {\n            \"tagName\":\"{{tagName1}}\"\n        },\n        {\n            \"tagName\":\"{{tagName2}}\"\n        },\n        {\n            \"tagName\":\"{{tagName3}}\"\n        },\n        {\n            \"tagName\":\"{{tagName4}}\"\n        },\n        {\n            \"tagName\":\"{{tagName5}}\"\n        },\n        {\n            \"tagName\":\"{{tagName6}}\"\n        }\n    ],\n\t\"grouId\" : null,\n\t\"imageUrl\" : [\"{{imageUrl}}\"]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/app/feeds",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "게시글 등록(시설, 피드)",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"content\" : \"\",\n\t\"category\" : 2,\n    \"coord\":{\n        \"latitude\":37.5,\n        \"longitude\":38.4\n    },\n    \"tag\":[\n        1,\n        4,\n        6\n    ],\n    \"hashTag\":[\n        {\n            \"name\":\"감자튀김\",\n            \"type\":1 //게시글\n        }\n    ],\n\t\"grouId\" : 5,\n\t\"imageUrl\" : []\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/post",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"post"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":\"{{$randomUUID}}\"\n}"
+						}
+					]
+				},
+				{
+					"name": "게시글 리스트 조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/feeds?latitude=122&distance=100000000&word=코딩&start=0&size=20&longitude=37.421998333333335",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "122"
+								},
+								{
+									"key": "distance",
+									"value": "100000000"
+								},
+								{
+									"key": "word",
+									"value": "코딩",
+									"description": "nullable"
+								},
+								{
+									"key": "start",
+									"value": "0",
+									"description": "nullable(default:0)"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "nullable(default:20)"
+								},
+								{
+									"key": "longitude",
+									"value": "37.421998333333335"
+								},
+								{
+									"key": "category",
+									"value": "1",
+									"description": "nullable(게시글 종류,default:all(0))",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "게시글 리스트 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/post/:mode?latitude=37.8&longitude=38.4&range=동&search-word=강현커피&category=4&start=1&count=20",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"post",
+										":mode"
+									],
+									"query": [
+										{
+											"key": "latitude",
+											"value": "37.8",
+											"description": "nullable"
+										},
+										{
+											"key": "longitude",
+											"value": "38.4",
+											"description": "nullable"
+										},
+										{
+											"key": "range",
+											"value": "동",
+											"description": "nullable"
+										},
+										{
+											"key": "search-word",
+											"value": "강현커피",
+											"description": "nullable"
+										},
+										{
+											"key": "category",
+											"value": "4",
+											"description": "nullable(게시글 종류,default:all(0))"
+										},
+										{
+											"key": "start",
+											"value": "1",
+											"description": "시작번호"
+										},
+										{
+											"key": "count",
+											"value": "20",
+											"description": "가져올 갯수 (default:20)"
+										}
+									],
+									"variable": [
+										{
+											"key": "mode",
+											"value": null,
+											"description": "pid(1)/place(2)/private(3)"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"isSuccess\":true,\n    \"txId\":\"{{$randomUUID}}\",\n    \"result\":[\n        {\n            \"content\" : \"\",\n            \"category\" : 2,\n            \"grouId\" : 5,\n            \"coord\":{\n                \"latitude\":37.5,\n                \"longitude\":38.4\n            },\n            \"imageUrl\" : [],\n            \"userId\" : 1,\n            \"comments\":[\n                {\n                    \"userInfo\":{\n                        \"nickName\":\"name\",\n                        \"id\":4\n                    },\n                    \"parentId\":\"{{$randomUUID}}\",\n                    \"time\":\"{{$isoTimestamp}}\",\n                    \"comment\" : \"asdf\"\n                }\n            ],\n            \"tagUsers\":[\n                {\n                    \"userId\":4,\n                    \"nicname\":\"skine134\"\n                }\n            ]\n        }\n    ]\n\n}"
+						}
+					]
+				},
+				{
+					"name": "게시글 리스트 조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/feeds?latitude=38.3&longitude=37.1&distance=1000&start=0&size=20",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "38.3"
+								},
+								{
+									"key": "longitude",
+									"value": "37.1",
+									"description": "nullable"
+								},
+								{
+									"key": "distance",
+									"value": "1000",
+									"description": "nullable"
+								},
+								{
+									"key": "word",
+									"value": "Lo",
+									"description": "nullable",
+									"disabled": true
+								},
+								{
+									"key": "start",
+									"value": "0",
+									"description": "nullable(default:0)"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "nullable(default:20)"
+								},
+								{
+									"key": "category",
+									"value": "1",
+									"description": "nullable(게시글 종류,default:all(0))",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "게시글 리스트 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/post/:mode?latitude=37.8&longitude=38.4&range=동&search-word=강현커피&category=4&start=1&count=20",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"post",
+										":mode"
+									],
+									"query": [
+										{
+											"key": "latitude",
+											"value": "37.8",
+											"description": "nullable"
+										},
+										{
+											"key": "longitude",
+											"value": "38.4",
+											"description": "nullable"
+										},
+										{
+											"key": "range",
+											"value": "동",
+											"description": "nullable"
+										},
+										{
+											"key": "search-word",
+											"value": "강현커피",
+											"description": "nullable"
+										},
+										{
+											"key": "category",
+											"value": "4",
+											"description": "nullable(게시글 종류,default:all(0))"
+										},
+										{
+											"key": "start",
+											"value": "1",
+											"description": "시작번호"
+										},
+										{
+											"key": "count",
+											"value": "20",
+											"description": "가져올 갯수 (default:20)"
+										}
+									],
+									"variable": [
+										{
+											"key": "mode",
+											"value": null,
+											"description": "pid(1)/place(2)/private(3)"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"isSuccess\":true,\n    \"txId\":\"{{$randomUUID}}\",\n    \"result\":[\n        {\n            \"content\" : \"\",\n            \"category\" : 2,\n            \"grouId\" : 5,\n            \"coord\":{\n                \"latitude\":37.5,\n                \"longitude\":38.4\n            },\n            \"imageUrl\" : [],\n            \"userId\" : 1,\n            \"comments\":[\n                {\n                    \"userInfo\":{\n                        \"nickName\":\"name\",\n                        \"id\":4\n                    },\n                    \"parentId\":\"{{$randomUUID}}\",\n                    \"time\":\"{{$isoTimestamp}}\",\n                    \"comment\" : \"asdf\"\n                }\n            ],\n            \"tagUsers\":[\n                {\n                    \"userId\":4,\n                    \"nicname\":\"skine134\"\n                }\n            ]\n        }\n    ]\n\n}"
+						}
+					]
+				},
+				{
+					"name": "내 게시글 리스트 조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/feeds/my-feed?start=0&size=20",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds",
+								"my-feed"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0",
+									"description": "nullable(default:0)"
+								},
+								{
+									"key": "size",
+									"value": "20",
+									"description": "nullable(default:20)"
+								},
+								{
+									"key": "userId",
+									"value": "0",
+									"description": "nullable(게시글 종류,default:all(0))",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "게시글 리스트 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/post/:mode?latitude=37.8&longitude=38.4&range=동&search-word=강현커피&category=4&start=1&count=20",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"post",
+										":mode"
+									],
+									"query": [
+										{
+											"key": "latitude",
+											"value": "37.8",
+											"description": "nullable"
+										},
+										{
+											"key": "longitude",
+											"value": "38.4",
+											"description": "nullable"
+										},
+										{
+											"key": "range",
+											"value": "동",
+											"description": "nullable"
+										},
+										{
+											"key": "search-word",
+											"value": "강현커피",
+											"description": "nullable"
+										},
+										{
+											"key": "category",
+											"value": "4",
+											"description": "nullable(게시글 종류,default:all(0))"
+										},
+										{
+											"key": "start",
+											"value": "1",
+											"description": "시작번호"
+										},
+										{
+											"key": "count",
+											"value": "20",
+											"description": "가져올 갯수 (default:20)"
+										}
+									],
+									"variable": [
+										{
+											"key": "mode",
+											"value": null,
+											"description": "pid(1)/place(2)/private(3)"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"isSuccess\":true,\n    \"txId\":\"{{$randomUUID}}\",\n    \"result\":[\n        {\n            \"content\" : \"\",\n            \"category\" : 2,\n            \"grouId\" : 5,\n            \"coord\":{\n                \"latitude\":37.5,\n                \"longitude\":38.4\n            },\n            \"imageUrl\" : [],\n            \"userId\" : 1,\n            \"comments\":[\n                {\n                    \"userInfo\":{\n                        \"nickName\":\"name\",\n                        \"id\":4\n                    },\n                    \"parentId\":\"{{$randomUUID}}\",\n                    \"time\":\"{{$isoTimestamp}}\",\n                    \"comment\" : \"asdf\"\n                }\n            ],\n            \"tagUsers\":[\n                {\n                    \"userId\":4,\n                    \"nicname\":\"skine134\"\n                }\n            ]\n        }\n    ]\n\n}"
+						}
+					]
+				},
+				{
+					"name": "마커 리스트 조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/map/markers?latitude=122&longitude=38.5&distance=3000000000",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"map",
+								"markers"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "122",
+									"description": "위도"
+								},
+								{
+									"key": "longitude",
+									"value": "38.5",
+									"description": "경도"
+								},
+								{
+									"key": "distance",
+									"value": "3000000000",
+									"description": "범위"
+								},
+								{
+									"key": "category",
+									"value": "2",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "마커 리스트 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/map/markers?latitude=37.5&longitude=38.5&range=1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"map",
+										"markers"
+									],
+									"query": [
+										{
+											"key": "latitude",
+											"value": "37.5",
+											"description": "위도"
+										},
+										{
+											"key": "longitude",
+											"value": "38.5",
+											"description": "경도"
+										},
+										{
+											"key": "range",
+											"value": "1",
+											"description": "[“동”,”시”,”군”,”구”]"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"isSuccess\":true,\n    \"txId\":\"{{$randomUUID}}\",\n    \"result\":[\n\t    {\n\t\t    \"atitude\":\"37.6\",\n\t\t    \"latitude\":\"38.1\",\n\t\t    \"category\":1\n\t    },\n\t    {\n\t\t    \"atitude\":\"36.3\",\n\t\t    \"latitude\":\"38.0\",\n\t\t    \"category\":2\n\t    }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "게시글 수정(시설, 피드)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjF9.8lSCknTnRANlJ0AVzCgO2yF838WYA7bLaAR7vAKnofo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"content\" : \"update post\",\n\t\"category\" : 3,\n    \"location\":{\n\t    \"category\" : 2,\n        \"coord\":{\n            \"x\":37.1,\n            \"y\":38.3\n        }\n    },\n    \"tagUsers\":[\n        1,\n        4,\n        6\n    ],\n    \"hashTag\":[\n        {\n            \"tagName\":\"감자튀김\"\n        }\n    ],\n    \"isUsed\":true,\n\t\"grouId\" : 5,\n\t\"imageUrl\" : []\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:9090/feeds/:postId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"feeds",
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "게시글 수정(시설, 피드)",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"content\" : \"update post\",\n\t\"category\" : 3,\n    \"location\":{\n\t    \"category\" : 2,\n        \"coord\":{\n            \"x\":37.1,\n            \"y\":38.3\n        }\n    },\n    \"tag\":[\n        1,\n        4,\n        6\n    ],\n    \"hashTag\":[\n        {\n            \"name\":\"감자튀김\",\n            \"type\":1\n        }\n    ],\n\t\"grouId\" : 5,\n\t\"imageUrl\" : []\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/post",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"post"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":\"{{$randomUUID}}\"\n}"
+						}
+					]
+				},
+				{
+					"name": "게시글 삭제(시설, 피드)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/feeds/:postId",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds",
+								":postId"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "7"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "게시글 삭제(시설, 피드)",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/post/:",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"post",
+										":"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":\"{{$randomUUID}}\"\n}"
+						}
+					]
+				},
+				{
+					"name": "산책로 등록",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"coord\" : [\n\t\t{\n            \"latitude\":37.5,\n            \"longitute\":38.4\n        },\n\t\t{\n            \"latitude\":37.5,\n            \"longitute\":38.4\n        }\n\t],\n\t\"postId\" : 1,\n\t\"category\" : 1 \n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/map/walk",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"map",
+								"walk"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "산책로 등록",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"coord\" : [\n\t\t{\n            \"latitude\":37.5,\n            \"longitute\":38.4\n        },\n\t\t{\n            \"latitude\":37.5,\n            \"longitute\":38.4\n        }\n\t],\n\t\"postId\" : 1,\n\t\"category\" : 1 \n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/map/walk",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"map",
+										"walk"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":\"success\"\n}"
+						}
+					]
+				},
+				{
+					"name": "댓글 등록",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"comment\" : \"Lorem Ipsum has been \",\n    \"profileId\" : 1,\n    \"parentCommentId\": 15\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/app/feeds/:postId/comment",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds",
+								":postId",
+								"comment"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "54"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "댓글 등록",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"comment\" : \"hello wolrd\",\n    \"parentId\" : \"{{$randomUUID}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/\bpost/:postId/comment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"\bpost",
+										":postId",
+										"comment"
+									],
+									"variable": [
+										{
+											"key": "postId",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":\"{{$randomUUID}}\"\n}"
+						}
+					]
+				},
+				{
+					"name": "댓글 수정",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"comment\" : \"hello wolrd\",\n    \"commentId\": 3\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/\bpost/:postId/comment",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"\bpost",
+								":postId",
+								"comment"
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "\"{{$randomUUID}}\""
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "댓글 수정",
+							"originalRequest": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"comment\" : \"hello wolrd\",\n    \"commentId\": \"{{$randomUUID}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/\bpost/:postId/comment",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"\bpost",
+										":postId",
+										"comment"
+									],
+									"variable": [
+										{
+											"key": "postId",
+											"value": null
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":\"{{$randomUUID}}\"\n}"
+						}
+					]
+				},
+				{
+					"name": "게시글 댓글 조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/feeds/:postId/comment?start=0&count=20",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds",
+								":postId",
+								"comment"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0",
+									"description": "가져올 데이터 시작 숫자(default: 1)"
+								},
+								{
+									"key": "count",
+									"value": "20",
+									"description": "가져올 데이터 개수(default : 20)"
+								}
+							],
+							"variable": [
+								{
+									"key": "postId",
+									"value": "54"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "게시글 댓글 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/post/:postId?start=1&count=1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"post",
+										":postId"
+									],
+									"query": [
+										{
+											"key": "start",
+											"value": "1",
+											"description": "가져올 데이터 시작 숫자(default: 1)"
+										},
+										{
+											"key": "count",
+											"value": "1",
+											"description": "가져올 데이터 개수(default : 20)"
+										}
+									],
+									"variable": [
+										{
+											"key": "postId",
+											"value": "\"{{$randomUUID}}\"",
+											"description": "글 아이디"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"isSuccess\":true,\n    \"txId\":\"{{$randomUUID}}\",\n    \"result\":[\n        {\n            \"userInfo\":{\n                \"nickName\":\"name\",\n                \"id\":4\n            },\n            \"parentId\":\"{{$randomUUID}}\",\n            \"time\":\"{{$isoTimestamp}}\",\n            \"comment\" : \"asdf\"\n        }\n    ]\n\n}"
+						}
+					]
+				},
+				{
+					"name": "펫 루틴 등록",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\":\"산책하기\",\n    \"description\":\"산책로1 산책\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/proflil/rutin",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"proflil",
+								"rutin"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "펫 루틴 등록",
+							"originalRequest": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"name": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\":\"산책하기\",\n    \"description\":\"산책로1 산책\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/proflil/rutin",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"proflil",
+										"rutin"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":false,\n    \"result\":4\n}"
+						}
+					]
+				},
+				{
+					"name": "펫 로그 등록",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"datetime\": \"yyyy-MM-dd-HH-mm-ss\",\n    \"description\":\"hello world\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/proflil/\brutin/:logId",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"proflil",
+								"\brutin",
+								":logId"
+							],
+							"variable": [
+								{
+									"key": "logId",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "펫 로그 등록",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"datetime\": \"yyyy-MM-dd-HH-mm-ss\",\n    \"description\":\"hello world\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/proflil/rutin/:rutinId",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"proflil",
+										"rutin",
+										":rutinId"
+									],
+									"variable": [
+										{
+											"key": "rutinId",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":1\n}"
+						}
+					]
+				},
+				{
+					"name": "펫 로그 조회",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/profil/log",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"profil",
+								"log"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "펫 로그 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/profil/log",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"profil",
+										"log"
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\": \"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":[\n        {\n            \"name\":\"산책하기\",\n            \"description\":\"산책로1 산책\"\n        },\n        {\n            \"name\":\"산책하기\",\n            \"description\":\"산책로2 산책\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "팔로우 신청/변경",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"followId\":6\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/profile/follow",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"profile",
+								"follow"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "팔로우 신청/변경",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"followId\":6\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/users/follow",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users",
+										"follow"
+									]
+								}
+							},
+							"_postman_previewlanguage": "json",
+							"header": null,
+							"cookie": [],
+							"body": "{\n    \"txId\": \"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "좋아요 신청/취소",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"isFavorite\":true\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/app/feeds/:post/emotion",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds",
+								":post",
+								"emotion"
+							],
+							"variable": [
+								{
+									"key": "post",
+									"value": "11"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "좋아요 신청/취소",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{host}}/posts/:post/emotion",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"posts",
+										":post",
+										"emotion"
+									],
+									"variable": [
+										{
+											"key": "post",
+											"value": "5"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\": \"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\": true\n}"
+						}
+					]
+				},
+				{
+					"name": "사용자 리스트 조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/users?name=dev9",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"users"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": null,
+									"description": "검색타입(nullable default: all) [all,follower,favorit,follow]",
+									"disabled": true
+								},
+								{
+									"key": "name",
+									"value": "dev9",
+									"description": "사용자 이름(nullable)"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "사용자 리스트 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/users?type&name=skine134&start=1&count=1",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"users"
+									],
+									"query": [
+										{
+											"key": "type",
+											"value": null,
+											"description": "검색타입(nullable default: all) [all,follower,favorit,follow]"
+										},
+										{
+											"key": "name",
+											"value": "skine134",
+											"description": "사용자 이름(nullable)"
+										},
+										{
+											"key": "start",
+											"value": "1",
+											"description": "시작 번호"
+										},
+										{
+											"key": "count",
+											"value": "1",
+											"description": "개수"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":[\n        {\n            \"userId\":5,\n            \"imaegUrl\":\"\",\n            \"nickname\":\"dongdong1\"\n        },\n        {\n            \"userId\":6,\n            \"imaegUrl\":\"\",\n            \"nickname\":\"skine134\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "해시태그 조회",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/hash?name=강변&type=게시글",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"hash"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "강변",
+									"description": "해시태그명"
+								},
+								{
+									"key": "type",
+									"value": "게시글",
+									"description": "카테고리명(nullable default : all)"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "해시태그 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{host}}/hash?name=강변&type=게시글",
+									"host": [
+										"{{host}}"
+									],
+									"path": [
+										"hash"
+									],
+									"query": [
+										{
+											"key": "name",
+											"value": "강변",
+											"description": "해시태그명"
+										},
+										{
+											"key": "type",
+											"value": "게시글",
+											"description": "카테고리명(nullable default : all)"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":{\n        \"users\":[],\n        \"places\":[],\n        \"posts\":[]\n    }\n}"
+						}
+					]
+				},
+				{
+					"name": "pingpong",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://ec2-3-112-73-64.ap-northeast-1.compute.amazonaws.com:9090/test/pingpong",
+							"protocol": "http",
+							"host": [
+								"ec2-3-112-73-64",
+								"ap-northeast-1",
+								"compute",
+								"amazonaws",
+								"com"
+							],
+							"port": "9090",
+							"path": [
+								"test",
+								"pingpong"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "chat test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJza2luZTEzNEBuYXZlci5jb20iLCJzY29wZSI6WyJ0cnVzdCJdLCJleHAiOjE2NzYwNzcxNTIsInVzZXJJZCI6MSwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6ImQxMDIzOGQ4LWNhZjMtNDBlZS04ODkyLTM2ZWY5ODU2MmQxMSIsImNsaWVudF9pZCI6ImRldiJ9.uiy7GAbunCcDe-4iFUg1EB8gh1pEFs4KwM45CItqdlA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/chat/room/test",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"room",
+								"test"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "팔로워 조회",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/profile/:profileId/follower?start=0&count=1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"profile",
+								":profileId",
+								"follower"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "count",
+									"value": "1"
+								}
+							],
+							"variable": [
+								{
+									"key": "profileId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "팔로워 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/profile/:profileId/follower?start=0&count=20",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"profile",
+										":profileId",
+										"follower"
+									],
+									"query": [
+										{
+											"key": "start",
+											"value": "0"
+										},
+										{
+											"key": "count",
+											"value": "20"
+										}
+									],
+									"variable": [
+										{
+											"key": "profileId",
+											"value": null
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":[\n        {\n            \"profileId\":5,\n            \"nickname\":\"skine\",\n            \"imageUrl\":\"http://image.gg\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "팔로우 조회",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/profile/:profileId/follow?start&count",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"profile",
+								":profileId",
+								"follow"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": null
+								},
+								{
+									"key": "count",
+									"value": null
+								}
+							],
+							"variable": [
+								{
+									"key": "profileId",
+									"value": null
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "팔로우 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/profile/:profileId/follow?start=0&count=20",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"profile",
+										":profileId",
+										"follow"
+									],
+									"query": [
+										{
+											"key": "start",
+											"value": "0"
+										},
+										{
+											"key": "count",
+											"value": "20"
+										}
+									],
+									"variable": [
+										{
+											"key": "profileId",
+											"value": null
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":[\n        {\n            \"profileId\":5,\n            \"nickname\":\"skine\",\n            \"imageUrl\":\"http://image.gg\"\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "펫 리스트 조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/profile/:profileId/pet",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"profile",
+								":profileId",
+								"pet"
+							],
+							"variable": [
+								{
+									"key": "profileId",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "펫 리스트 조회",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:9090/profile/:profileId/follower?start=0&count=20",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "9090",
+									"path": [
+										"profile",
+										":profileId",
+										"follower"
+									],
+									"query": [
+										{
+											"key": "start",
+											"value": "0"
+										},
+										{
+											"key": "count",
+											"value": "20"
+										}
+									],
+									"variable": [
+										{
+											"key": "profileId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "",
+									"value": "",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"txId\":\"{{$randomUUID}}\",\n    \"isSuccess\":true,\n    \"result\":[\n        {\n            \"createdAt\": \"2023-02-11T03:07:24.94648\",\n            \"updatedAt\": \"2023-02-11T03:07:24.946491\",\n            \"petId\": 4,\n            \"profileId\": 1,\n            \"name\": \"Pozzi\",\n            \"birth\": \"2022-12-31\",\n            \"meetDat\": null,\n            \"division\": \"프렌치 불독\",\n            \"about\": \"우리 애기\",\n            \"imageUrl\": \"\",\n            \"used\": false\n        },\n        {\n            \"createdAt\": \"2023-02-11T03:07:24.947277\",\n            \"updatedAt\": \"2023-02-11T03:07:24.947285\",\n            \"petId\": 5,\n            \"profileId\": 1,\n            \"name\": \"hulk\",\n            \"birth\": \"2022-12-31\",\n            \"meetDat\": null,\n            \"division\": \"프렌치 불독\",\n            \"about\": \"우량아\",\n            \"imageUrl\": \"\",\n            \"used\": false\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "fcm test",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/test/fcm?user-token=dPTt0YR0QNyD7vOLLE7iwB:APA91bEX7CAmFsLC7auUvR8K1iraDP8ZS6v-S_yOb_KlJiDi9S7vb82k_NIooe27xrDDqE1CiEFj09t9UYe_UJ9-RB8_cq39m6tweOZY7hcWmXIgrBMqgdBCocbKfjHqBC-61kaBr52w",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"test",
+								"fcm"
+							],
+							"query": [
+								{
+									"key": "user-token",
+									"value": "dPTt0YR0QNyD7vOLLE7iwB:APA91bEX7CAmFsLC7auUvR8K1iraDP8ZS6v-S_yOb_KlJiDi9S7vb82k_NIooe27xrDDqE1CiEFj09t9UYe_UJ9-RB8_cq39m6tweOZY7hcWmXIgrBMqgdBCocbKfjHqBC-61kaBr52w"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "test",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/auth/users/user",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"users",
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "추천게시글 조회",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/app/feeds/recommend?start=0&size=20",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"app",
+								"feeds",
+								"recommend"
+							],
+							"query": [
+								{
+									"key": "start",
+									"value": "0"
+								},
+								{
+									"key": "size",
+									"value": "20"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "feed",
+			"item": [
+				{
+					"name": "유저 노드 생성",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"email1001\",\r\n    \"nickname\" : \"거북왕\",\r\n    \"birth\" : \"200011\",\r\n    \"address\" : \"서울4\",\r\n    \"gender\" : \"남\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/userinfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유저 팔로우",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower\" : \"email13\",\r\n    \"following\" : \"email14\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/userinfo/follow",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"userinfo",
+								"follow"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유저 팔로우 취소",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower\" : \"email13\",\r\n    \"following\" : \"email14\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/userinfo/follow/cancel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"userinfo",
+								"follow",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유저 팔로워수 세기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower\" : \"dev8@naver.com\",\r\n    \"following\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/userinfo/count/follower",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"userinfo",
+								"count",
+								"follower"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유저 팔로잉수 세기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower\" : \"userId73\",\r\n    \"following\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/userinfo/count/following",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"userinfo",
+								"count",
+								"following"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유저 팔로워 리스트 가져오기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower\" : \"dev8@naver.com\",\r\n    \"following\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:4000/userinfo/list/follower",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "4000",
+							"path": [
+								"userinfo",
+								"list",
+								"follower"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유저 팔로잉 리스트 가져오기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"follower\" : \"userId64\",\r\n    \"following\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/userinfo/list/following",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"userinfo",
+								"list",
+								"following"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유저 노드 수정",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"email13\",\r\n    \"nickname\" : \"루돌프 아톰\",\r\n    \"birth\" : \"19803\",\r\n    \"address\" : \"경기도\",\r\n    \"gender\" : \"남\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/userinfo",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"userinfo"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "유저 노드 삭제",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"email1001\",\r\n    \"nickname\" : \"\",\r\n    \"birth\" : \"\",\r\n    \"address\" : \"\",\r\n    \"gender\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "펫 노드 생성",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"petName\" : \"루비\",\r\n    \"petBirth\" : \"2004\",\r\n    \"petSpecies\" : \"시고르자브종\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "펫 관계 생성",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"email10\",\r\n    \"petId\" : \"71f0ff0c-4d13-4d11-a5d9-85e7524bc926\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pet/raise",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pet",
+								"raise"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "펫 관계 취소",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"email10\",\r\n    \"petId\" : \"71f0ff0c-4d13-4d11-a5d9-85e7524bc926\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pet/raise/cancel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pet",
+								"raise",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "펫 노드 가져오기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"petId\" : \"71f0ff0c-4d13-4d11-a5d9-85e7524bc926\",\r\n    \"petName\" : \"\",\r\n    \"petBirth\" : \"\",\r\n    \"petSpecies\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "펫 노드 수정",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"petId\" : \"71f0ff0c-4d13-4d11-a5d9-85e7524bc926\",\r\n    \"petName\" : \"자비스1\",\r\n    \"petBirth\" : \"2000\",\r\n    \"petSpecies\" : \"시고르자브종\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "펫 노드 삭제",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"petId\" : \"e47404d4-ac14-42e7-9f33-2c4784622235\",\r\n    \"petName\" : \"\",\r\n    \"petBirth\" : \"\",\r\n    \"petSpecies\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/pet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"pet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "좋아요",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"email8\",\r\n    \"postId\" : \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/like",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"like"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "좋아요 취소",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"userId\" : \"email8\",\r\n    \"postId\" : \"12345\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/user/like/cancel",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"user",
+								"like",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "점수 리스트 보내기",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"userId\": \"{{userId}}\",\r\n        \"postId\": \"{{postId1}}\",\r\n        \"score\": {{score1}}\r\n    },\r\n    {\r\n        \"userId\": \"{{userId}}\",\r\n        \"postId\": \"{{postId2}}\",\r\n        \"score\": {{score2}}\r\n    },\r\n    {\r\n        \"userId\": \"{{userId}}\",\r\n        \"postId\": \"{{postId3}}\",\r\n        \"score\": {{score3}}\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/relation/feed",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"relation",
+								"feed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "게시글 리스트 보내기",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/relation/feed?username=skine134@naver.com",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"relation",
+								"feed"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "skine134@naver.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "점수 비교해서 re 관계 형성",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\"userId\" : \"email12\",  \"postId\" : \"21\", \"score\" : \"3.9\"},\r\n {\"userId\" : \"email12\",  \"postId\" : \"22\", \"score\" : 6.0},\r\n {\"userId\" : \"email12\",  \"postId\" : \"23\", \"score\" : 4.1},\r\n {\"userId\" : \"email12\",  \"postId\" : \"24\", \"score\" : 4.3},\r\n {\"userId\" : \"email12\",  \"postId\" : \"25\", \"score\" : 1.7}]\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/feed",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"feed"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "내가 팔로우 한 유저들이 작성한 게시글들 가져오기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJza2luZTEzNEBnbWFpbC5jb20iLCJzY29wZSI6WyJ0cnVzdCJdLCJleHAiOjE2NzY0ODc3OTMsInVzZXJJZCI6MSwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjkxZGViYjllLTMwZjItNDQ0My1iOWRiLTRkMDc5NTNlNjBjNSIsImNsaWVudF9pZCI6ImRldiJ9.x91-3a9e_o8mofrNQgJOMIiamo2rY5G4HIe9SIGyyyU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"follower\" : \"userId59\",  \r\n    \"following\" : \"\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/relation/userinfo/list/follow/post",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"relation",
+								"userinfo",
+								"list",
+								"follow",
+								"post"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "내가 좋아요를 누른 게시글의 tag 에 관련된 다른 게시글들 불러오기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"follower\" : \"userId59\",  \r\n    \"following\" : \"\"\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/userinfo/list/like/post",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"userinfo",
+								"list",
+								"like",
+								"post"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "내가 댓글을 쓴 게시글의 tag에 관련된 다른 게시글들 불러오기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"follower\" : \"userId59\",  \r\n    \"following\" : \"\"\r\n\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/userinfo/list/comment/post",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"userinfo",
+								"list",
+								"comment",
+								"post"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "내가 팔로우 한 유저들의 recommend 관계가 있는 게시글의 tag에 관련된 게시글들 불러오기",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"follower\" : \"userId9\",  \r\n    \"following\" : \"\"\r\n\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/userinfo/list/recommend/post",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"userinfo",
+								"list",
+								"recommend",
+								"post"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "내가 키우는 펫과 관련된 태그의 게시물",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/relation/userinfo/feed1/list/post?userId=skine134@naver.com",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"relation",
+								"userinfo",
+								"feed1",
+								"list",
+								"post"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "skine134@naver.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "내가 팔로우한 유저가 댓글 단 경우(이벤트)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJza2luZTEzNEBnbWFpbC5jb20iLCJzY29wZSI6WyJ0cnVzdCJdLCJleHAiOjE2NzY0ODc3OTMsInVzZXJJZCI6MSwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjkxZGViYjllLTMwZjItNDQ0My1iOWRiLTRkMDc5NTNlNjBjNSIsImNsaWVudF9pZCI6ImRldiJ9.x91-3a9e_o8mofrNQgJOMIiamo2rY5G4HIe9SIGyyyU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \r\n    \"follower\" : \"userId9\",  \r\n    \"following\" : \"\"\r\n\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/relation/userinfo/list/follow/comment/post",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"relation",
+								"userinfo",
+								"list",
+								"follow",
+								"comment",
+								"post"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "chat",
+			"item": [
+				{
+					"name": "message",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzY29wZSI6WyJ0cnVzdCJdLCJleHAiOjE2NzY2OTY4ODAsInVzZXJJZCI6NSwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6ImUyYWJiYmIwLWM3MDktNGVkNy1iYzM2LTg4ODdjYjYwMWZiNyIsImNsaWVudF9pZCI6ImRldiIsInVzZXJuYW1lIjoicXdlIn0.IUa1h2Y2KhuBlKhWbV8sz_jdUIvxXwVyMyVreNXZnGU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/chat/chat/messages",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"chat",
+								"messages"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "room",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{auth}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\"3\",\"0\"]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/api/chat/room",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"chat",
+								"room"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "회원가입",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "username",
+							"value": "skine134@naver.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "qwer!@#$",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "오세환",
+							"type": "text"
+						},
+						{
+							"key": "provider",
+							"value": "",
+							"type": "text"
+						},
+						{
+							"key": "phone",
+							"value": "01056974181",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/auth/oauth/sign-up",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"oauth",
+						"sign-up"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "로그인",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(pm.response.json().access_token,function(){\r",
+							"    const json = pm.response.json();\r",
+							"    pm.expect(json).to.have.property('access_token');\r",
+							"    pm.environment.set(\"auth\", json.access_token);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic ZGV2OnBldA==",
+						"type": "text",
+						"description": "Basic cW1zOnNlY3JldA=="
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "\bskine134@gmail.com",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "qwer!@#$",
+							"type": "text"
+						},
+						{
+							"key": "scope",
+							"value": "trust",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/auth/oauth/token",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"oauth",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "check token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Basic ZGV2OnBldA==",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "token",
+							"value": "{{auth}}",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{host}}/api/auth/oauth/check_token",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"auth",
+						"oauth",
+						"check_token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "eureka test",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://ec2-54-199-113-36.ap-northeast-1.compute.amazonaws.com:8761",
+					"protocol": "http",
+					"host": [
+						"ec2-54-199-113-36",
+						"ap-northeast-1",
+						"compute",
+						"amazonaws",
+						"com"
+					],
+					"port": "8761"
+				}
+			},
+			"response": []
+		}
+	]
+}
