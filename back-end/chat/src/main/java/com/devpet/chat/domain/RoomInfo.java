@@ -20,10 +20,10 @@ public class RoomInfo {
     private Long chatCounter;
 
     @OneToMany @JoinColumn(name = "room_id")        //MEMBER 테이블의 TEAM_ID (FK)
-    List<UserInfo> userInfos = new ArrayList<UserInfo>();
+    List<UserInfo> userInfos;
 
 
     public RoomInfo() {
-
+        userInfos  = new ArrayList<UserInfo>();
     }
 }

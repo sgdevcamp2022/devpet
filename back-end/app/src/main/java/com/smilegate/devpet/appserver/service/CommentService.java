@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -71,8 +72,8 @@ public class CommentService {
         // 코멘트 정보를 관계정보 서버로 전송합니다.
         CommentRelationRequest commentRelationRequest = CommentRelationRequest.builder()
                 .postId(Long.valueOf(comment.getPostId()).toString())
-                .userId(Long.valueOf(userInfo.getUserId()).toString())
-                .createdAt(comment.getCreatedAt().toString()).build();
+                .userId(userInfo.getUsername())
+                .createdAt(comment.getCreatedAt().toEpochSecond(ZoneOffset.ofHours(9))).build();
         postInfoApi.postComment(commentRelationRequest);
         return comment;
     }

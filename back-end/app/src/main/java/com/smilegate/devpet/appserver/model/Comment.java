@@ -37,7 +37,8 @@ public class Comment extends BaseModel {
             this.commentId = commentRequest.getCommentId();
         this.setProfileId(commentRequest.getProfileId());
         this.setComment(commentRequest.getComment());
-        this.setParentCommentId(commentRequest.getParentCommentId());
+        if (commentRequest.getParentCommentId() != null)
+            this.setParentCommentId(commentRequest.getParentCommentId());
     }
     public void setComment(String comment)
     {

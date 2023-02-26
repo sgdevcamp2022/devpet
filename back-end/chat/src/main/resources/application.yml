@@ -20,7 +20,6 @@ spring:
   redis:
     host: localhost
     port: 6379
-
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/chat?createDatabaseIfNotExist=true
@@ -53,7 +52,7 @@ eureka:
     register-with-eureka: true # 유레카 서비스에 (자신을) 등록 여부
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://localhost:8761/eureka/
+      defaultZone: http://ec2-54-199-113-36.ap-northeast-1.compute.amazonaws.com:8761/eureka/
 
 logging.level:
   org.hibernate.SQL: debug
