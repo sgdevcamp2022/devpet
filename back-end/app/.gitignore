@@ -1,12 +1,13 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,java,gradle,windows,maven,intellij,android,eclipse,androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,java,gradle,windows,maven,intellij,android,eclipse,androidstudio
 nohup.out
+docker-volumes
 ### Android ###
 # Gradle files
 .gradle/
 build/
-mongodb
-mongodb/*
+docker-volumes/mongodb
+docker-volumes/mongodb/*
 # Local configuration file (sdk path, etc)
 local.properties
 

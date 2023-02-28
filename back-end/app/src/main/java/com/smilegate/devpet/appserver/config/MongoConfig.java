@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.MongoDatabaseFactory;
+import org.springframework.data.mongodb.MongoTransactionManager;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoClientDatabaseFactory;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
@@ -33,10 +34,10 @@ public class MongoConfig {
     private String password;
 
 
-//    @Bean
-//    MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
-//        return new MongoTransactionManager(dbFactory);
-//    }
+    @Bean("mongoTransactionManager")
+    MongoTransactionManager transactionManager(MongoDatabaseFactory dbFactory) {
+        return new MongoTransactionManager(dbFactory);
+    }
 
     @Bean
     public MongoDatabaseFactory mongoDbFactory() {
@@ -45,7 +46,6 @@ public class MongoConfig {
         return new SimpleMongoClientDatabaseFactory(url);
     }
 
-    @Bean
     public MongoTemplate mongoTemplate() {
         return new MongoTemplate(mongoDbFactory());
     }

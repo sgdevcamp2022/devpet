@@ -15,7 +15,7 @@ spring:
     mongodb:
       authentication-database: admin
       username: root
-      password: root
+      password: root!
       host: localhost
       port: 27017
       database: app_db
@@ -31,14 +31,14 @@ spring:
     livereload:
       enabled: true
 
-eureka:
-  instance:
-    prefer-ip-address: true
-  client:
-    register-with-eureka: true
-    fetch-registry: true
-    serviceUrl:
-      defaultZone: http://ec2-13-115-157-11.ap-northeast-1.compute.amazonaws.com:8761/eureka/
+#eureka:
+#  instance:
+#    prefer-ip-address: true
+#  client:
+#    register-with-eureka: true
+#    fetch-registry: true
+#    serviceUrl:
+#      defaultZone: http://localhost:8761/eureka/
 
 logging:
   level:
