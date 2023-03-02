@@ -41,7 +41,6 @@ public class MongoConfig {
 
     @Bean
     public MongoDatabaseFactory mongoDbFactory() {
-
         String url = String.format("mongodb://%s:%s@%s:%s/%s?authSource=admin",username,password,host,port,database);
         return new SimpleMongoClientDatabaseFactory(url);
     }

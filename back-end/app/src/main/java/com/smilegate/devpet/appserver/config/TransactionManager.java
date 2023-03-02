@@ -6,10 +6,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.transaction.ChainedTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionSynchronization;
 
 public class TransactionManager {
-//    private final TransactionSynchronization transactionSynchronization;
     @Bean
     @Primary
     @Autowired

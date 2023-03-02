@@ -20,7 +20,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         basePackages = { "com.smilegate.devpet.appserver.repository.redis" }
 )
 public class RedisConfig {
-//    private final EntityManagerFactory entityManagerFactory;
     /**
      * 어플리케이션에서 사용할 redisTemplate 설정
      */
