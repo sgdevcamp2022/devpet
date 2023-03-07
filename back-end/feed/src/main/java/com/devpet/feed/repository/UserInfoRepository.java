@@ -13,43 +13,61 @@ import java.util.Set;
 
 @Repository
 public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
+
     List<UserInfo> findAllByUserIdIn(List<String> userIds);
+
     @Query("MATCH (m:UserInfo {id: $followedUser}) " +
             "MATCH (n:UserInfo {id: $followUser}) "+
             "MATCH (m)<-[F:FOLLOW]-(n)"+
             "DELETE F;" )
     UserInfo deleteFollowById(String followedUser, String followUser);
+
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
     Optional<UserInfo> findNodeById (@Param("userId") String userId);
+
     @Query("MATCH (m:UserInfo {userId: $userId}) " + "RETURN m" )
     UserInfo findNodeById2(String userId);
+
     @Query("MATCH (m:PostInfo {postId: $postId}) " +
             "MATCH (n:UserInfo {userId : $userId}) " +
             "MATCH (n)-[l:LIKE]->(m) "+
-            "return n"
-    )
+            "return n")
     Optional<UserInfo> existsLike(String postId, String userId);
-
-    @Query("match(u:UserInfo{userId : $userId})-[r:RECOMMENDED]->(p:PostInfo) " +
-            "with u, r, p " +
-            "LIMIT 6 " +
-            "match (u)-[r]->(p) " +
-            "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
-            "with n " +
-            "order by n.createdAt DESC "+
-            "return DISTINCT n.postId LIMIT 20"
-            )
-    Set<String> getPostList(@Param("userId") String userId);
-
 
     @Query("match(u:UserInfo{userId : $userId})" + "DETACH DELETE u")
     void deleteUser(@Param("userId") String userId);
 
-    @Query("match(u:UserInfo{userId : $userId})-[r:LIKE]->(p:PostInfo{postId : $postId}) " + "delete r")
-    void cancelLike(@Param("userId") String userId, @Param("postId") String postId);
+     @Query("MATCH(n1:UserInfo {userId: $userId1}) " +
+            "MATCH(n2:UserInfo {userId: $userId2}) " +
+            "optional match (n1)-[r1:FOLLOW]->(n2) " +
+            "optional match (n1)<-[r2:FOLLOW]-(n2) " +
+            "delete r1 " +
+            "delete r2 " +
+            "with n1, n2 " +
+            "optional match (n2)-[:POST]->(p:PostInfo) " +
+            "optional match (n1)-[r3]->(p) " +
+            "delete r3 " +
+            "merge(n1)-[:BLOCK]->(n2) ")
+    void block(@Param("userId1") String userId1, @Param("userId2") String userId2);
+
+    // block 관계가 있는지 체크
+    @Query("MATCH (u1:UserInfo {userId: $userId1}) " +
+            "MATCH (u2:UserInfo {userId : $userId2}) " +
+            "RETURN EXISTS((u1)-[:BLOCK]->(u2))" +
+            "LIMIT 1")
+    boolean checkBlock(@Param("userId1") String userId1, @Param("userId2") String userId2);
+
+    // follow 관계가 있는지 체크
+    @Query("match(u1:UserInfo{userId: $follower}) " +
+            "match(u2:UserInfo{userId: $following}) " +
+            "WHERE EXISTS((u1)-[:FOLLOW]->(u2)) " + "RETURN u1")
+    UserInfo checkFollow(@Param("follower") String follower, @Param("following") String following);
 
     @Query("match(f1:UserInfo {userId : $follower})-[r:FOLLOW]->(f2:UserInfo{userId: $following}) " + "delete r")
     void cancelFollow(@Param("follower") String follower, @Param("following") String following);
+
+    @Query("match(u1:UserInfo{userId : $userId1})-[r:BLOCK]->(u2:UserInfo{userId : $userId2}) " + "delete r")
+    void cancelBlock(@Param("userId1") String userId1, @Param("userId2") String userId2);
 
     @Query("match(f:UserInfo{userId : $userId})<-[:FOLLOW]-()" + "RETURN COUNT(f)")
     Long countFollower(@Param("userId") String userId);
@@ -62,12 +80,6 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
 
     @Query("match(f1:UserInfo{userId : $userId})-[:FOLLOW]->(f2:UserInfo)" + "return DISTINCT f2.userId")
     Set<String> getFollowingList(@Param("userId") String userId);
-
-    // follow 관계가 있는지 체크
-    @Query("match(u1:UserInfo{userId: $follower}) " +
-            "match(u2:UserInfo{userId: $following}) " +
-            "WHERE EXISTS((u1)-[:FOLLOW]->(u2)) " + "RETURN u1")
-    UserInfo checkFollow(@Param("follower") String follower, @Param("following") String following);
 
     @Query("match(u1:UserInfo{userId: $follower}) " +
             "match(u2:UserInfo{userId: $following}) " +
@@ -128,13 +140,24 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
     List<String> getFollowingRecommendPostList(String userId);
 
     @Query("match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[]->(p:PostInfo) " +
-
             "WITH datetime() AS now, datetime(p.createdAt) AS date , p " +
             "where duration.inSeconds(date, now).hours < 10 " +
             "return p.postId")
     List<String> getFollowingNewPostList(String userId);
 
-    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물 + 팔로우한 유저가 작성한 게시물(주황색 부분)
+    // 유저 행동 기반 추천
+    @Query("match(u:UserInfo{userId : $userId})-[r:RECOMMENDED]->(p:PostInfo) " +
+            "with u, r, p " +
+            "LIMIT 6 " +
+            "match (u)-[r]->(p) " +
+            "match (p)-[:TAGD]->(t:Tag)<-[:TAGD]-(n:PostInfo) " +
+            "with n " +
+            "order by n.createdAt DESC "+
+            "return DISTINCT n.postId LIMIT 20"
+    )
+    Set<String> getPostList(@Param("userId") String userId);
+
+    // 유저가 좋아요, 댓글, 키우는 펫과 관련된 태그의 게시물, 팔로우한 유저가 작성한 게시물(주황색 부분)
     @Query("match (u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[:POST]->(p1:PostInfo) " +
             "WITH p1, datetime() AS now, datetime(p1.createdAt) AS date " +
             "where duration.inSeconds(date, now).hours < 24 " +
@@ -156,6 +179,7 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return n2.postId as postId ")
     Set<String> getPetLikeCommentPostList(@Param("userId") String userId);
 
+    // 내가 알 수 있는 사람의 게시물, 유저 행동 기반 추천, 팔로우한 유저의 행동 기반 추천(연두색 부분)
     @Query("Match(u1:UserInfo{userId: $userId})-[:FOLLOW]->()-[r1:RECOMMENDED]->(p1:PostInfo) " +
             "with r1, p1 " +
             "ORDER BY r1.score DESC " +
@@ -184,4 +208,3 @@ public interface UserInfoRepository extends Neo4jRepository<UserInfo, String> {
             "return DISTINCT p.postId as postId ")
     Set<String> getRecommendedFollowPostList(@Param("userId") String userId);
 }
-

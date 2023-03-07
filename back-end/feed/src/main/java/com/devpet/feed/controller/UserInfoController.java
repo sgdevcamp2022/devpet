@@ -33,20 +33,6 @@ public class UserInfoController {
     }
 
     /**
-     * 사용자 Follow
-     *
-     * @param followDto
-     * @return
-     * @throws Exception
-     */
-    @PostMapping("/follow")
-    public ResponseEntity<?> followUser(@RequestBody FollowDto followDto) throws Exception {
-        userInfoService.followUser(followDto.getFollowing(), followDto.getFollower());
-        return ResponseEntity.ok("");
-        //TODO : 반환할거 고민해보자!
-    }
-
-    /**
      * 사용자 정보 변경
      *
      * @param userInfoDto
@@ -59,14 +45,42 @@ public class UserInfoController {
         return userInfoDto;
     }
 
+    /**
+     * 사용자 Follow
+     *
+     * @param followDto
+     * @return
+     * @throws Exception
+     */
+//    @PostMapping("/follow")
+//    public ResponseEntity<?> followUser(@RequestBody FollowDto followDto) throws Exception {
+//        userInfoService.followUser(followDto.getFollowing(), followDto.getFollower());
+//        return ResponseEntity.ok("");
+//        //TODO : 반환할거 고민해보자!
+//    }
     /*
-    * 팔로우 취소
-    * followDto 의 follower 필드가 사용자 본인
-    * */
-    @PostMapping("/follow/cancel")
-    public void cancelFollow(@RequestBody FollowDto followDto) {
+     * 팔로우, 블락
+     * followDto 의 follower 필드가 사용자 본인
+     * relationship 을 통해 팔로우 인지 차단인지 구분
+     * */
+    @PostMapping("/{relationship}")
+    public ResponseEntity<?> relationship(@PathVariable("relationship") String relationship,
+                                        @RequestBody FollowDto followDto) throws Exception {
+        userInfoService.relationship(followDto.getFollowing(), followDto.getFollower(), relationship);
+        return ResponseEntity.ok("");
+        //TODO : 반환할거 고민해보자!
+    }
 
-        userInfoService.cancelFollow(followDto);
+    /*
+    * 팔로우, 블락 취소
+    * followDto 의 follower 필드가 사용자 본인
+    * relationship 을 통해 팔로우 인지 차단인지 구분
+    * */
+    @PostMapping("/{relationship}/cancel")
+    public void cancelRelationship(@PathVariable("relationship") String relationship,
+                             @RequestBody FollowDto followDto) {
+
+        userInfoService.cancelRelationship(relationship, followDto);
     }
 
     /*

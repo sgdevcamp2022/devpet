@@ -41,6 +41,16 @@ return new UserInfoDto(info);
         UserInfo user = userRepository.findNodeById(save.getUserId()).orElse(userRepository.save(userDtoToUserInfo(userInfo)));
         return userInfoToUserInfoDto(user);
     }
+    // 유저 노드 수정
+    @Transactional
+    public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) {
+
+        // 유저가 db에 존재하는지 확인
+        userRepository.findNodeById(userInfoDto.getUserId()).orElseThrow(RuntimeException::new);
+        UserInfo userInfo = userDtoToUserInfo(userInfoDto);
+
+        return userInfoToUserInfoDto(userRepository.save(userInfo));
+    }
 
     /*
     * followUser -[:FOLLOW]-> followedUser
@@ -93,49 +103,77 @@ return new UserInfoDto(info);
 //        user.setFollowers(userFollower);
 //    }
 
+
+    /**
+     * 팔로우 또는 차단 기능
+     */
     @Transactional
-    public UserInfoDto followUser(String followedUser, String followUser) throws Exception {
+    public void relationship(String followedUser, String followUser, String relationship) throws Exception {
 
         // 팔로우 당하는 사람
         UserInfo user = userRepository.findNodeById(followedUser).orElseThrow(RuntimeException::new);
         // 팔로우를 하는 사람
         UserInfo follower = userRepository.findNodeById(followUser).orElseThrow(RuntimeException::new);
 
-        // 서로 관계가 있는지 체크
-        UserInfo check = userRepository.checkFollow(followUser, followedUser);
-        if (check != null) {
-            throw new Exception("이미 존재하는 관계입니다.");
+        switch(relationship) {
+            case "follow" :
+
+                // 차단관계인지 체크
+                if (userRepository.checkBlock(followUser, followedUser)) {
+                    throw new Exception("차단한 유저입니다.");
+                }
+
+                // 서로 관계가 있는지 체크
+                UserInfo check = userRepository.checkFollow(followUser, followedUser);
+                if (check != null) {
+                    throw new Exception("팔로우한 유저입니다.");
+                }
+
+                Set<Follow> userFollower = user.getFollowers();
+                Follow followerNode = new Follow(follower);
+                userFollower.add(followerNode);
+                userRepository.save(user);
+                //return userInfoToUserInfoDto(userRepository.save(user));
+                break;
+            case "block" :
+
+                // 차단관계인지 체크
+                if (userRepository.checkBlock(followUser, followedUser)) {
+                    throw new Exception("이미 차단한 유저입니다.");
+                }
+
+                userRepository.block(followUser, followedUser);
+                break;
+            default:
+                throw new RuntimeException("Invalid request.");
         }
-
-        Set<Follow> userFollower = user.getFollowers();
-        Follow followerNode = new Follow(follower);
-        userFollower.add(followerNode);
-        return userInfoToUserInfoDto(userRepository.save(user));
-    }
-
-    // 유저 노드 수정
-    @Transactional
-    public UserInfoDto patchUserInfo(UserInfoDto userInfoDto) {
-
-        // 유저가 db에 존재하는지 확인
-        userRepository.findNodeById(userInfoDto.getUserId()).orElseThrow(RuntimeException::new);
-        UserInfo userInfo = userDtoToUserInfo(userInfoDto);
-
-        return userInfoToUserInfoDto(userRepository.save(userInfo));
     }
 
     /**
-     * 팔로우를 취소 합니다.
+     * 팔로우 또는 차단을 취소 합니다.
      * @param followDto
      */
-    public void cancelFollow(FollowDto followDto) {
+    public void cancelRelationship(String relationship , FollowDto followDto) {
 
         // 팔로워가 db에 존재하는지 확인(사용자 본인)
         userRepository.findNodeById(followDto.getFollower()).orElseThrow(RuntimeException::new);
         // 팔로잉 대상이 db에 존재하는지 확인
         userRepository.findNodeById(followDto.getFollowing()).orElseThrow(RuntimeException::new);
-        // 팔로잉 대상의 팔로워 연결 제거
-        userRepository.cancelFollow(followDto.getFollower(), followDto.getFollowing());
+
+        switch (relationship) {
+            case "follow" :
+                // 팔로잉 대상의 팔로워 연결 제거
+                userRepository.cancelFollow(followDto.getFollower(), followDto.getFollowing());
+                break;
+
+            case "block" :
+                // 블락 제거
+                userRepository.cancelBlock(followDto.getFollower(), followDto.getFollowing());
+                break;
+
+            default:
+                throw new RuntimeException("Invalid request.");
+        }
     }
 
 
